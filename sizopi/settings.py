@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'authentication',
-    'datasatwa'
+    'datasatwa',
+    'datahabitat'
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Habitat</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-bold mb-6">Daftar Habitat</h2>
+        <a href="{% url 'datahabitat:tambah_habitat' %}" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Habitat</a>
+
+        <table class="w-full border-collapse">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="border p-2">Nama Habitat</th>
+                    <th class="border p-2">Luas Area (m²)</th>
+                    <th class="border p-2">Kapasitas Maksimal</th>
+                    <th class="border p-2">Status Lingkungan</th>
+                    <th class="border p-2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for habitat in habitats %}
+                <tr>
+                    <td class="border p-2">{{ habitat.nama }}</td>
+                    <td class="border p-2">{{ habitat.luas_area }}</td>
+                    <td class="border p-2">{{ habitat.kapasitas_maksimal }}</td>
+                    <td class="border p-2">{{ habitat.status_lingkungan }}</td>
+                    <td class="border p-2">
+                        <a href="{% url 'datahabitat:detail_habitat' habitat.pk %}" class="text-blue-600">[Detail]</a> |
+                        <a href="{% url 'datahabitat:edit_habitat' habitat.pk %}" class="text-blue-600">[Edit]</a> |
+                        <a href="{% url 'datahabitat:hapus_habitat' habitat.pk %}" class="text-red-600">[Hapus]</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

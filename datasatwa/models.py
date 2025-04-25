@@ -1,4 +1,5 @@
 from django.db import models
+from datahabitat.models import Habitat
 
 class Habitat(models.Model):
     nama = models.CharField(max_length=100)
@@ -19,11 +20,11 @@ class Satwa(models.Model):
     asal_hewan = models.CharField(max_length=100)
     tanggal_lahir = models.DateField(blank=True, null=True)
     status_kesehatan = models.CharField(max_length=30, choices=STATUS_KESEHATAN_CHOICES)
-    habitat = models.ForeignKey(Habitat, on_delete=models.SET_NULL, null=True)
+    habitat = models.ForeignKey(Habitat, on_delete=models.CASCADE, related_name='satwa', default='1')
     url_foto = models.URLField(blank=True, null=True)
 
     class Meta:
         unique_together = ('nama_individu', 'spesies', 'asal_hewan')
 
     def __str__(self):
-        return self.nama_individu or self.spesies
+        return self.nama_individu

@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),  
     path('datasatwa/', include('datasatwa.urls')), 
+    path('datahabitat/', include('datahabitat.urls')),
 ]

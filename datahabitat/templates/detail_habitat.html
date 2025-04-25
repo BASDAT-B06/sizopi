@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Habitat: {{ habitat.nama }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">DETAIL HABITAT: {{ habitat.nama }}</h2>
+
+        <!-- Habitat Info -->
+        <div class="mb-6">
+            <p><strong>Luas Area:</strong> {{ habitat.luas_area }} m²</p>
+            <p><strong>Status Lingkungan:</strong> {{ habitat.status_lingkungan }}</p>
+            <p><strong>Kapasitas Maksimal:</strong> {{ habitat.kapasitas_maksimal }} hewan</p>
+        </div>
+
+        <!-- List of Species in Habitat -->
+        <h3 class="text-xl font-semibold mb-4">DAFTAR HEWAN DALAM HABITAT</h3>
+        <table class="w-full border-collapse">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="border p-2">Nama Individu</th>
+                    <th class="border p-2">Spesies</th>
+                    <th class="border p-2">Asal Hewan</th>
+                    <th class="border p-2">Tanggal Lahir</th>
+                    <th class="border p-2">Status Kesehatan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for satwa in species_in_habitat %}
+                <tr>
+                    <td class="border p-2">{{ satwa.nama_individu }}</td>
+                    <td class="border p-2">{{ satwa.spesies }}</td>
+                    <td class="border p-2">{{ satwa.asal_hewan }}</td>
+                    <td class="border p-2">{{ satwa.tanggal_lahir }}</td>
+                    <td class="border p-2">{{ satwa.status_kesehatan }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="border p-2 text-center">Tidak ada hewan dalam habitat ini.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Edit and Delete Habitat buttons -->
+        <div class="flex justify-between mt-4">
+            <a href="{% url 'datahabitat:edit_habitat' habitat.pk %}" class="text-blue-600">[Edit Habitat]</a>
+            <a href="{% url 'datahabitat:hapus_habitat' habitat.pk %}" class="text-red-600">[Hapus Habitat]</a>
+        </div>
+
+    </div>
+</body>
+</html>
