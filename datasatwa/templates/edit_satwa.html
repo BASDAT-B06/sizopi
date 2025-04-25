@@ -8,9 +8,43 @@
 <body class="bg-gray-100 p-10">
     <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
         <h2 class="text-xl font-bold mb-6">Edit Satwa</h2>
+        
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="mb-4">
+                <label for="nama_individu" class="block text-sm font-medium">Nama Individu</label>
+                <input type="text" name="nama_individu" id="nama_individu" value="{{ satwa.nama_individu }}" class="w-full border rounded px-2 py-1">
+            </div>
+            <div class="mb-4">
+                <label for="spesies" class="block text-sm font-medium">Spesies</label>
+                <input type="text" name="spesies" id="spesies" value="{{ satwa.spesies }}" class="w-full border rounded px-2 py-1">
+            </div>
+            <div class="mb-4">
+                <label for="asal_hewan" class="block text-sm font-medium">Asal Hewan</label>
+                <input type="text" name="asal_hewan" id="asal_hewan" value="{{ satwa.asal_hewan }}" class="w-full border rounded px-2 py-1">
+            </div>
+            <div class="mb-4">
+                <label for="tanggal_lahir" class="block text-sm font-medium">Tanggal Lahir</label>
+                <input type="date" name="tanggal_lahir" id="tanggal_lahir" value="{{ satwa.tanggal_lahir }}" class="w-full border rounded px-2 py-1">
+            </div>
+            <div class="mb-4">
+                <label for="status_kesehatan" class="block text-sm font-medium">Status Kesehatan</label>
+                <select name="status_kesehatan" id="status_kesehatan" class="w-full border rounded px-2 py-1">
+                    <option value="Sehat" {% if satwa.status_kesehatan == "Sehat" %}selected{% endif %}>Sehat</option>
+                    <option value="Sakit" {% if satwa.status_kesehatan == "Sakit" %}selected{% endif %}>Sakit</option>
+                    <option value="Dalam Pemantauan" {% if satwa.status_kesehatan == "Dalam Pemantauan" %}selected{% endif %}>Dalam Pemantauan</option>
+                    <option value="Lainnya" {% if satwa.status_kesehatan == "Lainnya" %}selected{% endif %}>Lainnya</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="habitat" class="block text-sm font-medium">Habitat</label>
+                <input type="text" name="habitat" id="habitat" value="{{ satwa.habitat }}" class="w-full border rounded px-2 py-1">
+            </div>
+            <div class="mb-4">
+                <label for="url_foto" class="block text-sm font-medium">URL Foto Satwa</label>
+                <input type="url" name="url_foto" id="url_foto" value="{{ satwa.url_foto }}" class="w-full border rounded px-2 py-1">
+            </div>
+
             <div class="flex space-x-4">
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Simpan</button>
                 <a href="{% url 'datasatwa:daftar_satwa' %}" class="bg-gray-600 text-white px-4 py-2 rounded">Batal</a>

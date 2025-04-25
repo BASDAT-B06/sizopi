@@ -68,23 +68,24 @@ WSGI_APPLICATION = 'sizopi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.getenv('DB_NAME'),
-#         'USER': os.getenv('DB_USERNAME'),
-#         'PASSWORD': os.getenv('DB_PASSWORD'), 
-#         'HOST': os.getenv('DB_HOST'),
-#         'PORT': os.getenv('DB_PORT'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Using SQLite
-        'NAME': BASE_DIR / 'db.sqlite3',  # Database file location
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),  # This will now use DB_NAME from .env
+        'USER': os.getenv('DB_USER'),  # This will now use DB_USER from .env
+        'PASSWORD': os.getenv('DB_PASSWORD'),  # This will now use DB_PASSWORD from .env
+        'HOST': os.getenv('DB_HOST'),  # This will now use DB_HOST from .env
+        'PORT': os.getenv('DB_PORT'),  # This will now use DB_PORT from .env
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',  # Using SQLite
+#         'NAME': BASE_DIR / 'db.sqlite3',  # Database file location
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
