@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'authentication',
-    'kuning'
+    'datasatwa'
 ]
 
 MIDDLEWARE = [

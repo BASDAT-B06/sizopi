@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Satwa</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-bold mb-6">Daftar Satwa</h2>
+        <a href="{% url 'datasatwa:tambah_satwa' %}" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Satwa</a>
+
+        <table class="w-full border-collapse">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="border p-2">Nama Individu</th>
+                    <th class="border p-2">Spesies</th>
+                    <th class="border p-2">Asal Hewan</th>
+                    <th class="border p-2">Tanggal Lahir</th>
+                    <th class="border p-2">Status Kesehatan</th>
+                    <th class="border p-2">Habitat</th>
+                    <th class="border p-2">Foto</th>
+                    <th class="border p-2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for satwa in data %}
+                    <tr>
+                        <td class="border p-2">{{ satwa.nama_individu }}</td>
+                        <td class="border p-2">{{ satwa.spesies }}</td>
+                        <td class="border p-2">{{ satwa.asal_hewan }}</td>
+                        <td class="border p-2">{{ satwa.tanggal_lahir }}</td>
+                        <td class="border p-2">{{ satwa.status_kesehatan }}</td>
+                        <td class="border p-2">{{ satwa.habitat }}</td>
+                        <td class="border p-2">
+                            {% if satwa.url_foto %}
+                                <img src="{{ satwa.url_foto }}" alt="Foto" width="100">
+                            {% else %}
+                                No Image
+                            {% endif %}
+                        </td>
+                        <td class="border p-2">
+                            <a href="{% url 'datasatwa:hapus_satwa' satwa.id %}" class="text-red-600">[Hapus]</a>
+                            <a href="{% url 'datasatwa:edit_satwa' satwa.id %}" class="text-red-600">[Edit]</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center p-4">Tidak ada data satwa.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-6">
+        <a href="{% url 'datasatwa:home' %}" class="bg-gray-600 text-white px-4 py-2 rounded">Kembali ke Homepage</a>
+    </div>
+</body>
+</html>

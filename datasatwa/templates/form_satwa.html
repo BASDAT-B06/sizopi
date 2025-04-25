@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Tambah Data Satwa</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-2xl font-bold mb-6">Form Tambah Data Satwa</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="nama_individu" class="block text-sm font-medium">Nama Individu</label>
+                <input type="text" name="nama_individu" class="w-full border rounded px-2 py-1">
+            </div>
+
+            <div class="mb-4">
+                <label for="spesies" class="block text-sm font-medium">Spesies</label>
+                <input type="text" name="spesies" class="w-full border rounded px-2 py-1">
+            </div>
+
+            <div class="mb-4">
+                <label for="asal_hewan" class="block text-sm font-medium">Asal Hewan</label>
+                <input type="text" name="asal_hewan" class="w-full border rounded px-2 py-1">
+            </div>
+
+            <div class="mb-4">
+                <label for="tanggal_lahir" class="block text-sm font-medium">Tanggal Lahir</label>
+                <input type="date" name="tanggal_lahir" class="w-full border rounded px-2 py-1">
+            </div>
+
+            <div class="mb-4">
+                <label for="status_kesehatan" class="block text-sm font-medium">Status Kesehatan</label>
+                <select name="status_kesehatan" class="w-full border rounded px-2 py-1">
+                    <option value="Sehat">Sehat</option>
+                    <option value="Sakit">Sakit</option>
+                    <option value="Dalam Pemantauan">Dalam Pemantauan</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="habitat" class="block text-sm font-medium">Habitat</label>
+                <select name="habitat" class="w-full border rounded px-2 py-1">
+                    {% for habitat in habitat_list %}
+                        <option value="{{ habitat.id }}">{{ habitat.nama }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="url_foto" class="block text-sm font-medium">URL Foto Satwa</label>
+                <input type="url" name="url_foto" class="w-full border rounded px-2 py-1">
+            </div>
+
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Tambah Satwa</button>
+            <a href="{% url 'datasatwa:daftar_satwa' %}" class="bg-gray-600 text-white px-4 py-2 rounded text-center">Batal</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class KuningConfig(AppConfig):
+class DatasatwaConfig(AppConfig):  
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'kuning'
+    name = 'datasatwa'  
