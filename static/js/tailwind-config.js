@@ -60,5 +60,13 @@ tailwind.config = {
                 }]
             }
         }
+    },
+    variants: {
+        extend: {
+            backgroundColor: ['hover', 'active', 'focus'],
+            textColor: ['hover', 'active', 'focus'],
+            borderColor: ['hover', 'active', 'focus'],
+            opacity: ['hover', 'active', 'focus']
+        }
     }
 };

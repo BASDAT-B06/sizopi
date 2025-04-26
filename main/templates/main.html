@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block meta %}
-<title>Button Components</title>
 {% endblock meta %}
 
 {% block content %}
@@ -31,6 +30,29 @@
         <div class="font-header text-h6 text-neutral-black">Heading 6 dengan Tailwind</div>
 
         <div class="font-body text-base text-neutral-black mt-4">Lorem ipsum dolor sit amet</div>
+    </div>
+    
+    <div class="p-8">
+        <h2>Primary Buttons</h2>
+        <div class="space-y-4">
+            {% include "components/button.html" with type="primary" text="Button" icon_left=True icon_right=True %}
+            {% include "components/button.html" with type="primary" text="Button" arrow_up=True %}
+            {% include "components/button.html" with type="primary" text="Button" disabled=True %}
+        </div>
+        
+        <h2 class="mt-8">Secondary Buttons</h2>
+        <div class="space-y-4">
+            {% include "components/button.html" with type="secondary" text="Button" icon_left=True icon_right=True %}
+            {% include "components/button.html" with type="secondary" text="Button" arrow_up=True %}
+            {% include "components/button.html" with type="secondary" text="Button" disabled=True %}
+        </div>
+        
+        <h2 class="mt-8">Ghost Buttons</h2>
+        <div class="space-y-4">
+            {% include "components/button.html" with type="ghost" text="Button" icon_left=True icon_right=True %}
+            {% include "components/button.html" with type="ghost" text="Button" arrow_up=True %}
+            {% include "components/button.html" with type="ghost" text="Button" disabled=True %}
+        </div>
     </div>
 </div>
 {% endblock content %}
