@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Pemeriksaan Kesehatan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            100: '#91986E',
+                            80: '#91986ECC',
+                            60: '#91986E99',
+                            40: '#91986E66',
+                            20: '#91986E33',
+                        },
+                        secondary: {
+                            100: '#F5EFE0',
+                            80: '#F5EEDBCC',
+                            60: '#F5EEDB99',
+                            40: '#F5EEDB66',
+                            20: '#F5EEDB33',
+                        },
+                        accent: {
+                            50: '#FBF0E6',
+                            200: '#FAE9D9',
+                            400: '#F2D4B9',
+                            500: '#DB6900',
+                            600: '#C55F00',
+                            700: '#A44F00',
+                            800: '#A44F00',
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="bg-accent-cream-50">
+    <header class="bg-primary-100 shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-white text-xl font-bold">Rekam Medis Hewan</h1>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-6">
+        <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-accent-teal-100">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">Nama Hewan</div>
+                    <p class="text-gray-800">Molly</p>
+                </div>
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">Spesies</div>
+                    <p class="text-gray-800">Gajah</p>
+                </div>
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">ID Hewan</div>
+                    <p class="text-gray-800">GJH-2023-001</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-6 overflow-x-auto">
+        <table class="mx-auto w-full max-w-2xl border border-gray-300 shadow-lg rounded-lg overflow-hidden">
+            <thead class="bg-gradient-to-r from-primary-100 to-primary-80">
+                <tr>
+                    <th class="px-6 py-4 text-left text-sm font-bold text-white border-b border-primary-60">
+                        Tanggal Pemeriksaan Selanjutnya
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <tr class="hover:bg-accent-blue-50 transition duration-200">
+                    <td class="px-6 py-4 text-gray-800 font-medium">2025-03-20</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
