@@ -31,6 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'authentication',
+    'atraksi_wahana',
+    'booking_tiket',
 ]
 
 MIDDLEWARE = [
