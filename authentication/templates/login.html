@@ -4,17 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                colors: {
+                    primary: {
+                        DEFAULT: '#91986E', 
+                        '80': '#91986ECC',    
+                        '60': '#91986E99',    
+                        '40': '#91986E66',    
+                        '20': '#91986E33',    
+                    },
+                    secondary: {
+                        DEFAULT: '#F5EFE0', 
+                        '80': '#F5EEDBCC',    
+                        '60': '#F5EEDB99',   
+                        '40': '#F5EEDB66',    
+                        '20': '#F5EEDB33',    
+                    },
+                    accent: {
+                        '50': '#FBF0E6',
+                        '200': '#FAE9D9',
+                        '400': '#F2D4B9',
+                        '500': '#DB6900',
+                        '600': '#C55F00',
+                        '700': '#A44F00',
+                        '800': '#A44F00',
+                    }
+                }
+            }
+        };
+    </script>
+</head>
 
-    <body>
-        <div class="container">
-            <h1>Login</h1>
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Login</button>
-            </form>
-            <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+<body class="bg-secondary min-h-screen flex items-center justify-center">
+    <div class="container max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold text-primary mb-6 text-center">Login</h1>
+        
+        <form method="post" action="#" class="space-y-4">
+            
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address
+                </label>
+                <input type="email" id="email" name="email" 
+                       class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                       required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                    Password
+                </label>
+                <input type="password" id="password" name="password" 
+                       class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                       required>
+            </div>
+            
+            <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-80 transition duration-300">
+                Login
+            </button>
+        </form>
+        
+        <p class="mt-6 text-center text-sm">
+            Don't have an account? <a href="#" id="register-link" class="text-accent-500 hover:text-accent-700">Register here</a>
+        </p>
+
+        <!-- Registration Role Selection (Hidden by default) -->
+        <div id="registration-roles" class="mt-6 hidden">
+            <p class="text-center text-sm font-medium mb-3">Select your role:</p>
+            <div class="grid grid-cols-3 gap-4">
+                <a href="/auth/register/dokter" class="flex items-center justify-center py-2 px-4 bg-white text-black border border-black rounded-md hover:bg-gray-100 transition">
+                    Dokter<br>Hewan
+                </a>
+                <a href="/auth/register/staff" class="flex items-center justify-center py-2 px-4 bg-white text-black border border-black rounded-md hover:bg-gray-100 transition">
+                    Staff
+                </a>
+                <a href="/auth/register/pengunjung" class="flex items-center justify-center py-2 px-4 bg-white text-black border border-black rounded-md hover:bg-gray-100 transition">
+                    Pengunjung
+                </a>
+            </div>
         </div>
-    </body>
+    </div>
+
+    <script>
+        // JavaScript to toggle registration role buttons
+        document.getElementById('register-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            const rolesDiv = document.getElementById('registration-roles');
+            rolesDiv.classList.toggle('hidden');
+        });
+    </script>
+</body>
 </html>

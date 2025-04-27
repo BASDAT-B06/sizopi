@@ -27,4 +27,8 @@ urlpatterns = [
     path("", include("main.urls")),
     path('', include('kesehatan_hewan.urls')), 
     path('', include('pakan_hewan.urls')), 
+    path("auth/", include("authentication.urls")),
+    path("atraksi_wahana/", include("atraksi_wahana.urls")),
+    path("booking_tiket/", include("booking_tiket.urls")),
+    path('dashboard/', include('dashboard.urls')),
 ]

@@ -33,10 +33,13 @@ INSTALLED_APPS = [
     'authentication',
     'datasatwa',
     'datahabitat',
-    'profil'
+    'profil',
     'kesehatan_hewan',
     'pakan_hewan',
-    'dashboard'
+    'dashboard',
+    'atraksi_wahana',
+    'booking_tiket',
+
 ]
 
 MIDDLEWARE = [
