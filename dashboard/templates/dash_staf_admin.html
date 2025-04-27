@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Staf Administrasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        },
+                        neutral: {
+                            'black': '#121212'
+                        }
+                    },
+                    fontFamily: {
+                        'header': ['Helvetica', 'Arial', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #121212;
+        }
+    </style>
+</head>
+
+<body class="bg-secondary-20 p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-primary p-4 rounded-t-lg">
+            <h1 class="text-white text-xl font-bold">DASHBOARD STAF ADMINISTRASI</h1>
+        </div>
+
+        <div class="bg-white p-5 shadow-md mb-5">
+            <h2 class="text-lg font-semibold text-primary mb-4">Profil Pengguna</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Nama Lengkap</p>
+                    <p class="text-base font-medium">Janette Karim Kumar</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Username</p>
+                    <p class="text-base font-medium">kkumar2l</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Email</p>
+                    <p class="text-base font-medium">kkumar2l@netvibes.com</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Nomor Telepon</p>
+                    <p class="text-base font-medium">+2307603448</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">ID Staf</p>
+                    <p class="text-base font-medium">e37e4290-155a-4933-a9dd-ee8ef0d3dea7</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Peran</p>
+                    <p class="text-base font-medium">Staf Administrasi</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 shadow-md">
+            <h2 class="text-lg font-semibold text-primary mb-4">Informasi Staf Administrasi</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                <div class="bg-secondary-20 rounded-md p-4">
+                    <p class="text-sm text-gray-500 mb-1">Ringkasan Penjualan Tiket Hari Ini</p>
+                    <p class="text-2xl font-bold text-primary">Rp 5.450.000</p>
+                </div>
+
+                <div class="bg-secondary-20 rounded-md p-4">
+                    <p class="text-sm text-gray-500 mb-1">Jumlah Pengunjung Hari Ini</p>
+                    <p class="text-2xl font-bold text-primary">180</p>
+                </div>
+
+                <div class="bg-secondary-20 rounded-md p-4">
+                    <p class="text-sm text-gray-500 mb-1">Laporan Pendapatan Mingguan</p>
+                    <p class="text-2xl font-bold text-primary">Rp 25.125.000</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

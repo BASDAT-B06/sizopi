@@ -34,6 +34,9 @@ INSTALLED_APPS = [
     'datasatwa',
     'datahabitat',
     'profil'
+    'kesehatan_hewan',
+    'pakan_hewan',
+    'dashboard'
 ]
 
 MIDDLEWARE = [
@@ -83,11 +86,11 @@ WSGI_APPLICATION = 'sizopi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),  # This will now use DB_NAME from .env
-        'USER': os.getenv('DB_USER'),  # This will now use DB_USER from .env
-        'PASSWORD': os.getenv('DB_PASSWORD'),  # This will now use DB_PASSWORD from .env
-        'HOST': os.getenv('DB_HOST'),  # This will now use DB_HOST from .env
-        'PORT': os.getenv('DB_PORT'),  # This will now use DB_PORT from .env
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'), 
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
