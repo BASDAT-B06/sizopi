@@ -42,14 +42,10 @@
 </head>
 
 <body class="bg-accent-cream-50">
-    <header class="bg-primary-100 shadow-md">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <h1 class="text-white text-xl font-bold">Rekam Medis Hewan</h1>
-        </div>
-    </header>
-
     <div class="container mx-auto px-4 py-6">
-        <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-accent-teal-100">
+        <h1 class="text-primary-100 text-xl font-bold mb-6">JADWAL PEMERIKSAAN HEWAN</h1>
+
+        <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-primary-100">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <div class="text-sm font-medium text-primary-100 mb-1">Nama Hewan</div>
@@ -61,40 +57,38 @@
                 </div>
                 <div>
                     <div class="text-sm font-medium text-primary-100 mb-1">ID Hewan</div>
-                    <p class="text-gray-800">GJH-2023-001</p>
+                    <p class="text-gray-800">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c</p>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="flex justify-end mb-4">
+            <button
+                class="bg-accent-500 hover:bg-accent-600 focus:bg-accent-600 active:bg-accent-700 text-white font-medium py-1.5 px-4 rounded-full text-sm transition duration-150 ease-in-out flex items-center space-x-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                        clip-rule="evenodd" />
+                </svg>
+                <span>CREATE JADWAL PEMERIKSAAN</span>
+            </button>
+        </div>
 
-    <div class="flex justify-end mb-4">
-        <button
-            class="bg-accent-500 hover:bg-accent-600 focus:bg-accent-600 active:bg-accent-700 text-white font-medium py-1.5 px-4 rounded-full text-sm transition duration-150 ease-in-out flex items-center space-x-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                    clip-rule="evenodd" />
-            </svg>
-            <span>CREATE JADWAL PEMERIKSAAN</span>
-        </button>
-    </div>
-
-    <div class="mt-6 overflow-x-auto">
-        <table class="mx-auto w-full max-w-2xl border border-gray-300 shadow-lg rounded-lg overflow-hidden">
-            <thead class="bg-gradient-to-r from-primary-100 to-primary-80">
-                <tr>
-                    <th class="px-6 py-4 text-left text-sm font-bold text-white border-b border-primary-60">
-                        Tanggal Pemeriksaan Selanjutnya
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                <tr class="hover:bg-accent-blue-50 transition duration-200">
-                    <td class="px-6 py-4 text-gray-800 font-medium">2025-03-20</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="mt-6 overflow-x-auto">
+            <table class="mx-auto w-full max-w-2xl border border-gray-300 shadow-lg rounded-lg overflow-hidden">
+                <thead class="bg-gradient-to-r from-primary-100 to-primary-80">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-bold text-white border-b border-primary-60">
+                            Tanggal Pemeriksaan Selanjutnya
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="hover:bg-accent-blue-50 transition duration-200">
+                        <td class="px-6 py-4 text-gray-800 font-medium">2025-03-20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
 </body>
 
