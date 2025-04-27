@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Habitat: Hutan Tropis</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"> <!-- Poppins Font -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F5EEDB;
+        }
+        .rounded-card {
+            border-radius: 20px;
+        }
+        .btn-primary {
+            background-color: #DB6900;
+            color: white;
+            border-radius: 28px;
+            padding: 8px 18px;
+            font-size: 14px;
+        }
+        .btn-secondary {
+            background-color: #FDECEC;
+            color: #EE443F;
+            border-radius: 28px;
+            border: 1.5px solid #EE443F;
+            padding: 8px 18px;
+            font-size: 14px;
+        }
+        .btn-edit, .btn-hapus {
+            color: #1C2628;
+            border-radius: 12px;
+            padding: 3px 6px;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-edit {
+            background-color: #D7DACB;
+            border: 1.5px solid #193e30;
+        }
+        .btn-hapus {
+            background-color: #FDECEC;
+            border: 1.5px solid #EE443F;
+        }
+        .table-container {
+            background-color: #FFFFFF;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .table-header {
+            background-color: #91986E;
+            color: white;
+        }
+        .table-cell {
+            padding: 12px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        .table-cell img {
+            border-radius: 12px;
+        }
+        .text-header {
+            color: #1C2628;
+        }
+    </style>
+</head>
+<body class="p-10">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded-card shadow-lg table-container">
+        <h2 class="text-2xl font-bold mb-4 text-center text-header">DETAIL HABITAT: Hutan Tropis</h2>
+
+        <div class="mb-6">
+            <p><strong>Luas Area:</strong> 1500 m²</p>
+            <p><strong>Status Lingkungan:</strong> Suhu: 30°C, Kelembapan: 40%, Vegetasi: Pepohonan lebat</p>
+            <p><strong>Kapasitas Maksimal:</strong> 1000 hewan</p>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">DAFTAR HEWAN DALAM HABITAT</h3>
+        <table class="w-full border-collapse">
+            <thead class="table-header">
+                <tr>
+                    <th class="table-cell">Nama Individu</th>
+                    <th class="table-cell">Spesies</th>
+                    <th class="table-cell">Asal Hewan</th>
+                    <th class="table-cell">Tanggal Lahir</th>
+                    <th class="table-cell">Status Kesehatan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="table-cell">Simba</td>
+                    <td class="table-cell">Singa</td>
+                    <td class="table-cell">Afrika</td>
+                    <td class="table-cell">2018-05-12</td>
+                    <td class="table-cell">Sehat</td>
+                </tr>
+                <tr>
+                    <td class="table-cell">Nala</td>
+                    <td class="table-cell">Zebra</td>
+                    <td class="table-cell">Afrika</td>
+                    <td class="table-cell">2020-03-01</td>
+                    <td class="table-cell">Sehat</td>
+                </tr>
+                <tr>
+                    <td class="table-cell">Rio</td>
+                    <td class="table-cell">Harimau</td>
+                    <td class="table-cell">Kalimantan</td>
+                    <td class="table-cell">2020-03-03</td>
+                    <td class="table-cell">Sakit</td>
+                </tr>
+                <tr>
+                    <td class="table-cell">Luna</td>
+                    <td class="table-cell">Orangutan</td>
+                    <td class="table-cell">Kalimantan</td>
+                    <td class="table-cell">2019-01-10</td>
+                    <td class="table-cell">Sehat</td>
+                </tr>
+                <tr>
+                    <td class="table-cell">Kara</td>
+                    <td class="table-cell">Kuda</td>
+                    <td class="table-cell">Amerika</td>
+                    <td class="table-cell">2021-06-15</td>
+                    <td class="table-cell">Sehat</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="flex justify-between mt-4">
+            <a href="{% url 'datahabitat:edit_habitat' 1 %}" class="btn-edit">Edit Habitat</a>
+            <a href="#" class="btn-hapus">Hapus Habitat</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

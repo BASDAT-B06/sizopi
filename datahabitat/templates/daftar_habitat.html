@@ -1,41 +1,111 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <title>Daftar Habitat</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"> <!-- Poppins Font -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F5EEDB; 
+        }
+        .rounded-card {
+            border-radius: 20px;
+        }
+        .btn-primary {
+            background-color: #DB6900; 
+            color: white;
+            border-radius: 28px; 
+            padding: 8px 18px; 
+            font-size: 14px;
+        }
+        .btn-secondary {
+            background-color: #FDECEC; 
+            color: #EE443F; 
+            border-radius: 28px;
+            border: 1.5px solid #EE443F; 
+            padding: 8px 18px; 
+            font-size: 14px;
+        }
+        .btn-edit, .btn-hapus {
+            color: #1C2628;
+            border-radius: 12px; 
+            padding: 3px 6px;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-edit {
+            background-color: #D7DACB; 
+            border: 1.5px solid #193e30; 
+        }
+        .btn-hapus {
+            background-color: #FDECEC; 
+            border: 1.5px solid #EE443F; 
+        }
+        .table-container {
+            background-color: #FFFFFF;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .table-header {
+            background-color: #91986E;
+            color: white;
+        }
+        .table-cell {
+            padding: 12px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        .table-cell img {
+            border-radius: 12px;
+        }
+        .text-header {
+            color: #1C2628;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 p-10">
-    <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
-        <h2 class="text-xl font-bold mb-6">Daftar Habitat</h2>
-        <a href="{% url 'datahabitat:tambah_habitat' %}" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Habitat</a>
+<body class="p-10">
 
-        <table class="w-full border-collapse">
-            <thead class="bg-gray-200">
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded-card shadow-lg table-container">
+        <h2 class="text-3xl font-semibold mb-6 text-center text-header">Daftar Habitat</h2>
+        
+        <div class="flex justify-end mb-6">
+            <a href="{% url 'datahabitat:tambah_habitat' %}" class="btn-primary inline-block">Tambah Habitat</a>
+        </div>
+
+        <table class="w-full border-collapse rounded-card">
+            <thead class="table-header">
                 <tr>
-                    <th class="border p-2">Nama Habitat</th>
-                    <th class="border p-2">Luas Area (m²)</th>
-                    <th class="border p-2">Kapasitas Maksimal</th>
-                    <th class="border p-2">Status Lingkungan</th>
-                    <th class="border p-2">Aksi</th>
+                    <th class="table-cell">Nama Habitat</th>
+                    <th class="table-cell">Luas Area (m²)</th>
+                    <th class="table-cell">Kapasitas Maksimal</th>
+                    <th class="table-cell">Status Lingkungan</th>
+                    <th class="table-cell">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 {% for habitat in habitats %}
-                <tr>
-                    <td class="border p-2">{{ habitat.nama }}</td>
-                    <td class="border p-2">{{ habitat.luas_area }}</td>
-                    <td class="border p-2">{{ habitat.kapasitas_maksimal }}</td>
-                    <td class="border p-2">{{ habitat.status_lingkungan }}</td>
-                    <td class="border p-2">
-                        <a href="{% url 'datahabitat:detail_habitat' habitat.pk %}" class="text-blue-600">[Detail]</a> |
-                        <a href="{% url 'datahabitat:edit_habitat' habitat.pk %}" class="text-blue-600">[Edit]</a> |
-                        <a href="{% url 'datahabitat:hapus_habitat' habitat.pk %}" class="text-red-600">[Hapus]</a>
+                <tr class="bg-white">
+                    <td class="table-cell">{{ habitat.nama }}</td>
+                    <td class="table-cell">{{ habitat.luas_area }}</td>
+                    <td class="table-cell">{{ habitat.kapasitas_maksimal }}</td>
+                    <td class="table-cell">
+                        Suhu: {{ habitat.suhu }}°C, Kelembapan: {{ habitat.kelembapan }}%, Vegetasi: {{ habitat.vegetasi }}
+                    </td>
+                    <td class="table-cell">
+                        <a href="{% url 'datahabitat:detail_habitat' habitat.id %}" class="btn-edit">Detail</a> 
+                        <a href="{% url 'datahabitat:edit_habitat' habitat.id %}" class="btn-edit">Edit</a> 
+                        <a href="{% url 'datahabitat:hapus_habitat' habitat.id %}" class="btn-hapus">Hapus</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
 </body>
-</html> -->
+</html>

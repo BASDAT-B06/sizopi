@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Form Tambah Habitat</title>
+    <title>Form Edit Habitat</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"> <!-- Poppins Font -->
     <style>
@@ -14,7 +14,7 @@
             border-radius: 20px;
         }
         .btn-primary {
-            background-color: #DB6900;
+            background-color: #193e30;
             color: white;
             border-radius: 28px;
             padding: 8px 18px;
@@ -51,47 +51,38 @@
             color: #1C2628;
         }
     </style>
-    <script>
-        function handleSave() {
-            window.location.href = "{% url 'datahabitat:daftar_habitat' %}";
-        }
-
-        function handleCancel() {
-            window.location.href = "{% url 'datahabitat:daftar_habitat' %}";
-        }
-    </script>
 </head>
 <body class="p-10">
 
     <div class="max-w-3xl mx-auto bg-white p-6 rounded-card shadow-lg form-container">
-        <h2 class="text-2xl font-bold mb-6 text-center text-header">Form Tambah Habitat</h2>
+        <h2 class="text-2xl font-bold mb-6 text-center text-header">Form Edit Habitat</h2>
 
-        <form method="POST" onsubmit="event.preventDefault(); handleSave();">
+        <form method="POST">
             {% csrf_token %}
 
             <div class="mb-4">
                 <label for="nama_habitat" class="block text-sm font-medium form-label">Nama Habitat</label>
-                <input type="text" name="nama_habitat" id="nama_habitat" value="" class="w-full form-input">
+                <input type="text" name="nama_habitat" id="nama_habitat" value="{{ habitat.nama }}" class="w-full form-input">
             </div>
 
             <div class="mb-4">
                 <label for="luas_area" class="block text-sm font-medium form-label">Luas Area (m²)</label>
-                <input type="number" name="luas_area" id="luas_area" value="" class="w-full form-input">
+                <input type="number" name="luas_area" id="luas_area" value="{{ habitat.luas_area }}" class="w-full form-input">
             </div>
 
             <div class="mb-4">
                 <label for="kapasitas_maksimal" class="block text-sm font-medium form-label">Kapasitas Maksimal</label>
-                <input type="number" name="kapasitas_maksimal" id="kapasitas_maksimal" value="" class="w-full form-input">
+                <input type="number" name="kapasitas_maksimal" id="kapasitas_maksimal" value="{{ habitat.kapasitas_maksimal }}" class="w-full form-input">
             </div>
 
             <div class="mb-4">
                 <label for="status_lingkungan" class="block text-sm font-medium form-label">Status Lingkungan</label>
-                <input type="text" name="status_lingkungan" id="status_lingkungan" value="" class="w-full form-input" placeholder="Contoh: Suhu: 28°C, Kelembapan: 70%, Vegetasi: Pepohonan lebat">
+                <textarea name="status_lingkungan" id="status_lingkungan" class="w-full form-input">{{ habitat.status_lingkungan }}</textarea>
             </div>
 
             <div class="flex space-x-4 justify-center mt-6">
                 <button type="submit" class="btn-primary">Simpan Perubahan</button>
-                <button type="button" class="btn-secondary inline-block" onclick="handleCancel()">Batal</button>
+                <a href="{% url 'datahabitat:daftar_habitat' %}" class="btn-secondary inline-block">Batal</a>
             </div>
         </form>
     </div>

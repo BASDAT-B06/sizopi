@@ -2,62 +2,111 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Form Tambah Data Satwa</title>
+    <title>Daftar Satwa</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"> <!-- Poppins Font -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F5EEDB; 
+        }
+        .rounded-card {
+            border-radius: 20px;
+        }
+        .btn-primary {
+            background-color: #DB6900; 
+            color: white;
+            border-radius: 28px;
+            padding: 8px 18px;
+            font-size: 14px;
+        }
+        .btn-secondary {
+            background-color: #FDECEC; 
+            color: #EE443F; 
+            border-radius: 28px;
+            border: 1.5px solid #EE443F;
+            padding: 8px 18px;
+            font-size: 14px;
+        }
+        .form-container {
+            background-color: #FFFFFF;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-label {
+            color: #1C2628; 
+        }
+        .form-input {
+            border: 1px solid #ccc;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #193e30; 
+            box-shadow: 0 0 5px rgba(0, 100, 0, 0.5);
+        }
+        .text-header {
+            color: #1C2628; 
+        }
+    </style>
+    <script>
+        function handleSave() {
+            window.location.href = "{% url 'datasatwa:daftar_satwa' %}";
+        }
+
+        function handleCancel() {
+            window.location.href = "{% url 'datasatwa:daftar_satwa' %}";
+        }
+    </script>
 </head>
-<body class="bg-gray-100 p-10">
-    <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
-        <h2 class="text-2xl font-bold mb-6">Form Tambah Data Satwa</h2>
+<body class="p-10">
 
-        <form method="POST">
-            {% csrf_token %}
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-card shadow-lg form-container">
+        <h2 class="text-2xl font-bold mb-6 text-center text-header">Form Tambah Data Satwa</h2>
+
+        <form method="POST" onsubmit="event.preventDefault(); handleSave();">
             <div class="mb-4">
-                <label for="nama_individu" class="block text-sm font-medium">Nama Individu</label>
-                <input type="text" name="nama_individu" class="w-full border rounded px-2 py-1">
+                <label for="nama_individu" class="block text-sm font-medium form-label">Nama Individu</label>
+                <input type="text" name="nama_individu" id="nama_individu" class="w-full form-input">
             </div>
-
             <div class="mb-4">
-                <label for="spesies" class="block text-sm font-medium">Spesies</label>
-                <input type="text" name="spesies" class="w-full border rounded px-2 py-1">
+                <label for="spesies" class="block text-sm font-medium form-label">Spesies</label>
+                <input type="text" name="spesies" id="spesies" class="w-full form-input">
             </div>
-
             <div class="mb-4">
-                <label for="asal_hewan" class="block text-sm font-medium">Asal Hewan</label>
-                <input type="text" name="asal_hewan" class="w-full border rounded px-2 py-1">
+                <label for="asal_hewan" class="block text-sm font-medium form-label">Asal Hewan</label>
+                <input type="text" name="asal_hewan" id="asal_hewan" class="w-full form-input">
             </div>
-
             <div class="mb-4">
-                <label for="tanggal_lahir" class="block text-sm font-medium">Tanggal Lahir</label>
-                <input type="date" name="tanggal_lahir" class="w-full border rounded px-2 py-1">
+                <label for="tanggal_lahir" class="block text-sm font-medium form-label">Tanggal Lahir</label>
+                <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="w-full form-input">
             </div>
-
             <div class="mb-4">
-                <label for="status_kesehatan" class="block text-sm font-medium">Status Kesehatan</label>
-                <select name="status_kesehatan" class="w-full border rounded px-2 py-1">
+                <label for="status_kesehatan" class="block text-sm font-medium form-label">Status Kesehatan</label>
+                <select name="status_kesehatan" id="status_kesehatan" class="w-full form-input">
                     <option value="Sehat">Sehat</option>
                     <option value="Sakit">Sakit</option>
                     <option value="Dalam Pemantauan">Dalam Pemantauan</option>
                     <option value="Lainnya">Lainnya</option>
                 </select>
             </div>
-
             <div class="mb-4">
-                <label for="habitat" class="block text-sm font-medium">Habitat</label>
-                <select name="habitat" class="w-full border rounded px-2 py-1">
-                    {% for habitat in habitat_list %}
-                        <option value="{{ habitat.id }}">{{ habitat.nama }}</option>
-                    {% endfor %}
-                </select>
+                <label for="habitat" class="block text-sm font-medium form-label">Habitat</label>
+                <input type="text" name="habitat" id="habitat" class="w-full form-input">
+            </div>
+            <div class="mb-4">
+                <label for="url_foto" class="block text-sm font-medium form-label">URL Foto Satwa</label>
+                <input type="url" name="url_foto" id="url_foto" class="w-full form-input">
             </div>
 
-            <div class="mb-4">
-                <label for="url_foto" class="block text-sm font-medium">URL Foto Satwa</label>
-                <input type="url" name="url_foto" class="w-full border rounded px-2 py-1">
+            <div class="flex space-x-4 justify-center mt-6">
+                <button type="submit" class="btn-primary">Simpan</button>
+                <button type="button" class="btn-secondary inline-block" onclick="handleCancel()">Batal</button>
             </div>
-
-            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Tambah Satwa</button>
-            <a href="{% url 'datasatwa:daftar_satwa' %}" class="bg-gray-600 text-white px-4 py-2 rounded text-center">Batal</a>
         </form>
     </div>
+
 </body>
 </html>
