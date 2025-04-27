@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Edit Satwa</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"> <!-- Poppins Font -->
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -93,7 +94,12 @@
             </div>
             <div class="mb-4">
                 <label for="habitat" class="block text-sm font-medium form-label">Habitat</label>
-                <input type="text" name="habitat" id="habitat" value="Savana" class="w-full form-input">
+                <select name="habitat" id="habitat" class="w-full form-input">
+                    <option value="Savana">Savana</option>
+                    <option value="Hutan Tropis">Hutan Tropis</option>
+                    <option value="Padang Rumput">Padang Rumput</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
             </div>
             <div class="mb-4">
                 <label for="url_foto" class="block text-sm font-medium form-label">URL Foto Satwa</label>
@@ -102,7 +108,7 @@
 
 
             <div class="flex space-x-4 justify-center mt-6">
-                <button type="submit" class="btn-primary">Simpan</button>
+                <button type="submit" class="btn-primary">Simpan Perubahan</button>
                 <button type="button" class="btn-secondary inline-block" onclick="handleCancel()">Batal</button>
             </div>
         </form>

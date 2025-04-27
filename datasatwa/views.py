@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 def daftar_satwa(request):
-    # Dummy data instead of database query
+    # Dummy data
     data = [
         {'id': 1, 'nama_individu': 'Simba', 'spesies': 'Singa', 'asal_hewan': 'Afrika', 'tanggal_lahir': '2018-05-12', 'status_kesehatan': 'Sehat', 'habitat': 'Savana', 'url_foto': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrOunpvF6cRJnnrnfpFksyRMhWcQyJfivzAQ&s'},
         {'id': 2, 'nama_individu': 'Nala', 'spesies': 'Zebra', 'asal_hewan': 'Afrika', 'tanggal_lahir': '2020-03-01', 'status_kesehatan': 'Sehat', 'habitat': 'Savana', 'url_foto': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJAFJ2cCC3gFAubQ8mFa77Oj8KFexvUJkM0A&s'},
@@ -20,7 +20,7 @@ def tambah_satwa(request):
     return render(request, 'form_satwa.html')
 
 def edit_satwa(request, id):
-    # Dummy data to mimic editing a specific Satwa instance
+    # Dummy data
     data = [
         {'id': 1, 'nama_individu': 'Simba', 'spesies': 'Singa', 'asal_hewan': 'Afrika', 'tanggal_lahir': '2018-05-12', 'status_kesehatan': 'Sehat', 'habitat': 'Savana', 'url_foto': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrOunpvF6cRJnnrnfpFksyRMhWcQyJfivzAQ&s'},
         {'id': 2, 'nama_individu': 'Nala', 'spesies': 'Zebra', 'asal_hewan': 'Afrika', 'tanggal_lahir': '2020-03-01', 'status_kesehatan': 'Sehat', 'habitat': 'Savana', 'url_foto': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJAFJ2cCC3gFAubQ8mFa77Oj8KFexvUJkM0A&s'},
@@ -29,12 +29,10 @@ def edit_satwa(request, id):
         {'id': 5, 'nama_individu': 'Kara', 'spesies': 'Kuda', 'asal_hewan': 'Amerika', 'tanggal_lahir': '2021-06-15', 'status_kesehatan': 'Sehat', 'habitat': 'Savana', 'url_foto': 'https://images.pexels.com/photos/6696645/pexels-photo-6696645.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'},
     ]
 
-    # Find the satwa by id
+
     satwa = next((item for item in data if item["id"] == id), None)
     
     if satwa is None:
-        # Handle the case where no satwa was found (e.g., show an error page)
         return render(request, 'error.html', {'message': 'Satwa not found'})
 
-    # Render the edit form for the specific satwa
     return render(request, 'edit_satwa.html', {'satwa': satwa})

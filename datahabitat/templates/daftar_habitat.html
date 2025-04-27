@@ -8,42 +8,43 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #F5EEDB; 
+            background-color: #F5EEDB;
         }
         .rounded-card {
             border-radius: 20px;
         }
         .btn-primary {
-            background-color: #DB6900; 
+            background-color: #DB6900;
             color: white;
-            border-radius: 28px; 
-            padding: 8px 18px; 
+            border-radius: 28px;
+            padding: 8px 18px;
             font-size: 14px;
         }
         .btn-secondary {
-            background-color: #FDECEC; 
-            color: #EE443F; 
+            background-color: #FDECEC;
+            color: #EE443F;
             border-radius: 28px;
-            border: 1.5px solid #EE443F; 
-            padding: 8px 18px; 
+            border: 1.5px solid #EE443F;
+            padding: 8px 18px;
             font-size: 14px;
         }
         .btn-edit, .btn-hapus {
             color: #1C2628;
-            border-radius: 12px; 
+            border-radius: 12px;
             padding: 3px 6px;
             font-size: 12px;
             text-decoration: none;
             display: inline-block;
             text-align: center;
+            margin-right: 8px; /* Space between buttons */
         }
         .btn-edit {
-            background-color: #D7DACB; 
-            border: 1.5px solid #193e30; 
+            background-color: #D7DACB;
+            border: 1.5px solid #193e30;
         }
         .btn-hapus {
-            background-color: #FDECEC; 
-            border: 1.5px solid #EE443F; 
+            background-color: #FDECEC;
+            border: 1.5px solid #EE443F;
         }
         .table-container {
             background-color: #FFFFFF;
@@ -66,6 +67,10 @@
         .text-header {
             color: #1C2628;
         }
+     
+        .status-lingkungan {
+            width: 300px; 
+        }
     </style>
 </head>
 <body class="p-10">
@@ -74,7 +79,7 @@
         <h2 class="text-3xl font-semibold mb-6 text-center text-header">Daftar Habitat</h2>
         
         <div class="flex justify-end mb-6">
-            <a href="{% url 'datahabitat:tambah_habitat' %}" class="btn-primary inline-block">Tambah Habitat</a>
+            <a href="{% url 'datahabitat:tambah_habitat' %}" class="btn-primary inline-block">+ Tambah Habitat</a>
         </div>
 
         <table class="w-full border-collapse rounded-card">
@@ -83,7 +88,7 @@
                     <th class="table-cell">Nama Habitat</th>
                     <th class="table-cell">Luas Area (m²)</th>
                     <th class="table-cell">Kapasitas Maksimal</th>
-                    <th class="table-cell">Status Lingkungan</th>
+                    <th class="table-cell status-lingkungan">Status Lingkungan</th> 
                     <th class="table-cell">Aksi</th>
                 </tr>
             </thead>
@@ -91,9 +96,9 @@
                 {% for habitat in habitats %}
                 <tr class="bg-white">
                     <td class="table-cell">{{ habitat.nama }}</td>
-                    <td class="table-cell">{{ habitat.luas_area }}</td>
+                    <td class="table-cell">{{ habitat.luas_area }} m²</td>
                     <td class="table-cell">{{ habitat.kapasitas_maksimal }}</td>
-                    <td class="table-cell">
+                    <td class="table-cell status-lingkungan">
                         Suhu: {{ habitat.suhu }}°C, Kelembapan: {{ habitat.kelembapan }}%, Vegetasi: {{ habitat.vegetasi }}
                     </td>
                     <td class="table-cell">
