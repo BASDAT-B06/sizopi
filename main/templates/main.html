@@ -1,9 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Flask App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</html>
-<h1>test</h1>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+{% endblock meta %}
+
+{% block content %}
+<div class="container">
+    <div class="mb-10">
+        <h2 class="mb-4">Typography dengan CSS Default</h2>
+
+        <h1>Heading 1 (72px)</h1>
+        <h2>Heading 2 (60px)</h2>
+        <h3>Heading 3 (48px)</h3>
+        <h4>Heading 4 (36px)</h4>
+        <h5>Heading 5 (30px)</h5>
+        <h6>Heading 6 (24px)</h6>
+
+        <p class="mt-4">Lorem ipsum dolor sit amet</p>
+    </div>
+
+    <div class="mb-10">
+        <h2 class="mb-4">Typography dengan Tailwind Classes</h2>
+
+        <div class="font-header text-h1 text-neutral-black">Heading 1 dengan Tailwind</div>
+        <div class="font-header text-h2 text-neutral-black">Heading 2 dengan Tailwind</div>
+        <div class="font-header text-h3 text-neutral-black">Heading 3 dengan Tailwind</div>
+        <div class="font-header text-h4 text-neutral-black">Heading 4 dengan Tailwind</div>
+        <div class="font-header text-h5 text-neutral-black">Heading 5 dengan Tailwind</div>
+        <div class="font-header text-h6 text-neutral-black">Heading 6 dengan Tailwind</div>
+
+        <div class="font-body text-base text-neutral-black mt-4">Lorem ipsum dolor sit amet</div>
+    </div>
+    
+    <div class="p-8">
+        <h2>Primary Buttons</h2>
+        <div class="space-y-4">
+            {% include "components/button.html" with type="primary" text="Button" icon_left=True icon_right=True %}
+            {% include "components/button.html" with type="primary" text="Button" arrow_up=True %}
+            {% include "components/button.html" with type="primary" text="Button" disabled=True %}
+        </div>
+        
+        <h2 class="mt-8">Secondary Buttons</h2>
+        <div class="space-y-4">
+            {% include "components/button.html" with type="secondary" text="Button" icon_left=True icon_right=True %}
+            {% include "components/button.html" with type="secondary" text="Button" arrow_up=True %}
+            {% include "components/button.html" with type="secondary" text="Button" disabled=True %}
+        </div>
+        
+        <h2 class="mt-8">Ghost Buttons</h2>
+        <div class="space-y-4">
+            {% include "components/button.html" with type="ghost" text="Button" icon_left=True icon_right=True %}
+            {% include "components/button.html" with type="ghost" text="Button" arrow_up=True %}
+            {% include "components/button.html" with type="ghost" text="Button" disabled=True %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

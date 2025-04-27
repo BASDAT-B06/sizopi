@@ -25,4 +25,6 @@ urlpatterns = [
     path('datahabitat/', include('datahabitat.urls')),
     path('profil/', include('profil.urls')),
     
+
+    
 ]
