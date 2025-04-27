@@ -1,6 +1,17 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
+import json
+
+class DummyWahana:
+    def __init__(self, pk, nama, kapasitas, jadwal, peraturan):
+        self.pk = pk
+        self.nama = nama
+        self.kapasitas = kapasitas
+        self.jadwal = jadwal
+        self.peraturan = peraturan
+        # JSON-encoded string for JavaScript
+        self.peraturan_json = json.dumps(peraturan)
 
 class DummyPelatih:
     def __init__(self, id, nama):
@@ -72,27 +83,33 @@ def manajemen_data(request):
         'hewan_list': hewan_list
     }
     
-    return render(request, 'manajemen_data.html', context)
+    return render(request, 'manajemen_data_atraksi.html', context)
 
 def tambah_atraksi(request):
     """
     View untuk menangani penambahan atraksi (dummy, hanya redirect)
     """
-     
+    # Dalam implementasi sebenarnya, di sini akan menangani form submission
+    # dan menyimpan atraksi baru ke database
+    
     return HttpResponseRedirect(reverse('atraksi_wahana:manajemen_data'))
 
 def edit_atraksi(request, pk):
     """
     View untuk menangani edit atraksi (dummy, hanya redirect)
     """
-     
+    # Dalam implementasi sebenarnya, di sini akan menangani form submission
+    # dan memperbarui atraksi di database
+    
     return HttpResponseRedirect(reverse('atraksi_wahana:manajemen_data'))
 
 def hapus_atraksi(request, pk):
     """
     View untuk menangani penghapusan atraksi (dummy, hanya redirect)
     """
-     
+    # Dalam implementasi sebenarnya, di sini akan menangani penghapusan
+    # atraksi dari database
+    
     return HttpResponseRedirect(reverse('atraksi_wahana:manajemen_data'))
 
 def get_hewan(request, pk):
@@ -109,3 +126,70 @@ def get_hewan(request, pk):
         hewan_ids = []
     
     return JsonResponse({'hewan_ids': hewan_ids})
+
+def manajemen_data_wahana(request):
+    """
+    View untuk menampilkan halaman manajemen data wahana
+    """
+    # Dummy data untuk prototype
+    wahanas = [
+        DummyWahana(
+            pk=1,
+            nama="Roller Coaster",
+            kapasitas=24,
+            jadwal="10:00 - 17:00",
+            peraturan=["Minimal tinggi 120cm", "Dilarang membawa barang", "Wajib memasang sabuk pengaman"]
+        ),
+        DummyWahana(
+            pk=2,
+            nama="Ferris Wheel",
+            kapasitas=40,
+            jadwal="09:00 - 18:00",
+            peraturan=["Dilarang bergoyang", "Dilarang membawa makanan/minuman"]
+        ),
+        DummyWahana(
+            pk=3,
+            nama="Rumah Hantu",
+            kapasitas=15,
+            jadwal="16:00 - 22:00",
+            peraturan=["Tidak direkomendasikan untuk pengidap jantung", "Dilarang memotret"]
+        )
+    ]
+    
+    context = {
+        'wahanas': wahanas
+    }
+    
+    return render(request, 'manajemen_data_wahana.html', context)
+
+def tambah_wahana(request):
+    """
+    View untuk menangani penambahan wahana (dummy, hanya redirect)
+    """
+    # Dalam implementasi sebenarnya, di sini akan:
+    # 1. Mengambil data dari form (nama, kapasitas, jadwal, peraturan[])
+    # 2. Memproses array peraturan
+    # 3. Menyimpan wahana baru ke database
+    
+    return HttpResponseRedirect(reverse('atraksi_wahana:manajemen_data_wahana'))
+
+def edit_wahana(request, pk):
+    """
+    View untuk menangani edit wahana (dummy, hanya redirect)
+    """
+    # Dalam implementasi sebenarnya, di sini akan:
+    # 1. Mengambil data dari form (nama, kapasitas, jadwal, peraturan[])
+    # 2. Memproses array peraturan
+    # 3. Memperbarui wahana di database berdasarkan pk
+    
+    return HttpResponseRedirect(reverse('atraksi_wahana:manajemen_data_wahana'))
+
+def hapus_wahana(request, pk):
+    """
+    View untuk menangani penghapusan wahana (dummy, hanya redirect)
+    """
+    # Dalam implementasi sebenarnya, di sini akan:
+    # 1. Mencari wahana berdasarkan pk
+    # 2. Menghapus wahana dari database
+    
+    return HttpResponseRedirect(reverse('atraksi_wahana:manajemen_data_wahana'))
