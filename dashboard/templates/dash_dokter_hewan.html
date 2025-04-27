@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Dokter Hewan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        },
+                        neutral: {
+                            'black': '#121212'
+                        }
+                    },
+                    fontFamily: {
+                        'header': ['Helvetica', 'Arial', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #121212;
+        }
+    </style>
+</head>
+
+<body class="bg-secondary-20 p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-primary p-4 rounded-t-lg">
+            <h1 class="text-white text-xl font-bold">DASHBOARD DOKTER HEWAN</h1>
+        </div>
+
+        <div class="bg-white p-5 shadow-md mb-5">
+            <h2 class="text-lg font-semibold text-primary mb-4">Profil Dokter</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Nama Lengkap</p>
+                    <p class="text-base font-medium">dr. Siti Diana</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Username</p>
+                    <p class="text-base font-medium">dr_siti_d</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Email</p>
+                    <p class="text-base font-medium">sitidianad@gmail.com</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Nomor Telepon</p>
+                    <p class="text-base font-medium">+1234567890</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Peran</p>
+                    <p class="text-base font-medium">Dokter Hewan</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 shadow-md mb-5">
+            <h2 class="text-lg font-semibold text-primary mb-4">Informasi Profesional</h2>
+            <div class="grid grid-cols-1 gap-4 mb-5">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Nomor Sertifikasi Profesional</p>
+                    <p class="text-base font-medium">STR-DOC-11</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Spesialisasi</p>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        <span class="px-3 py-1 bg-primary-20 text-primary text-sm rounded-full">Mamalia Besar</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-md font-semibold text-primary mb-3">Hewan yang Ditangani: 3</h3>
+        </div>
+    </div>
+</body>
+
+</html>
