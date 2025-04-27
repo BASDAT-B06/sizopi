@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'main',
     'authentication',
     'datasatwa',
-    'datahabitat'
+    'datahabitat',
+    'profil'
 ]
 
 MIDDLEWARE = [

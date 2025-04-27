@@ -23,5 +23,6 @@ urlpatterns = [
     path('', views.home, name='home'),  
     path('datasatwa/', include('datasatwa.urls')), 
     path('datahabitat/', include('datahabitat.urls')),
+    path('profil/', include('profil.urls')),
     
 ]
