@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-secondary-20 min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-h3 text-center text-primary mb-8">{{ title }}</h1>
+        
+        {% block adoption_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
