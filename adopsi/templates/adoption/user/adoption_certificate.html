@@ -1,26 +1,19 @@
 {% extends "adoption/base_adoption.html" %}
 
 {% block adoption_content %}
-<div class="bg-white rounded-lg shadow-md p-8 max-w-2xl mx-auto">
+<div class="bg-white border border-secondary-40 rounded-xl shadow p-10 max-w-2xl mx-auto">
     <div class="text-center">
-        <h2 class="text-h4 mb-8">Sertifikat Adopsi Satwa</h2>
-        
-        <div class="border-4 border-primary-40 p-8 mb-8">
+        <h2 class="text-h4 text-primary font-header font-bold mb-8">Sertifikat Adopsi Satwa</h2>
+        <div class="border-4 border-primary-40 p-8 mb-8 rounded-lg bg-secondary-20 shadow-inner">
             <p class="text-xl mb-6">Sertifikat ini diberikan kepada</p>
-            
-            <p class="text-h5 text-primary mb-6">{{ adopter.name }}</p>
-            
+            <p class="text-h5 text-primary font-header font-bold mb-6">{{ adopter.name }}</p>
             <p class="text-xl mb-6">yang telah mengadopsi satwa</p>
-            
-            <p class="text-h5 text-primary mb-6">{{ animal.type }} bernama {{ animal.name }}</p>
-            
-            <p class="text-xl mb-6">di taman safari secara simbolis dari {{ animal.start_date }} hingga {{ animal.end_date }}.</p>
-            
-            <p class="italic mt-8">Kami sangat berterima kasih atas kepedulian dan kontribusi Anda terhadap kelestarian satwa di taman safari.</p>
+            <p class="text-h5 text-primary font-header font-bold mb-6">{{ animal.type }} bernama {{ animal.name }}</p>
+            <p class="text-xl mb-6">di taman safari secara simbolis dari <span class="font-semibold">{{ animal.start_date }}</span> hingga <span class="font-semibold">{{ animal.end_date }}</span>.</p>
+            <p class="italic mt-8 text-neutral-black/70">Kami sangat berterima kasih atas kepedulian dan kontribusi Anda terhadap kelestarian satwa di taman safari.</p>
         </div>
-        
-        <a href="{% url 'adoption:user_list' %}" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors">
-            Kembali
+        <a href="{% url 'adoption:user_list' %}" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition">
+            <i class="fas fa-arrow-left mr-2"></i>Kembali
         </a>
     </div>
 </div>

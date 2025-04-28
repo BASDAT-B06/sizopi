@@ -177,8 +177,7 @@ def adoption_certificate(request, animal_id):
     
     context = {
         'animal': animal,
-        'adopter': adopter,
-        'title': 'Sertifikat Adopsi Satwa'
+        'adopter': adopter
     }
     return render(request, 'adoption/user/adoption_certificate.html', context)
 
