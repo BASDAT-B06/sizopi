@@ -6,3 +6,4 @@ requests
 urllib3
 dotenv
 django-widget-tweaks
+supabase
