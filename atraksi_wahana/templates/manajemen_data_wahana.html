@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Wahana</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-bold mb-6">Data Wahana</h2>
+        <button id="btnTambahWahana" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Wahana</button>
+
+        <table class="w-full border-collapse">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="border p-2">Nama Wahana</th>
+                    <th class="border p-2">Kapasitas</th>
+                    <th class="border p-2">Jadwal</th>
+                    <th class="border p-2">Peraturan</th>
+                    <th class="border p-2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if wahanas %}
+                    {% for wahana in wahanas %}
+                    <tr>
+                        <td class="border p-2">{{ wahana.nama }}</td>
+                        <td class="border p-2">{{ wahana.kapasitas }}</td>
+                        <td class="border p-2">{{ wahana.jadwal }}</td>
+                        <td class="border p-2">
+                            {% if wahana.peraturan %}
+                                <ul class="list-disc pl-5">
+                                    {% for rule in wahana.peraturan %}
+                                        <li>{{ rule }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <span class="text-gray-500">Tidak ada peraturan</span>
+                            {% endif %}
+                        </td>
+                        <td class="border p-2 space-x-2">
+                            <button onclick="editWahana('{{ wahana.pk }}', '{{ wahana.nama }}', '{{ wahana.kapasitas }}', '{{ wahana.jadwal }}', '{{ wahana.peraturan_json }}')" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded">Edit</button>
+                            <form method="post" action="{% url 'atraksi_wahana:hapus_wahana' wahana.pk %}" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus wahana ini?')">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="border p-4 text-center text-gray-500">Tidak ada data wahana</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Tambah Wahana -->
+    <div id="modalTambah" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg w-full max-w-xl">
+            <h3 class="text-xl font-bold mb-4">Tambah Wahana</h3>
+            <form action="{% url 'atraksi_wahana:tambah_wahana' %}" method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="nama">Nama Wahana</label>
+                    <input type="text" id="nama" name="nama" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="kapasitas">Kapasitas Maksimum</label>
+                    <input type="number" id="kapasitas" name="kapasitas" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="jadwal">Jadwal</label>
+                    <input type="text" id="jadwal" name="jadwal" class="time-picker shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2 flex justify-between items-center">
+                        <span>Peraturan</span>
+                        <button type="button" class="btn-tambah-peraturan bg-green-500 hover:bg-green-700 text-white text-sm py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                            Tambah Peraturan
+                        </button>
+                    </label>
+                    <div class="peraturan-container">
+                        <div class="peraturan-item flex items-center mb-2">
+                            <input type="text" name="peraturan[]" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Peraturan 1" required>
+                            <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white rounded p-2 remove-peraturan">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end space-x-4">
+                    <button type="button" class="modal-cancel bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Batal</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Wahana -->
+    <div id="modalEdit" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg w-full max-w-xl">
+            <h3 class="text-xl font-bold mb-4">Edit Wahana</h3>
+            <form id="formEdit" method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_nama">Nama Wahana</label>
+                    <input type="text" id="edit_nama" name="nama" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_kapasitas">Kapasitas Maksimum</label>
+                    <input type="number" id="edit_kapasitas" name="kapasitas" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_jadwal">Jadwal</label>
+                    <input type="text" id="edit_jadwal" name="jadwal" class="time-picker shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2 flex justify-between items-center">
+                        <span>Peraturan</span>
+                        <button type="button" class="btn-tambah-peraturan bg-green-500 hover:bg-green-700 text-white text-sm py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                            Tambah Peraturan
+                        </button>
+                    </label>
+                    <div class="peraturan-container">
+                        <!-- Peraturan items will be added dynamically -->
+                    </div>
+                </div>
+                <div class="flex items-center justify-end space-x-4">
+                    <button type="button" class="modal-cancel bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Batal</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize time picker
+            flatpickr(".time-picker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true
+            });
+
+            // Tambah Modal
+            const modalTambah = document.getElementById('modalTambah');
+            const btnTambah = document.getElementById('btnTambahWahana');
+            
+            btnTambah.addEventListener('click', function() {
+                modalTambah.classList.remove('hidden');
+                modalTambah.classList.add('flex');
+            });
+
+            // Close modals
+            document.querySelectorAll('.modal-cancel').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('#modalTambah, #modalEdit').forEach(modal => {
+                        modal.classList.remove('flex');
+                        modal.classList.add('hidden');
+                    });
+                });
+            });
+
+            // Close modal when clicking outside the modal content
+            document.querySelectorAll('#modalTambah, #modalEdit').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        modal.classList.remove('flex');
+                        modal.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Initial remove button listeners
+            document.querySelectorAll('.remove-peraturan').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.closest('.peraturan-container').querySelectorAll('.peraturan-item').length > 1) {
+                        this.closest('.peraturan-item').remove();
+                    } else {
+                        alert('Harus ada minimal satu peraturan!');
+                    }
+                });
+            });
+
+            // Handle "Tambah Peraturan" buttons
+            document.querySelectorAll('.btn-tambah-peraturan').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const peraturanContainer = this.closest('div').querySelector('.peraturan-container');
+                    const index = peraturanContainer.querySelectorAll('.peraturan-item').length;
+                    
+                    const peraturanItem = document.createElement('div');
+                    peraturanItem.className = 'peraturan-item flex items-center mb-2';
+                    peraturanItem.innerHTML = `
+                        <input type="text" name="peraturan[]" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Peraturan ${index + 1}" required>
+                        <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white rounded p-2 remove-peraturan">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    `;
+                    
+                    peraturanContainer.appendChild(peraturanItem);
+                    
+                    // Add remove button event listener
+                    peraturanItem.querySelector('.remove-peraturan').addEventListener('click', function() {
+                        if (peraturanContainer.querySelectorAll('.peraturan-item').length > 1) {
+                            peraturanItem.remove();
+                        } else {
+                            alert('Harus ada minimal satu peraturan!');
+                        }
+                    });
+                });
+            });
+        });
+
+        // Function to open edit modal
+        function editWahana(id, nama, kapasitas, jadwal, peraturan) {
+            const modal = document.getElementById('modalEdit');
+            const form = document.getElementById('formEdit');
+            
+            // Set form action
+            form.action = `/atraksi_wahana/wahana/edit/${id}/`;
+            
+            // Fill form values
+            document.getElementById('edit_nama').value = nama;
+            document.getElementById('edit_kapasitas').value = kapasitas;
+            document.getElementById('edit_jadwal').value = jadwal;
+            
+            // Clear peraturan container first
+            const peraturanContainer = document.querySelector('#modalEdit .peraturan-container');
+            peraturanContainer.innerHTML = '';
+            
+            // Add peraturan items
+            try {
+                // Try to parse peraturan as JSON if it's stringified
+                const peraturanArray = typeof peraturan === 'string' ? JSON.parse(peraturan) : peraturan;
+                
+                // Add each peraturan as an input
+                peraturanArray.forEach((rule, index) => {
+                    const peraturanItem = document.createElement('div');
+                    peraturanItem.className = 'peraturan-item flex items-center mb-2';
+                    peraturanItem.innerHTML = `
+                        <input type="text" name="peraturan[]" value="${rule}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Peraturan ${index + 1}" required>
+                        <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white rounded p-2 remove-peraturan">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    `;
+                    
+                    peraturanContainer.appendChild(peraturanItem);
+                    
+                    // Add remove button event listener
+                    peraturanItem.querySelector('.remove-peraturan').addEventListener('click', function() {
+                        if (peraturanContainer.querySelectorAll('.peraturan-item').length > 1) {
+                            peraturanItem.remove();
+                        } else {
+                            alert('Harus ada minimal satu peraturan!');
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error("Error parsing peraturan:", error);
+                // Add one empty peraturan input if parsing fails
+                const peraturanItem = document.createElement('div');
+                peraturanItem.className = 'peraturan-item flex items-center mb-2';
+                peraturanItem.innerHTML = `
+                    <input type="text" name="peraturan[]" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Peraturan 1" required>
+                    <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white rounded p-2 remove-peraturan">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+                
+                peraturanContainer.appendChild(peraturanItem);
+                
+                peraturanItem.querySelector('.remove-peraturan').addEventListener('click', function() {
+                    alert('Harus ada minimal satu peraturan!');
+                });
+            }
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Function to safely delete wahana
+        function hapusWahana(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus wahana ini?')) {
+                // Create a form element
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/atraksi_wahana/wahana/hapus/${id}/`;
+                
+                // Add CSRF token
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = 'csrfmiddlewaretoken';
+                csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                form.appendChild(csrfToken);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>

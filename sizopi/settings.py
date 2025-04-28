@@ -31,9 +31,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'authentication',
+    'datasatwa',
+    'datahabitat',
+    'profil',
     'kesehatan_hewan',
     'pakan_hewan',
-    'dashboard'
+    'dashboard',
+    'atraksi_wahana',
+    'booking_tiket',
+
 ]
 
 MIDDLEWARE = [
@@ -90,6 +96,14 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',  # Using SQLite
+#         'NAME': BASE_DIR / 'db.sqlite3',  # Database file location
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
