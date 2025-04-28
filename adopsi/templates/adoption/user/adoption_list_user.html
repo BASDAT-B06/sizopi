@@ -1,0 +1,162 @@
+{% extends "adoption/base_adoption.html" %}
+
+{% block adoption_content %}
+<div class="text-center mb-12">
+    <p class="text-lg mb-8">Terima kasih telah mewujudkan kepedulian Anda terhadap satwa dengan menjadi adopter simbolis! Dapatkan sertifikat digital dan laporan berkala tentang kondisi hewan yang Anda dukung.</p>
+    
+    <h2 class="text-h5 mb-6">Hewan yang Sedang Anda Adopsi</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for animal in animals %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <img src="{{ animal.image }}" alt="{{ animal.name }}" class="w-full h-48 object-cover">
+            <div class="p-6">
+                <h3 class="text-h6 mb-2">{{ animal.name }}</h3>
+                <p class="text-gray-700 mb-1">{{ animal.type }}</p>
+                <p class="text-gray-600 mb-4">Kondisi: {{ animal.condition }}</p>
+                
+                <div class="flex justify-center mt-4">
+                    <button type="button" 
+                            class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors"
+                            onclick="showModal('animalModal{{ animal.id }}')">
+                        Lihat Detail
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Animal Info -->
+        <div id="animalModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+            <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-h6">Informasi Hewan Adopsi</h3>
+                    <button onclick="closeModal('animalModal{{ animal.id }}')" class="text-black hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-center mb-4">
+                        <img src="{{ animal.image }}" alt="{{ animal.name }}" class="w-full max-w-md h-auto rounded-lg">
+                    </div>
+                    
+                    <p class="mb-2"><span class="font-semibold">Nama hewan:</span> {{ animal.name }}</p>
+                    <p class="mb-2"><span class="font-semibold">Jenis hewan:</span> {{ animal.type }}</p>
+                    <p class="mb-2"><span class="font-semibold">Habitat:</span> {{ animal.habitat }}</p>
+                    <p class="mb-2"><span class="font-semibold">Tanggal mulai adopsi:</span> {{ animal.start_date }}</p>
+                    <p class="mb-2"><span class="font-semibold">Tanggal akhir adopsi:</span> {{ animal.end_date }}</p>
+                </div>
+                
+                <div class="mt-8 flex justify-between">
+                    <div>
+                        <a href="{% url 'adoption:animal_report' animal.id %}" class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-80 active:bg-primary-60 transition-colors mr-2">
+                            Pantau Kondisi Hewan
+                        </a>
+                        <a href="{% url 'adoption:certificate' animal.id %}" class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-secondary text-primary border border-transparent hover:border-primary-80 hover:bg-secondary-80 active:bg-primary-20 transition-colors">
+                            Lihat Sertifikat Adopsi
+                        </a>
+                    </div>
+                    <div>
+                        <button class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 active:bg-red-700 transition-colors mr-2"
+                                onclick="showModal('stopModal{{ animal.id }}')">
+                            Berhenti Adopsi
+                        </button>
+                        <button class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors"
+                                onclick="showModal('extendModal{{ animal.id }}')">
+                            Perpanjang Periode Adopsi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Stop Adoption -->
+        <div id="stopModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+            <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-96 shadow-lg rounded-md bg-white">
+                <p class="text-center text-xl font-semibold mb-6">Apakah Anda yakin ingin berhenti mengadopsi satwa ini?</p>
+                
+                <div class="flex justify-center space-x-4">
+                    <button class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-red-500 text-white hover:bg-red-600 active:bg-red-700 transition-colors">
+                        Iya
+                    </button>
+                    <button class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition-colors"
+                            onclick="closeModal('stopModal{{ animal.id }}')">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Extend Adoption -->
+        <div id="extendModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+            <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-h6">Form Perpanjang Periode Adopsi Satwa</h3>
+                    <button onclick="closeModal('extendModal{{ animal.id }}')" class="text-black hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="mt-4">
+                    <p class="font-semibold mb-4">Pihak di bawah ini,</p>
+                    
+                    <p class="mb-2"><span class="font-semibold">Nama:</span> Bambang</p>
+                    <p class="mb-2"><span class="font-semibold">NIK:</span> 3175021234567890</p>
+                    <p class="mb-2"><span class="font-semibold">Alamat:</span> Jl. Merdeka No. 123, Jakarta</p>
+                    <p class="mb-2"><span class="font-semibold">Nomor telepon:</span> 081234567890</p>
+                    
+                    <p class="font-semibold my-4">(selanjutnya disebut sebagai Adopter)</p>
+                    
+                    <p class="mb-4">dengan ini menyatakan kepedulian dan minat untuk lanjut mengadopsi secara simbolis satwa</p>
+                    
+                    <p class="mb-2"><span class="font-semibold">Nama:</span> {{ animal.name }}</p>
+                    <p class="mb-2"><span class="font-semibold">Jenis:</span> {{ animal.type }}</p>
+                    
+                    <p class="my-4">Adopter juga bersedia memberikan kontribusi finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="nominal">
+                            Nominal:
+                        </label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                               id="nominal" type="number" placeholder="Masukkan nominal kontribusi">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="period">
+                            untuk memperpanjang periode adopsi selama:
+                        </label>
+                        <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                                id="period">
+                            <option value="3">3 bulan</option>
+                            <option value="6">6 bulan</option>
+                            <option value="12">12 bulan</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-between">
+                    <button class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition-colors"
+                            onclick="closeModal('extendModal{{ animal.id }}')">
+                        Batal
+                    </button>
+                    <button class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors">
+                        Submit Form
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function showModal(id) {
+    document.getElementById(id).classList.remove('hidden');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+}
+</script>
+{% endblock %}
