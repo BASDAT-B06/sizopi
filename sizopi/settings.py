@@ -31,9 +31,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'authentication',
+    'datasatwa',
+    'datahabitat',
+    'profil',
     'kesehatan_hewan',
     'pakan_hewan',
-    'dashboard'
+    'dashboard',
+    'atraksi_wahana',
+    'booking_tiket',
+    'adopsi',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +79,7 @@ WSGI_APPLICATION = 'sizopi.wsgi.application'
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': os.getenv('DB_NAME'),
-#         'USER': os.getenv('DB_USERNAME'),
+#         'USER': os.getenv('DB_USER'),
 #         'PASSWORD': os.getenv('DB_PASSWORD'), 
 #         'HOST': os.getenv('DB_HOST'),
 #         'PORT': os.getenv('DB_PORT'),
@@ -82,12 +88,8 @@ WSGI_APPLICATION = 'sizopi.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'), 
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',  # Using SQLite
+        'NAME': BASE_DIR / 'db.sqlite3',  # Database file location
     }
 }
 

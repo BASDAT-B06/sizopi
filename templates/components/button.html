@@ -8,6 +8,7 @@ Usage:
     arrow_up=True (optional)
     disabled=True (optional)
     href="#" (optional)
+    icon_class="fas fa-user" (optional, for Font Awesome icons)
 %}
 {% endcomment %}
 
@@ -16,8 +17,9 @@ Usage:
 {% with has_left_icon=icon_left|default:False %}
 {% with has_right_icon=icon_right|default:False %}
 {% with has_arrow_up=arrow_up|default:False %}
-{% with button_text=text|default:"Button" %}
+{% with button_text=text|default:"" %}
 {% with button_href=href|default:"#" %}
+{% with fa_icon=icon_class|default:"" %}
 
     {% if btn_type == "primary" %}
         {% if is_disabled %}
@@ -29,7 +31,7 @@ Usage:
         {% if is_disabled %}
             <a class="inline-flex items-center justify-center px-6 py-4 rounded-full border bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed">
         {% else %}
-            <a href="{{ button_href }}" class="inline-flex items-center justify-center px-6 py-4 rounded-full border bg-secondary text-primary border-transparent hover:border-primary-80 border-2 hover:bg-secondary-80 active:bg-primary-20 transition-colors">
+        <a href="{{ button_href }}" class="inline-flex items-center justify-center px-6 py-4 rounded-full bg-secondary text-primary border border-transparent hover:border-primary-80 hover:bg-secondary-80 active:bg-primary-20 transition-colors">
         {% endif %}
     {% elif btn_type == "ghost" %}
         {% if is_disabled %}
@@ -38,7 +40,9 @@ Usage:
             <a href="{{ button_href }}" class="inline-flex items-center justify-center px-6 py-4 rounded-full bg-transparent text-accent-500 hover:bg-accent-50 active:bg-accent-200 transition-colors">
         {% endif %}
     {% endif %}
-        {% if has_left_icon %}
+        {% if fa_icon %}
+            <i class="{{ fa_icon }} {% if button_text %}mr-2{% endif %}"></i>
+        {% elif has_left_icon %}
             <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
             </svg>
@@ -59,6 +63,7 @@ Usage:
         {% endif %}
     </a>
 
+{% endwith %}
 {% endwith %}
 {% endwith %}
 {% endwith %}

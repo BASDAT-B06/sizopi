@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Tambah Data Satwa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              100: '#91986E',
+              80: '#91986ECC',
+              60: '#91986E99',
+              40: '#91986E66',
+              20: '#91986E33',
+            },
+            secondary: {
+              100: '#F5EFE0',
+              80: '#F5EEDBCC',
+              60: '#F5EEDB99',
+              40: '#F5EEDB66',
+              20: '#F5EEDB33',
+            },
+            accent: {
+              50: '#FBF0E6',
+              200: '#FAE9D9',
+              400: '#F2D4B9',
+              500: '#DB6900',
+              600: '#C55F00',
+              700: '#A44F00',
+              800: '#A44F00',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+    }
+    .btn-primary {
+      background-color: #DB6900;
+      color: white;
+      border-radius: 28px;
+      padding: 10px 20px;
+    }
+    .btn-secondary {
+      background-color: #A7AD8B;
+      color: #1C2628;
+      border: 1.5px solid #D3D6C5;
+      border-radius: 28px;
+      padding: 8px 18px;
+      font-size: 14px;
+    }
+    .form-container {
+      background-color: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .form-label {
+      color: #91986E;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .form-input {
+      border: 1px solid #d1d5db;
+      padding: 10px;
+      border-radius: 8px;
+      width: 100%;
+      font-size: 0.875rem;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #91986E;
+      box-shadow: 0 0 0 3px rgba(145, 152, 110, 0.3);
+    }
+  </style>
+  <script>
+    function handleSave() {
+      window.location.href = "{% url 'datasatwa:daftar_satwa' %}";
+    }
+    function handleCancel() {
+      window.location.href = "{% url 'datasatwa:daftar_satwa' %}";
+    }
+  </script>
+</head>
+
+<body class="min-h-screen p-10 bg-white">
+
+  <div class="max-w-3xl mx-auto form-container">
+    <h2 class="text-3xl font-bold text-primary-100 text-center mb-8">Form Tambah Data Satwa</h2>
+
+    <form method="POST" onsubmit="event.preventDefault(); handleSave();">
+      <div class="mb-6">
+        <label for="nama_individu" class="form-label">Nama Individu</label>
+        <input type="text" name="nama_individu" id="nama_individu" class="form-input">
+      </div>
+
+      <div class="mb-6">
+        <label for="spesies" class="form-label">Spesies</label>
+        <input type="text" name="spesies" id="spesies" class="form-input">
+      </div>
+
+      <div class="mb-6">
+        <label for="asal_hewan" class="form-label">Asal Hewan</label>
+        <input type="text" name="asal_hewan" id="asal_hewan" class="form-input">
+      </div>
+
+      <div class="mb-6">
+        <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+        <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-input">
+      </div>
+
+      <div class="mb-6">
+        <label for="status_kesehatan" class="form-label">Status Kesehatan</label>
+        <select name="status_kesehatan" id="status_kesehatan" class="form-input">
+          <option value="Sehat">Sehat</option>
+          <option value="Sakit">Sakit</option>
+          <option value="Dalam Pemantauan">Dalam Pemantauan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+
+      <div class="mb-6">
+        <label for="habitat" class="form-label">Nama Habitat</label>
+        <select name="habitat" id="habitat" class="form-input">
+          <option value="Savana">Savana</option>
+          <option value="Hutan Tropis">Hutan Tropis</option>
+          <option value="Padang Rumput">Padang Rumput</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+
+      <div class="mb-6">
+        <label for="url_foto" class="form-label">URL Foto Satwa</label>
+        <input type="url" name="url_foto" id="url_foto" class="form-input">
+      </div>
+
+      <div class="flex justify-center space-x-4 pt-6">
+        <button type="submit" class="btn-primary">Tambah</button>
+        <button type="button" class="btn-secondary" onclick="handleCancel()">Batal</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+
+</html>

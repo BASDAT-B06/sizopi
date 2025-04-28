@@ -1,0 +1,43 @@
+<div id="registerAdopterModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-h6">Pendataan Adopter</h3>
+        <button onclick="closeModal('registerAdopterModal{{ animal.id }}')" class="text-black hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="mt-4">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+            Username calon adopter:
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+            id="username" type="text" placeholder="Username">
+        </div>
+        <div class="mb-4">
+          <p class="block text-gray-700 text-sm font-bold mb-2">Calon Adopter akan mengadopsi satwa sebagai</p>
+          <div class="flex items-center space-x-4">
+            <label class="inline-flex items-center">
+              <input type="radio" class="form-radio" name="adopter_type" value="individu">
+              <span class="ml-2">Individu</span>
+            </label>
+            <label class="inline-flex items-center">
+              <input type="radio" class="form-radio" name="adopter_type" value="organisasi">
+              <span class="ml-2">Organisasi</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-between">
+        <button class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition-colors"
+          onclick="closeModal('registerAdopterModal{{ animal.id }}')">
+          Batal
+        </button>
+        <button class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors"
+          onclick="verifyAccount()">
+          Verifikasi Akun
+        </button>
+      </div>
+    </div>
+  </div>
+  
