@@ -31,4 +31,5 @@ urlpatterns = [
     path("atraksi_wahana/", include("atraksi_wahana.urls")),
     path("booking_tiket/", include("booking_tiket.urls")),
     path('dashboard/', include('dashboard.urls')),
+    path('adopsi/', include('adopsi.urls')),
 ]
