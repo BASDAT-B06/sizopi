@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemberian Pakan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            100: '#91986E',
+                            80: '#91986ECC',
+                            60: '#91986E99',
+                            40: '#91986E66',
+                            20: '#91986E33',
+                        },
+                        secondary: {
+                            100: '#F5EFE0',
+                            80: '#F5EEDBCC',
+                            60: '#F5EEDB99',
+                            40: '#F5EEDB66',
+                            20: '#F5EEDB33',
+                        },
+                        accent: {
+                            50: '#FBF0E6',
+                            200: '#FAE9D9',
+                            400: '#F2D4B9',
+                            500: '#DB6900',
+                            600: '#C55F00',
+                            700: '#A44F00',
+                            800: '#A44F00',
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="bg-accent-cream-50">
+    <header class="bg-primary-100 shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-white text-xl font-bold">RIWAYAT PEMBERIAN PAKAN</h1>
+        </div>
+    </header>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-md shadow overflow-hidden">
+            <thead>
+                <tr>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Nama Individu (Hewan)
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Spesies
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Asal Hewan
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Tanggal Lahir
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Habitat
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Status Kesehatan
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Jenis Pakan
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Jumlah Pakan (gram)
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Jadwal
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-accent-cream-50">
+                <tr class="hover:bg-accent-cream-50">
+                    <td class="px-4 py-3 text-sm text-gray-800">Molly</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">Gajah</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">2022-11-07</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">Padang Rumput</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">Sehat</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">Semangka</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">300</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">2025-07-13 11:00:00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pengunjung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        },
+                        neutral: {
+                            'black': '#121212'
+                        }
+                    },
+                    fontFamily: {
+                        'header': ['Helvetica', 'Arial', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #121212;
+        }
+    </style>
+</head>
+
+<body class="bg-secondary-20 p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-primary p-4 rounded-t-lg">
+            <h1 class="text-white text-xl font-bold">DASHBOARD PENGUNJUNG</h1>
+        </div>
+
+        <div class="bg-white p-5 shadow-md mb-5">
+            <h2 class="text-lg font-semibold text-primary mb-4">Profil Pengguna</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Nama Lengkap</p>
+                    <p class="text-base font-medium">Agatha Witty Cicerone</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Username</p>
+                    <p class="text-base font-medium">wcicerone0</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Email</p>
+                    <p class="text-base font-medium">wcicerone0@marriott.com</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Nomor Telepon</p>
+                    <p class="text-base font-medium">+1422606498</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Peran</p>
+                    <p class="text-base font-medium">Pengunjung</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 shadow-md mb-5">
+            <h2 class="text-lg font-semibold text-primary mb-4">Informasi Pengunjung</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Alamat Lengkap</p>
+                    <p class="text-base font-medium">Jl. Pasar Minggu No. 123, Jakarta Selatan</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Tanggal Lahir</p>
+                    <p class="text-base font-medium">26 April 2005</p>
+                </div>
+            </div>
+
+            <h3 class="text-md font-semibold text-primary mb-3">Riwayat Kunjungan</h3>
+            <div class="bg-secondary-20 rounded-md p-4 mb-5">
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center pb-2 border-b border-secondary">
+                        <div>
+                            <p class="font-medium">12 April 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-md font-semibold text-primary mb-3">Tiket yang Telah Dibeli</h3>
+            <div class="space-y-3">
+                <div class="bg-secondary-20 rounded-md p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <p class="font-medium">Tiket Reguler</p>
+                        </div>
+                        <p class="font-semibold">Rp 100.000</p>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <p>Tanggal: 30 April 2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
