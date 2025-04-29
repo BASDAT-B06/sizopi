@@ -93,7 +93,17 @@
         }
     </style>
 </head>
-<body class="bg-white p-10">
+
+{% extends "base.html" %}
+
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True%}
+{% endblock %}
+
+{% block content %}
+
+<body class="bg-white">
+    
     <div class="max-w-6xl mx-auto bg-accent-100 p-6 rounded-lg shadow">
         <h2 class="text-xl font-semibold mb-6">Manajemen Data Reservasi</h2>
         <!-- <button id="btnTambahReservasi" class="btn-primary mb-4 inline-block">Tambah Reservasi</button> -->
@@ -164,7 +174,8 @@
 
     <!-- Modal Tambah Reservasi -->
     <div id="modalTambah" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="popup w-full max-w-xl">
+        <div class="popup w-full max-w-2xl mx-4 overflow-y-auto max-h-[90vh]">
+
             <h3 class="text-xl font-bold mb-4">Tambah Reservasi</h3>
             <form action="{% url 'booking_tiket:create_reservasi' %}" method="post">
                 {% csrf_token %}
@@ -221,8 +232,8 @@
 
     <!-- Modal Edit Reservasi -->
     <div id="modalEdit" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="popup w-full max-w-xl">
-            <h3 class="text-xl font-bold mb-4">Edit Reservasi</h3>
+        <div class="popup w-full max-w-2xl mx-4 overflow-y-auto max-h-[90vh]">
+            <h2 class="text-xl font-bold mb-4">Edit Reservasi</h2>
             <form id="formEdit" method="post">
                 {% csrf_token %}
                 <input type="hidden" id="edit_id" name="id">
@@ -426,4 +437,5 @@
         }
     </script>
 </body>
+{% endblock %}
 </html>

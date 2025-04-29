@@ -13,5 +13,8 @@ def petugas(request):
 def ubah_password(request):
     return render(request, 'ubah_password.html')
 
+def pengaturan_profil(request):
+    return render(request, 'pengaturan_profil.html')
+
 
 

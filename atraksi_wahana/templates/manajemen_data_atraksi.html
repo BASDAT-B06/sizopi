@@ -88,7 +88,18 @@
         }
     </style>
 </head>
-<body class="bg-white p-10">
+
+{% extends "base.html" %}
+
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True%}
+{% endblock %}
+
+{% block content %}
+
+<body class="min-h-screen bg-white">
+
+
     <div class="max-w-6xl mx-auto bg-accent-100 p-6 rounded-lg shadow">
         <h2 class="text-xl font-semibold mb-6">Data Atraksi</h2>
         <button id="btnTambahAtraksi" class="btn-primary mb-4 inline-block">Tambah Atraksi</button>
@@ -341,4 +352,5 @@
         }
     </script>
 </body>
+{% endblock %}
 </html>

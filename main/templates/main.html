@@ -5,17 +5,16 @@
 {% include "components/navbar.html" with is_logged_in=False %}
 {% endblock %}
 
-{% block content %}
+{% block hero %}
 <!-- HERO SECTION -->
-<section class="relative bg-gradient-to-br from-primary-80 via-secondary to-accent-50 min-h-[70vh] flex items-center rounded-[2.5rem] justify-center overflow-hidden">
+<section class="relative w-full bg-gradient-to-br from-primary-80 via-secondary to-accent-50 min-h-[70vh] flex items-center justify-center overflow-hidden">
     <!-- Hero Illustration -->
     <div class="absolute inset-0 z-0 pointer-events-none">
-        <!-- Ganti dengan ilustrasi SIZOPI, gambar kebun binatang, atau maskot lucu -->
-        <img src="{% static 'img/hero-illustration-sizopi.png' %}" alt="Ilustrasi SIZOPI" class="w-full h-full object-cover opacity-20">
+        <img src="{% static 'img/panda.jpg' %}" alt="panda gemas" class="w-full h-full object-cover opacity-20">
     </div>
     <div class="relative z-10 max-w-2xl mx-auto text-center py-20 px-6">
         <h1 class="text-h2 md:text-h1 font-header font-extrabold text-primary mb-4 drop-shadow-lg animate-fadeInDown">
-            Selamat Datang di <span class="text-accent-500">SIZOPI</span>
+            Welcome to <span class="text-accent-500">SIZOPI B06</span>
         </h1>
         <p class="text-xl md:text-2xl text-neutral-black/80 mb-8 animate-fadeInUp delay-100">
             Sistem Informasi Zoo Pintar – Jelajahi, Dukung, dan Lindungi Satwa Nusantara!
@@ -29,56 +28,59 @@
             </a>
         </div>
     </div>
-    <!-- Floating animal icons (for fun) -->
-    <div class="absolute left-0 bottom-0 w-40 md:w-56 animate-float-slow z-20">
-        <!-- Gambar: Ilustrasi Gajah Kartun -->
-        <img src="{% static 'img/elephant-cute.png' %}" alt="Gajah lucu">
-    </div>
-    <div class="absolute right-0 top-10 w-32 md:w-44 animate-float-slow2 z-20">
-        <!-- Gambar: Ilustrasi Burung Tropis Kartun -->
-        <img src="{% static 'img/tropical-bird.png' %}" alt="Burung lucu">
-    </div>
 </section>
+{% endblock hero %}
 
+{% block content %}
 <!-- FITUR UTAMA (TILES) -->
 <section class="max-w-7xl mx-auto py-20 px-4" id="fitur">
     <h2 class="text-h3 text-primary font-header font-bold text-center mb-12">Fitur Utama SIZOPI</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
         <!-- Card 1: Adopsi Satwa -->
-        <div class="bg-white border border-secondary-40 rounded-2xl shadow-lg p-8 flex flex-col items-center hover:shadow-xl transition group">
-            <!-- Gambar: Ilustrasi Adopsi Satwa -->
-            <img src="{% static 'img/adopt-animal-illustration.png' %}" alt="Adopsi Satwa" class="w-28 h-28 mb-6 group-hover:scale-105 transition">
-            <h3 class="text-h5 text-center text-primary font-header font-bold mb-3">Adopsi Satwa</h3>
-            <p class="text-base text-neutral-black/80 mb-4 text-center">
-                Dukung kelestarian satwa dengan menjadi adopter simbolis. Dapatkan sertifikat digital, laporan kondisi satwa, dan kesempatan kunjungan eksklusif!
-            </p>
-            <a href="#adopsi" class="inline-flex items-center px-6 py-2 rounded-full bg-accent-500 text-white font-medium shadow hover:bg-accent-600 transition">
-                <i class="fas fa-paw mr-2"></i> Lihat Program
-            </a>
+        <div class="relative group rounded-2xl shadow-lg border border-secondary-40 overflow-hidden min-h-[380px] flex items-stretch">
+            <!-- Background Image -->
+            <img src="{% static 'img/kucing.jpg' %}" alt="Adopsi Satwa"
+                 class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-300 z-0">
+            <div class="absolute inset-0 bg-white/70 group-hover:bg-white/60 transition z-0"></div>
+            <div class="relative z-10 flex flex-col items-center justify-center w-full p-8">
+                <h3 class="text-h5 text-center text-primary font-header font-bold mb-3">Adopsi Satwa</h3>
+                <p class="text-base text-neutral-black/80 mb-4 text-center">
+                    Dukung kelestarian satwa dengan menjadi adopter simbolis. Dapatkan sertifikat digital, laporan kondisi satwa, dan kesempatan kunjungan eksklusif!
+                </p>
+                <a href="#adopsi" class="inline-flex items-center px-6 py-2 rounded-full bg-accent-500 text-white font-medium shadow hover:bg-accent-600 transition">
+                    <i class="fas fa-paw mr-2"></i> Lihat Program
+                </a>
+            </div>
         </div>
         <!-- Card 2: Reservasi & Atraksi -->
-        <div class="bg-white border border-secondary-40 rounded-2xl shadow-lg p-8 flex flex-col items-center hover:shadow-xl transition group">
-            <!-- Gambar: Ilustrasi Tiket/Atraksi -->
-            <img src="{% static 'img/ticket-illustration.png' %}" alt="Tiket & Atraksi" class="w-28 h-28 mb-6 group-hover:scale-105 transition">
-            <h3 class="text-h5 text-center text-primary font-header font-bold mb-3">Reservasi & Atraksi</h3>
-            <p class="text-base text-neutral-black/80 mb-4 text-center">
-                Pesan tiket kunjungan, ikuti atraksi seru, dan nikmati pengalaman interaktif bersama hewan favoritmu di taman safari!
-            </p>
-            <a href="#tiket" class="inline-flex items-center px-6 py-2 rounded-full bg-primary text-white font-medium shadow hover:bg-primary-80 transition">
-                <i class="fas fa-ticket-alt mr-2"></i> Reservasi Tiket
-            </a>
+        <div class="relative group rounded-2xl shadow-lg border border-secondary-40 overflow-hidden min-h-[380px] flex items-stretch">
+            <img src="{% static 'img/atraksi.jpg' %}" alt="Tiket & Atraksi"
+                 class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-300 z-0">
+            <div class="absolute inset-0 bg-white/70 group-hover:bg-white/60 transition z-0"></div>
+            <div class="relative z-10 flex flex-col items-center justify-center w-full p-8">
+                <h3 class="text-h5 text-center text-primary font-header font-bold mb-3">Reservasi & Atraksi</h3>
+                <p class="text-base text-neutral-black/80 mb-4 text-center">
+                    Pesan tiket kunjungan, ikuti atraksi seru, dan nikmati pengalaman interaktif bersama hewan favoritmu di taman safari!
+                </p>
+                <a href="#tiket" class="inline-flex items-center px-6 py-2 rounded-full bg-primary text-white font-medium shadow hover:bg-primary-80 transition">
+                    <i class="fas fa-ticket-alt mr-2"></i> Reservasi Tiket
+                </a>
+            </div>
         </div>
         <!-- Card 3: Jelajahi Satwa -->
-        <div class="bg-white border border-secondary-40 rounded-2xl shadow-lg p-8 flex flex-col items-center hover:shadow-xl transition group">
-            <!-- Gambar: Ilustrasi Galeri Satwa -->
-            <img src="{% static 'img/animal-gallery-illustration.png' %}" alt="Galeri Satwa" class="w-28 h-28 mb-6 group-hover:scale-105 transition">
-            <h3 class="text-h5 text-center text-primary font-header font-bold mb-3">Jelajahi Satwa</h3>
-            <p class="text-base text-neutral-black/80 mb-4 text-center">
-                Temukan fakta unik, habitat, dan kisah inspiratif dari puluhan satwa Nusantara yang dirawat di SIZOPI.
-            </p>
-            <a href="#satwa" class="inline-flex items-center px-6 py-2 rounded-full bg-secondary text-primary font-medium border border-primary shadow hover:bg-secondary-80 transition">
-                <i class="fas fa-search mr-2"></i> Lihat Satwa
-            </a>
+        <div class="relative group rounded-2xl shadow-lg border border-secondary-40 overflow-hidden min-h-[380px] flex items-stretch">
+            <img src="{% static 'img/kambing.jpg' %}" alt="Galeri Satwa"
+                 class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-300 z-0">
+            <div class="absolute inset-0 bg-white/70 group-hover:bg-white/60 transition z-0"></div>
+            <div class="relative z-10 flex flex-col items-center justify-center w-full p-8">
+                <h3 class="text-h5 text-center text-primary font-header font-bold mb-3">Jelajahi Satwa</h3>
+                <p class="text-base text-neutral-black/80 mb-4 text-center">
+                    Temukan fakta unik, habitat, dan kisah inspiratif dari puluhan satwa Nusantara yang dirawat di SIZOPI.
+                </p>
+                <a href="#satwa" class="inline-flex items-center px-6 py-2 rounded-full bg-secondary text-primary font-medium border border-primary shadow hover:bg-secondary-80 transition">
+                    <i class="fas fa-search mr-2"></i> Lihat Satwa
+                </a>
+            </div>
         </div>
     </div>
 </section>
@@ -86,23 +88,22 @@
 <!-- PARALLAX / TESTIMONIAL / INFO SECTION -->
 <section class="relative bg-gradient-to-r from-secondary-40 to-accent-50 py-20 px-4 overflow-hidden">
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10">
-        <!-- Gambar: Ilustrasi keluarga di kebun binatang -->
         <div class="flex-1 flex justify-center">
-            <img src="{% static 'img/family-zoo-illustration.png' %}" alt="Ilustrasi keluarga di kebun binatang" class="w-72 md:w-96 rounded-xl shadow-lg">
+            <img src="{% static 'img/keluarga.jpg' %}" alt="Ilustrasi keluarga di kebun binatang" class="w-72 md:w-96 rounded-xl shadow-lg">
         </div>
         <div class="flex-1">
-            <h3 class="text-h4 text-primary font-header font-bold mb-4">Kenapa SIZOPI?</h3>
+            <h3 class="text-h4 text-primary font-header font-bold mb-4">Why SIZOPI?</h3>
             <ul class="text-lg text-neutral-black/80 space-y-4 mb-6">
                 <li class="flex items-start gap-3">
-                    <span class="inline-block w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-lg"><i class="fas fa-leaf"></i></span>
+                    <span class="inline-block w-16 h-12 bg-accent-500 rounded-full flex items-center justify-center text-white text-lg"><i class="fas fa-leaf"></i></span>
                     <span>Berbasis konservasi, edukasi, dan kesejahteraan satwa.</span>
                 </li>
                 <li class="flex items-start gap-3">
-                    <span class="inline-block w-7 h-7 bg-primary rounded-full flex items-center justify-center text-white text-lg"><i class="fas fa-users"></i></span>
+                    <span class="inline-block w-20 h-12 bg-primary rounded-full flex items-center justify-center text-white text-lg"><i class="fas fa-users"></i></span>
                     <span>Fitur digital lengkap: adopsi, reservasi, galeri, dan laporan kesehatan satwa.</span>
                 </li>
                 <li class="flex items-start gap-3">
-                    <span class="inline-block w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-lg"><i class="fas fa-award"></i></span>
+                    <span class="inline-block w-16 h-12 bg-accent-500 rounded-full flex items-center justify-center text-white text-lg"><i class="fas fa-award"></i></span>
                     <span>Adopter terbaik mendapat penghargaan dan benefit eksklusif.</span>
                 </li>
             </ul>
@@ -111,103 +112,89 @@
             </a>
         </div>
     </div>
-    <!-- Parallax animal icon -->
-    <div class="absolute left-0 bottom-0 w-28 opacity-60 animate-float-slow pointer-events-none">
-        <!-- Gambar: Ilustrasi Harimau Kartun -->
-        <img src="{% static 'img/tiger-cute.png' %}" alt="Harimau lucu">
-    </div>
 </section>
 
 <!-- TESTIMONIAL SLIDER (dummy, multi-testimoni) -->
 <section class="max-w-4xl mx-auto py-20 px-4" id="testimoni">
-    <h2 class="text-h4 text-primary font-header font-bold text-center mb-10">Apa Kata Mereka?</h2>
+    <h2 class="text-h4 text-primary font-header font-bold text-center mb-12 tracking-tight">Apa Kata Mereka?</h2>
     <div 
-        x-data="{ idx: 0, testi: [
-            {img: '{% static "img/avatar-visitor-1.png" %}', nama: 'Rina, Adopter & Pengunjung', text: 'SIZOPI memudahkan saya mendukung satwa favorit dan memantau kesehatannya secara langsung. Anak-anak jadi lebih peduli lingkungan!'},
-            {img: '{% static "img/avatar-visitor-2.png" %}', nama: 'Andi, Adopter & Relawan', text: 'Program adopsi di SIZOPI sangat membantu saya untuk berkontribusi dalam pelestarian satwa. Laporan kesehatan hewan sangat informatif!'},
-            {img: '{% static "img/avatar-visitor-3.png" %}', nama: 'Sari, Pengunjung Keluarga', text: 'SIZOPI memberikan pengalaman yang menyenangkan saat berkunjung ke kebun binatang. Anak-anak saya sangat senang!'},
-            {img: '{% static "img/avatar-visitor-4.png" %}', nama: 'Budi, Orang Tua & Adopter', text: 'Aplikasi SIZOPI sangat user-friendly, dan fitur reservasi tiketnya sangat membantu kami merencanakan kunjungan keluarga.'},
-            {img: '{% static "img/avatar-visitor-5.png" %}', nama: 'Maya, Mahasiswa Pecinta Satwa', text: 'Saya suka fitur laporan kesehatan satwa, jadi merasa benar-benar terlibat dalam pelestarian!'}
-        ] }"
-        class="relative"
+        x-data="{
+            idx: 0,
+            testi: [
+                {img: '{% static "img/orang1.jpg" %}', nama: 'Rina, Adopter & Pengunjung', text: 'SIZOPI memudahkan saya mendukung satwa favorit dan memantau kesehatannya secara langsung. Anak-anak jadi lebih peduli lingkungan!'},
+                {img: '{% static "img/orang2.jpg" %}', nama: 'Andi, Adopter & Relawan', text: 'Program adopsi di SIZOPI sangat membantu saya untuk berkontribusi dalam pelestarian satwa. Laporan kesehatan hewan sangat informatif!'},
+                {img: '{% static "img/orang3.jpg" %}', nama: 'Sari, Pengunjung Keluarga', text: 'SIZOPI memberikan pengalaman yang menyenangkan saat berkunjung ke kebun binatang. Anak-anak saya sangat senang!'},
+            ],
+            next() { this.idx = (this.idx + 1) % this.testi.length },
+            prev() { this.idx = (this.idx - 1 + this.testi.length) % this.testi.length }
+        }"
+        class="relative flex items-center justify-center min-h-[430px]"
     >
         <!-- Testimonial Card -->
         <template x-for="(item, i) in testi" :key="i">
-            <div x-show="idx === i" x-transition
-                class="bg-white border border-secondary-40 rounded-2xl shadow-lg p-10 flex flex-col items-center text-center animate-fadeInUp min-h-[350px]">
-                <img :src="item.img" alt="Avatar" class="w-20 h-20 rounded-full mb-4 border-4 border-accent-500 shadow">
-                <blockquote class="text-xl text-neutral-black/80 italic mb-4" x-text="item.text"></blockquote>
-                <div class="text-primary font-semibold" x-text="item.nama"></div>
+            <div x-show="idx === i" x-transition:enter="transition duration-500"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition duration-300"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white border border-secondary-40 rounded-[2.5rem] shadow-2xl px-10 py-14 flex flex-col items-center text-center min-h-[380px] max-w-2xl mx-auto absolute left-0 right-0"
+                style="z-index: 2;"
+            >
+                <div class="mb-7">
+                    <span class="inline-block rounded-full bg-gradient-to-tr from-accent-500 via-primary to-accent-400 p-1 shadow-lg">
+                        <img :src="item.img" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover">
+                    </span>
+                </div>
+                <blockquote class="text-2xl text-neutral-black/90 italic mb-7 font-medium leading-relaxed tracking-tight" x-text="item.text"></blockquote>
+                <div class="text-primary font-semibold text-lg tracking-wide" x-text="item.nama"></div>
             </div>
         </template>
-        <!-- Slider Nav -->
-        <div class="flex justify-center gap-2 mt-6">
+        <!-- Slider Nav Bullets -->
+        <div class="absolute -bottom-8 left-0 right-0 flex justify-center gap-4 z-20">
             <template x-for="(item, i) in testi" :key="i">
                 <button 
-                    class="w-3 h-3 rounded-full transition"
-                    :class="idx === i ? 'bg-accent-500' : 'bg-secondary-40'"
+                    class="w-4 h-4 rounded-full border-2 border-accent-500 transition-all duration-200"
+                    :class="idx === i ? 'bg-accent-500 scale-125 shadow-lg' : 'bg-white opacity-60'"
                     @click="idx = i"
                     :aria-label="'Pilih testimoni ' + (i+1)">
                 </button>
             </template>
         </div>
         <!-- Arrow Navigation -->
-        <button @click="idx = idx === 0 ? testi.length-1 : idx-1"
-            class="absolute left-0 top-1/2 -translate-y-1/2 bg-white border border-secondary-40 rounded-full w-12 h-12 flex items-center justify-center shadow hover:bg-secondary-40 transition"
+        <button @click="prev()"
+            class="absolute left-0 top-1/2 -translate-y-1/2 bg-white border border-secondary-40 rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:bg-accent-500 hover:text-white hover:border-accent-500 transition z-20"
             aria-label="Sebelumnya">
-            <i class="fas fa-chevron-left text-accent-500 text-xl"></i>
+            <i class="fas fa-chevron-left text-2xl"></i>
         </button>
-        <button @click="idx = idx === testi.length-1 ? 0 : idx+1"
-            class="absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-secondary-40 rounded-full w-12 h-12 flex items-center justify-center shadow hover:bg-secondary-40 transition"
+        <button @click="next()"
+            class="absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-secondary-40 rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:bg-accent-500 hover:text-white hover:border-accent-500 transition z-20"
             aria-label="Berikutnya">
-            <i class="fas fa-chevron-right text-accent-500 text-xl"></i>
+            <i class="fas fa-chevron-right text-2xl"></i>
         </button>
     </div>
 </section>
 
 <!-- CTA SECTION -->
-<section class="bg-accent-500 py-16 px-4">
-    <div class="max-w-3xl mx-auto text-center">
-        <h2 class="text-h3 text-white font-header font-bold mb-4 drop-shadow-lg">Gabung Bersama SIZOPI!</h2>
-        <p class="text-xl text-accent-50 mb-8">Jadilah bagian dari gerakan pelestarian satwa Nusantara. Mulai adopsi, reservasi tiket, atau sekadar belajar lebih banyak tentang hewan-hewan luar biasa di taman safari kami.</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#adopsi" class="inline-flex items-center px-8 py-4 rounded-full bg-white text-accent-500 text-lg font-semibold shadow hover:bg-secondary transition">
-                <i class="fas fa-hand-holding-heart mr-3"></i> Mulai Adopsi
+<section class="relative py-20 px-4 bg-gradient-to-br from-accent-500/90 via-accent-500 to-primary-80/80 overflow-hidden rounded-[2.5rem] shadow-2xl mt-20">
+    <div class="max-w-3xl mx-auto text-center relative z-10">
+        <h2 class="text-h2 md:text-h3 text-white font-header font-extrabold mb-6 drop-shadow-xl tracking-tight animate-fadeInDown">
+            Gabung Bersama <span class="text-secondary">SIZOPI!</span>
+        </h2>
+        <p class="text-xl md:text-2xl text-accent-50 mb-10 font-medium animate-fadeInUp delay-100">Jadilah bagian dari gerakan pelestarian satwa Nusantara.<br> Mulai adopsi, reservasi tiket, atau sekadar belajar lebih banyak tentang hewan-hewan luar biasa di taman safari kami.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-6 animate-fadeInUp delay-200">
+            <a href="#adopsi"
+               class="inline-flex items-center px-10 py-5 rounded-full bg-white text-accent-500 text-xl font-bold shadow-xl hover:bg-secondary hover:text-primary-80 hover:scale-105 transition-all duration-200 group focus:outline-none focus:ring-4 focus:ring-accent-200">
+                <i class="fas fa-hand-holding-heart mr-3 text-2xl group-hover:animate-bounce"></i> Mulai Adopsi
             </a>
-            <a href="#tiket" class="inline-flex items-center px-8 py-4 rounded-full bg-accent-700 text-white text-lg font-semibold shadow hover:bg-accent-800 transition">
-                <i class="fas fa-ticket-alt mr-3"></i> Pesan Tiket
+            <a href="#tiket"
+               class="inline-flex items-center px-10 py-5 rounded-full bg-accent-700 text-white text-xl font-bold shadow-xl hover:bg-accent-800 hover:scale-105 transition-all duration-200 group focus:outline-none focus:ring-4 focus:ring-accent-200">
+                <i class="fas fa-ticket-alt mr-3 text-2xl group-hover:animate-bounce"></i> Pesan Tiket
             </a>
         </div>
     </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="bg-primary text-white py-10 px-4 mt-20">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-        <div class="flex items-center gap-3 mb-6 md:mb-0">
-            <!-- Logo SIZOPI (SVG/PNG) -->
-            <img src="{% static 'img/logo-sizopi.svg' %}" alt="Logo SIZOPI" class="w-12 h-12">
-            <span class="text-2xl font-header font-bold">SIZOPI</span>
-        </div>
-        <div class="flex gap-8">
-            <a href="#fitur" class="hover:text-accent-300 transition">Fitur</a>
-            <a href="#adopsi" class="hover:text-accent-300 transition">Adopsi</a>
-            <a href="#tiket" class="hover:text-accent-300 transition">Reservasi</a>
-            <a href="#satwa" class="hover:text-accent-300 transition">Galeri Satwa</a>
-            <a href="#testimoni" class="hover:text-accent-300 transition">Testimoni</a>
-        </div>
-        <div class="flex gap-4">
-            <a href="#" class="hover:text-accent-300 transition"><i class="fab fa-instagram text-2xl"></i></a>
-            <a href="#" class="hover:text-accent-300 transition"><i class="fab fa-facebook text-2xl"></i></a>
-            <a href="#" class="hover:text-accent-300 transition"><i class="fab fa-twitter text-2xl"></i></a>
-        </div>
-    </div>
-    <div class="text-center text-sm text-secondary-40 mt-6">
-        &copy; 2025 SIZOPI – Sistem Informasi Zoo Pintar. All rights reserved.
-    </div>
-</footer>
-
-<!-- Animasi CSS -->
 <style>
 @keyframes fadeInDown {
     0% { opacity: 0; transform: translateY(-40px);}
@@ -234,6 +221,24 @@
 }
 .animate-float-slow { animation: float-slow 5s ease-in-out infinite;}
 .animate-float-slow2 { animation: float-slow2 7s ease-in-out infinite;}
+
+#testimoni [x-show="idx === 0"],
+#testimoni [x-show="idx === 1"],
+#testimoni [x-show="idx === 2"] {
+    position: absolute;
+    left: 0; right: 0;
+    margin-left: auto; margin-right: auto;
+}
+
+@keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-40px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(40px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+.animate-fadeInDown { animation: fadeInDown .8s cubic-bezier(.4,0,.2,1) both;}
+.animate-fadeInUp { animation: fadeInUp .8s cubic-bezier(.4,0,.2,1) both;}
 </style>
 {% endblock %}
-
