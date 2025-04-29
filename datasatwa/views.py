@@ -36,3 +36,8 @@ def edit_satwa(request, id):
         return render(request, 'error.html', {'message': 'Satwa not found'})
 
     return render(request, 'edit_satwa.html', {'satwa': satwa})
+
+
+
+
+

@@ -2,19 +2,97 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Wahana</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            100: '#91986E',
+                            80: '#91986ECC',
+                            60: '#91986E99',
+                            40: '#91986E66',
+                            20: '#91986E33',
+                        },
+                        secondary: {
+                            100: '#F5EFE0',
+                            80: '#F5EEDBCC',
+                            60: '#F5EEDB99',
+                            40: '#F5EEDB66',
+                            20: '#F5EEDB33',
+                        },
+                        accent: {
+                            50: '#FBF0E6',
+                            200: '#FAE9D9',
+                            400: '#F2D4B9',
+                            500: '#DB6900',
+                            600: '#C55F00',
+                            700: '#A44F00',
+                            800: '#A44F00',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+        }
+        .btn-primary {
+            background-color: #DB6900;
+            color: white;
+            border-radius: 28px;
+            padding: 10px 20px;
+        }
+        .btn-secondary {
+            background-color: #A7AD8B;
+            color: #1C2628;
+            border: 1.5px solid #D3D6C5;
+            border-radius: 28px;
+            padding: 8px 18px;
+            font-size: 14px;
+        }
+        .btn-edit, .btn-hapus {
+            color: #1C2628;
+            border-radius: 12px;
+            padding: 3px 6px;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-edit {
+            background-color: #D7DACB;
+            border: 1.5px solid #193e30;
+        }
+        .btn-hapus {
+            background-color: #FDECEC;
+            border: 1.5px solid #EE443F;
+        }
+        .status-lingkungan {
+            width: 300px;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 p-10">
-    <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
-        <h2 class="text-xl font-bold mb-6">Data Wahana</h2>
-        <button id="btnTambahWahana" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Wahana</button>
+<body class="bg-white p-10">
+    <div class="max-w-6xl mx-auto bg-accent-100 p-6 rounded-lg shadow">
+        <h2 class="text-xl font-semibold mb-6">Data Wahana</h2>
+        <button id="btnTambahWahana" class="btn-primary mb-4 inline-block">Tambah Wahana</button>
 
         <table class="w-full border-collapse">
-            <thead class="bg-gray-200">
+            <thead class="bg-primary-20">
                 <tr>
                     <th class="border p-2">Nama Wahana</th>
                     <th class="border p-2">Kapasitas</th>
@@ -42,10 +120,10 @@
                             {% endif %}
                         </td>
                         <td class="border p-2 space-x-2">
-                            <button onclick="editWahana('{{ wahana.pk }}', '{{ wahana.nama }}', '{{ wahana.kapasitas }}', '{{ wahana.jadwal }}', '{{ wahana.peraturan_json }}')" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded">Edit</button>
+                            <button onclick="editWahana('{{ wahana.pk }}', '{{ wahana.nama }}', '{{ wahana.kapasitas }}', '{{ wahana.jadwal }}', '{{ wahana.peraturan_json }}')" class="btn-edit">Edit</button>
                             <form method="post" action="{% url 'atraksi_wahana:hapus_wahana' wahana.pk %}" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus wahana ini?')">
                                 {% csrf_token %}
-                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded">Hapus</button>
+                                <button type="submit" class="btn-hapus">Hapus</button>
                             </form>
                         </td>
                     </tr>
@@ -80,7 +158,7 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2 flex justify-between items-center">
                         <span>Peraturan</span>
-                        <button type="button" class="btn-tambah-peraturan bg-green-500 hover:bg-green-700 text-white text-sm py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                        <button type="button" class="btn-secondary text-sm py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                             Tambah Peraturan
                         </button>
                     </label>
@@ -96,8 +174,8 @@
                     </div>
                 </div>
                 <div class="flex items-center justify-end space-x-4">
-                    <button type="button" class="modal-cancel bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Batal</button>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
+                    <button type="button" class="modal-cancel btn-secondary">Batal</button>
+                    <button type="submit" class="btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
@@ -124,7 +202,7 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2 flex justify-between items-center">
                         <span>Peraturan</span>
-                        <button type="button" class="btn-tambah-peraturan bg-green-500 hover:bg-green-700 text-white text-sm py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                        <button type="button" class="btn-secondary text-sm py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                             Tambah Peraturan
                         </button>
                     </label>
@@ -133,8 +211,8 @@
                     </div>
                 </div>
                 <div class="flex items-center justify-end space-x-4">
-                    <button type="button" class="modal-cancel bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Batal</button>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
+                    <button type="button" class="modal-cancel btn-secondary">Batal</button>
+                    <button type="submit" class="btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
