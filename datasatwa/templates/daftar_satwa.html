@@ -91,6 +91,11 @@
         .btn-logout:hover {
             background-color: #f0fdf4;
         }
+        .custom-title {
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 2rem !important; /* Custom size */
+        font-weight: 700 !important; /* Custom weight */
+        }
     </style>
 </head>
 
@@ -105,7 +110,7 @@
 <body class="min-h-screen bg-white">
 
     <div class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h2 class="text-3xl font-bold text-primary-100 text-center mb-8">Data Satwa</h2>
+        <h2 class="custom-title text-primary-100 text-center mb-8">Data Satwa</h2>
 
         <div class="flex justify-end mb-6">
             <a href="{% url 'datasatwa:tambah_satwa' %}" class="btn-primary">+ Tambah Satwa</a>
