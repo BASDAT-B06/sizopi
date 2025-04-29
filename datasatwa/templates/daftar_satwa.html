@@ -79,10 +79,75 @@
             background-color: #FDECEC;
             border: 1.5px solid #EE443F;
         }
+        .btn-logout {
+            background-color: white;
+            color: #22c55e;
+            border: 2px solid #22c55e;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            background-color: #f0fdf4;
+        }
     </style>
 </head>
 
-<body class="min-h-screen p-10 bg-white">
+<body class="min-h-screen bg-white">
+    <!-- Navbar Start -->
+    <nav class="bg-[#91986E] text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/" class="font-bold text-xl">Sizopi</a>
+                    </div>
+                </div>
+
+                <div class="hidden sm:flex sm:items-center justify-end flex-grow">
+                    <a href="/rekam-medis-hewan/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Rekam Medis Hewan</a>
+                    <a href="/dashboard/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Dashboard</a>
+                    <a href="/pengaturan-profil/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Pengaturan Profil</a>
+                    
+                    
+                    
+                </div>
+
+                <div class="hidden sm:flex sm:items-center">
+                    <a href="/dashboard/" class="btn-primary ml-2">Logout</a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-primary-80">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Menu icon -->
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="mobile-menu hidden sm:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="/rekam-medis-hewan/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Rekam Medis Hewan</a>
+                <a href="/dashboard/" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Dashboard</a>
+                <a href="/pengaturan-profil/" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Pengaturan Profil</a>
+                
+            
+                <div class="pt-4 pb-3 border-t border-gray-200">
+                    <a href="/dashboard/" class="block w-full text-center px-4 py-2 rounded-md text-base font-medium bg-white text-green-600 border-2 border-green-600">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
     <div class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-md">
         <h2 class="text-3xl font-bold text-primary-100 text-center mb-8">Data Satwa</h2>
 
@@ -135,9 +200,18 @@
         </div>
     </div>
 
-    <div class="text-center mt-8">
-        <a href="{% url 'datasatwa:home' %}" class="btn-secondary inline-block">Kembali ke Homepage</a>
-    </div>
+
+    <!-- Add JavaScript for mobile menu toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.querySelector('.mobile-menu');
+
+            mobileMenuButton.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
 </body>
 
 </html>
