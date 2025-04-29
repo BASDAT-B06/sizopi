@@ -8,51 +8,123 @@
     <script>
         tailwind.config = {
             theme: {
-                colors: {
-                    primary: {
-                        DEFAULT: '#91986E', 
-                        '80': '#91986ECC',    
-                        '60': '#91986E99',    
-                        '40': '#91986E66',    
-                        '20': '#91986E33',    
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
                     },
-                    secondary: {
-                        DEFAULT: '#F5EFE0', 
-                        '80': '#F5EEDBCC',    
-                        '60': '#F5EEDB99',   
-                        '40': '#F5EEDB66',    
-                        '20': '#F5EEDB33',    
-                    },
-                    accent: {
-                        '50': '#FBF0E6',
-                        '200': '#FAE9D9',
-                        '400': '#F2D4B9',
-                        '500': '#DB6900',
-                        '600': '#C55F00',
-                        '700': '#A44F00',
-                        '800': '#A44F00',
+                    colors: {
+                        primary: {
+                            100: '#91986E',
+                            80: '#91986ECC',
+                            60: '#91986E99',
+                            40: '#91986E66',
+                            20: '#91986E33',
+                        },
+                        secondary: {
+                            100: '#F5EFE0',
+                            80: '#F5EEDBCC',
+                            60: '#F5EEDB99',
+                            40: '#F5EEDB66',
+                            20: '#F5EEDB33',
+                        },
+                        accent: {
+                            50: '#FBF0E6',
+                            200: '#FAE9D9',
+                            400: '#F2D4B9',
+                            500: '#DB6900',
+                            600: '#C55F00',
+                            700: '#A44F00',
+                            800: '#A44F00',
+                        }
                     }
                 }
             }
-        };
+        }
     </script>
     <!-- Date picker library -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+        }
         .popup {
-            background-color: seashell; /* Warna putih */
-            opacity: 1; /* Tidak transparan */
-            border-radius: 8px; /* Opsional: biar sudutnya halus */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Opsional: biar ada efek bayangan */
-            padding: 20px; /* Biar isi popup-nya nggak mepet */
+            background-color: white;
+            opacity: 1;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
         }
     </style>
 </head>
 
 <body class="bg-white min-h-screen py-8 px-4">
-    <div class="container mx-auto max-w-6xl">
-        <h1 class="text-3xl font-bold text-primary mb-6 text-center">Reservasi Atraksi</h1>
+    <nav class="bg-primary-80 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard/" class="font-bold text-xl text-white">Sizopi</a>
+                    </div>
+                </div>
+
+                <div class="hidden sm:flex sm:items-center justify-center flex-grow">
+                    <a href="/dashboard/"
+                        class="px-3 py-2 rounded-md text-white hover:bg-primary-80">Dashboard</a>
+
+                    <a href="/informasi-kebun-binatang/"
+                        class="px-3 py-2 rounded-md text-white hover:bg-primary-80">Informasi Kebun
+                        Binatang</a>
+
+                    <a href="/pengaturan-profil/"
+                        class="px-4 py-2 rounded-md text-white hover:bg-primary-60">
+                        Pengaturan Profil
+                    </a>
+                </div>
+
+                <div class="hidden sm:flex sm:items-center space-x-4">
+                    <a href="/logout/"
+                        class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                        role="button">
+                        Logout
+                    </a>
+                </div>
+
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button"
+                        class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-primary-80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                        aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-menu hidden sm:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="/dashboard/"
+                    class="block px-3 py-2 rounded-md text-white hover:bg-primary-80">Dashboard</a>
+
+                <a href="/informasi-kebun-binatang/"
+                    class="block px-3 py-2 rounded-md text-white hover:bg-primary-80">Informasi Kebun
+                    Binatang</a>
+
+                <a href="/pengaturan-profil/"
+                    class="block px-3 py-2 rounded-md text-white hover:bg-primary-80">Pengaturan Profil</a>
+                <a href="/logout/"
+                    class="block px-3 py-2 rounded-md text-white hover:bg-primary-80">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto max-w-6xl mt-8">
+        <h1 class="text-3xl font-bold text-primary-80 mb-6 text-center">Reservasi Atraksi</h1>
         
         <div class="mb-6 flex justify-end">
             <button id="tambahReservasiBtn" class="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-80 transition duration-300">
@@ -184,7 +256,7 @@
                             <button type="button" id="cancelBtn" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition duration-300 mr-2">
                                 Batal
                             </button>
-                            <button type="submit" id="submitBtn" class="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-80 transition duration-300">
+                            <button type="submit" id="submitBtn" class="bg-primary-80 text-white py-2 px-4 rounded-md hover:bg-primary-80 transition duration-300">
                                 Simpan
                             </button>
                         </div>
