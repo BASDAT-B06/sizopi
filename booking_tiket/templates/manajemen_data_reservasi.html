@@ -249,7 +249,8 @@
 
     <!-- Modal Tambah Reservasi -->
     <div id="modalTambah" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="popup w-full max-w-xl">
+        <div class="popup w-full max-w-2xl mx-4 overflow-y-auto max-h-[90vh]">
+
             <h3 class="text-xl font-bold mb-4">Tambah Reservasi</h3>
             <form action="{% url 'booking_tiket:create_reservasi' %}" method="post">
                 {% csrf_token %}
@@ -306,8 +307,8 @@
 
     <!-- Modal Edit Reservasi -->
     <div id="modalEdit" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="popup w-full max-w-xl">
-            <h3 class="text-xl font-bold mb-4">Edit Reservasi</h3>
+        <div class="popup w-full max-w-2xl mx-4 overflow-y-auto max-h-[90vh]">
+            <h2 class="text-xl font-bold mb-4">Edit Reservasi</h2>
             <form id="formEdit" method="post">
                 {% csrf_token %}
                 <input type="hidden" id="edit_id" name="id">
