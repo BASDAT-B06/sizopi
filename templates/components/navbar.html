@@ -45,25 +45,25 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                     <i class="fas fa-paw mr-2"></i>Catatan Perawatan Hewan
                 </a>
                 {% elif role == "staf_administrasi" %}
-                <a href="/kelola-pengunjung/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-users mr-2"></i>Kelola Pengunjung
                 </a>
-                <a href="/adopsi/kelola-adopsi/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'adoption:admin_list' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-heart mr-2"></i>Kelola Adopsi
                 </a>
-                <a href="/adopsi/kelola-adopter/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'adoption:adopter_list' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-user-friends mr-2"></i>Kelola Adopter
                 </a>
                 {% elif role == "pelatih_pertunjukan" %}
-                <a href="/jadwal-pertunjukan/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-calendar-alt mr-2"></i>Jadwal Pertunjukan
                 </a>
                 {% elif role == "pengunjung" %}
-                <a href="/informasi-kebun-binatang/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-info-circle mr-2"></i>Informasi Kebun Binatang
                 </a>
                 {% if adopter %}
-                <a href="/hewan-adopsi/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'adoption:user_list' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-hand-holding-heart mr-2"></i>Hewan Adopsi
                 </a>
                 {% endif %}
@@ -149,25 +149,25 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <i class="fas fa-paw w-6 mr-2"></i>Catatan Perawatan Hewan
             </a>
             {% elif role == "staf_administrasi" %}
-            <a href="/kelola-pengunjung/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-users w-6 mr-2"></i>Kelola Pengunjung
             </a>
-            <a href="/adopsi/kelola-adopsi/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'adoption:admin_list' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-heart w-6 mr-2"></i>Kelola Adopsi
             </a>
             <a href="/adopsi/kelola-adopter/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-user-friends w-6 mr-2"></i>Kelola Adopter
             </a>
             {% elif role == "pelatih_pertunjukan" %}
-            <a href="/jadwal-pertunjukan/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-calendar-alt w-6 mr-2"></i>Jadwal Pertunjukan
             </a>
             {% elif role == "pengunjung" %}
-            <a href="/informasi-kebun-binatang/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-info-circle w-6 mr-2"></i>Informasi Kebun Binatang
             </a>
             {% if adopter %}
-            <a href="/hewan-adopsi/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'adoption:user_list' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-hand-holding-heart w-6 mr-2"></i>Hewan Adopsi
             </a>
             {% endif %}
