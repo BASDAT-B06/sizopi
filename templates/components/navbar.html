@@ -81,7 +81,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                     <div class="absolute right-0 w-3 h-3 bg-accent-500 rounded-full top-0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
                 
-                <!-- Profile button with animation -->
+                <!-- Profile button  -->
                 <div class="relative group">
                     <a href="/pengaturan-profil/" class="flex items-center justify-center w-10 h-10 rounded-full bg-accent-500 hover:bg-accent-600 transition-all duration-200">
                         <i class="fas fa-user text-white"></i>
@@ -91,9 +91,9 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                     </div>
                 </div>
 
-                <!-- Logout button with animation -->
+                <!-- Logout button  -->
                 <div class="relative group">
-                    <a href="/logout/" class="flex items-center justify-center w-10 h-10 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
+                    <a href="/" class="flex items-center justify-center w-10 h-10 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
                         <i class="fas fa-sign-out-alt text-white"></i>
                     </a>
                     <div class="absolute -bottom-10 right-0 bg-white text-primary rounded-md py-1 px-2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
@@ -101,13 +101,13 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                     </div>
                 </div>
                 {% else %}
-                <!-- Login button (primary) -->
-                <a href="/login/" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors shadow-md">
+                <!-- Login button -->
+                <a href="/auth/login/" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors shadow-md">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </a>
 
-                <!-- Register button (secondary) -->
-                <a href="/register/" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-primary hover:bg-opacity-90 active:bg-opacity-80 transition-colors shadow-md">
+                <!-- Register button -->
+                <a href="/auth/" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-primary hover:bg-opacity-90 active:bg-opacity-80 transition-colors shadow-md">
                     <i class="fas fa-user-plus mr-2"></i>Registrasi
                 </a>
                 {% endif %}
@@ -194,7 +194,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
     </div>
 </nav>
 
-<!-- Add JavaScript for mobile menu toggle with animation -->
+<!-- Add JavaScript for mobile menu toggle -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const mobileMenuButton = document.querySelector('.mobile-menu-button');
