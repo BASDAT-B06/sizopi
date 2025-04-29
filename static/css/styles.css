@@ -15,4 +15,8 @@ h6 { font-size: 24px !important; line-height: 140% !important; }
 body {
     font-family: 'Poppins', sans-serif;
     color: #121212;
+    background-image: url('../img/texture-grunge-primary.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
