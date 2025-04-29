@@ -91,17 +91,17 @@
                             Username calon adopter:
                         </label>
                         <input class="shadow border border-secondary-40 rounded w-full py-2 px-3 text-neutral-black focus:outline-none focus:ring-2 focus:ring-primary-80" 
-                            id="username" type="text" placeholder="Username">
+                            id="username{{ animal.id }}" type="text" placeholder="Username">
                     </div>
                     <div class="mb-4">
                         <p class="block text-primary text-base font-semibold mb-2">Calon Adopter akan mengadopsi satwa sebagai</p>
                         <div class="flex items-center gap-6">
                             <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio accent-primary" name="adopter_type" value="individu">
+                                <input type="radio" class="form-radio accent-primary" name="adopter_type_{{ animal.id }}" value="individu">
                                 <span class="ml-2">Individu</span>
                             </label>
                             <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio accent-primary" name="adopter_type" value="organisasi">
+                                <input type="radio" class="form-radio accent-primary" name="adopter_type_{{ animal.id }}" value="organisasi">
                                 <span class="ml-2">Organisasi</span>
                             </label>
                         </div>
@@ -113,11 +113,141 @@
                         Batal
                     </button>
                     <button class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition"
-                        onclick="verifyAccount()">
+                        onclick="verifyAccount('{{ animal.id }}')">
                         <i class="fas fa-check mr-2"></i>Verifikasi Akun
                     </button>
                 </div>
             </div>
+        </div>
+
+        <!-- Modal Form Adopsi Satwa INDIVIDU -->
+        <div id="formAdopsiIndividu{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+          <div class="relative top-24 mx-auto p-8 border border-secondary-40 w-full max-w-2xl shadow-xl rounded-2xl bg-white">
+            <div class="flex justify-between items-center border-b border-secondary-40 pb-4 mb-6">
+              <h5 class="text-h5 text-primary font-header font-bold">Form Adopsi Satwa (Individu)</h5>
+              <button onclick="closeModal('formAdopsiIndividu{{ animal.id }}')" class="text-gray-700 hover:text-accent-500 transition">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
+            <form>
+              <p class="mb-4 text-base text-neutral-black/90">Pihak di bawah ini,</p>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Nama</label>
+                <input type="text" name="nama" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+              </div>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">NIK</label>
+                <input type="text" name="nik" placeholder="NIK" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+              </div>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Alamat</label>
+                <input type="text" name="alamat" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+              </div>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Nomor Telepon</label>
+                <input type="text" name="no_telepon" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+              </div>
+              <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
+              <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk mengadopsi secara simbolis satwa</p>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Nama Satwa</label>
+                <input type="text" value="{{ animal.name }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+              </div>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Jenis Satwa</label>
+                <input type="text" value="{{ animal.type }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+              </div>
+              <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Nominal Kontribusi</label>
+                <input type="number" name="nominal" placeholder="Masukkan nominal kontribusi" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+              </div>
+              <div class="mb-8">
+                <label class="block text-primary font-semibold mb-2">Periode Adopsi</label>
+                <select name="periode" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                  <option value="3">3 bulan</option>
+                  <option value="6">6 bulan</option>
+                  <option value="12">12 bulan</option>
+                </select>
+              </div>
+              <div class="flex justify-between gap-4">
+                <button type="button"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow"
+                        onclick="closeModal('formAdopsiIndividu{{ animal.id }}')">
+                  Batal
+                </button>
+                <button type="submit"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
+                  Submit Form
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Modal Form Adopsi Satwa ORGANISASI -->
+        <div id="formAdopsiOrganisasi{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+          <div class="relative top-24 mx-auto p-8 border border-secondary-40 w-full max-w-2xl shadow-xl rounded-2xl bg-white">
+            <div class="flex justify-between items-center border-b border-secondary-40 pb-4 mb-6">
+              <h5 class="text-h5 text-primary font-header font-bold">Form Adopsi Satwa (Organisasi)</h5>
+              <button onclick="closeModal('formAdopsiOrganisasi{{ animal.id }}')" class="text-gray-700 hover:text-accent-500 transition">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
+            <form>
+              <p class="mb-4 text-base text-neutral-black/90">Pihak di bawah ini, selaku organisasi/perusahaan</p>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Nama Organisasi</label>
+                <input type="text" name="nama_organisasi" placeholder="Nama Organisasi" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+              </div>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">NPP</label>
+                <input type="text" name="npp" placeholder="NPP" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+              </div>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Alamat</label>
+                <input type="text" name="alamat" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+              </div>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Kontak</label>
+                <input type="text" name="kontak" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+              </div>
+              <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
+              <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk mengadopsi secara simbolis satwa</p>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Nama Satwa</label>
+                <input type="text" value="{{ animal.name }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+              </div>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Jenis Satwa</label>
+                <input type="text" value="{{ animal.type }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+              </div>
+              <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
+              <div class="mb-4">
+                <label class="block text-primary font-semibold mb-2">Nominal Kontribusi</label>
+                <input type="number" name="nominal" placeholder="Masukkan nominal kontribusi" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+              </div>
+              <div class="mb-8">
+                <label class="block text-primary font-semibold mb-2">Periode Adopsi</label>
+                <select name="periode" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                  <option value="3">3 bulan</option>
+                  <option value="6">6 bulan</option>
+                  <option value="12">12 bulan</option>
+                </select>
+              </div>
+              <div class="flex justify-between gap-4">
+                <button type="button"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow"
+                        onclick="closeModal('formAdopsiOrganisasi{{ animal.id }}')">
+                  Batal
+                </button>
+                <button type="submit"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
+                  Submit Form
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <!-- Modal Stop Adoption -->
@@ -146,8 +276,25 @@ function showModal(id) {
 function closeModal(id) {
     document.getElementById(id).classList.add('hidden');
 }
-function verifyAccount() {
-    alert('Akun ditemukan! Silakan lanjutkan dengan pengisian form adopsi.');
+function getAdopterType(animalId) {
+    let radios = document.getElementsByName('adopter_type_' + animalId);
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].checked) return radios[i].value;
+    }
+    return null;
+}
+function verifyAccount(animalId) {
+    const adopterType = getAdopterType(animalId);
+    if (!adopterType) {
+        alert('Pilih tipe adopter terlebih dahulu.');
+        return;
+    }
+    closeModal('registerModal' + animalId);
+    if (adopterType === 'individu') {
+        showModal('formAdopsiIndividu' + animalId);
+    } else if (adopterType === 'organisasi') {
+        showModal('formAdopsiOrganisasi' + animalId);
+    }
 }
 </script>
 {% endblock %}
