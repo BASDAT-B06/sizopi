@@ -31,7 +31,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
             <div class="hidden sm:flex sm:items-center {% if logged_in %}justify-center flex-grow{% endif %}">
                 {% if logged_in %}
                 <!-- Common links for all logged-in users -->
-                <a href="/dashboard/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'dashboard:dash_dokter_hewan' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-home mr-2"></i>Dashboard
                 </a>
 
@@ -41,7 +41,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                     <i class="fas fa-notes-medical mr-2"></i>Rekam Medis Hewan
                 </a>
                 {% elif role == "penjaga_hewan" %}
-                <a href="/catatan-perawatan/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'pakan_hewan:pakan_per_hewan' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-paw mr-2"></i>Catatan Perawatan Hewan
                 </a>
                 {% elif role == "staf_administrasi" %}
@@ -83,7 +83,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 
                 <!-- Profile button with animation -->
                 <div class="relative group">
-                    <a href="/pengaturan-profil/" class="flex items-center justify-center w-10 h-10 rounded-full bg-accent-500 hover:bg-accent-600 transition-all duration-200">
+                    <a href="{% url 'profil:pengaturan_profil' %}" class="flex items-center justify-center w-10 h-10 rounded-full bg-accent-500 hover:bg-accent-600 transition-all duration-200">
                         <i class="fas fa-user text-white"></i>
                     </a>
                     <div class="absolute -bottom-10 right-0 bg-white text-primary rounded-md py-1 px-2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
@@ -135,7 +135,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
         <div class="px-2 pt-2 pb-3 space-y-1 bg-primary-80 rounded-b-lg shadow-lg">
             {% if logged_in %}
             <!-- Common links for all logged-in users -->
-            <a href="/dashboard/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'dashboard:dash_dokter_hewan' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-home w-6 mr-2"></i>Dashboard
             </a>
 
@@ -145,7 +145,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <i class="fas fa-notes-medical w-6 mr-2"></i>Rekam Medis Hewan
             </a>
             {% elif role == "penjaga_hewan" %}
-            <a href="/catatan-perawatan/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'pakan_hewan:pakan_per_hewan' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-paw w-6 mr-2"></i>Catatan Perawatan Hewan
             </a>
             {% elif role == "staf_administrasi" %}
@@ -175,7 +175,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
 
             <!-- User options -->
             <div class="border-t border-white border-opacity-20 my-2"></div>
-            <a href="/pengaturan-profil/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'profil:pengaturan_profil' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-user-cog w-6 mr-2"></i>Pengaturan Profil
             </a>
             <a href="/logout/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
