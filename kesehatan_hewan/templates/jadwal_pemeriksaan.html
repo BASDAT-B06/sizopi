@@ -1,181 +1,287 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Rekam Medis Hewan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            DEFAULT: '#91986E',
-                            '100': '#91986E',
-                            '80': '#91986ECC',
-                            '60': '#91986E99',
-                            '40': '#91986E66',
-                            '20': '#91986E33',
-                        },
-                        secondary: {
-                            DEFAULT: '#F5EFE0',
-                            '100': '#F5EFE0',
-                            '80': '#F5EEDBCC',
-                            '60': '#F5EEDB99',
-                            '40': '#F5EEDB66',
-                            '20': '#F5EEDB33',
-                        },
-                        accent: {
-                            '50': '#FBF0E6',
-                            '200': '#FAE9D9',
-                            '400': '#F2D4B9',
-                            '500': '#DB6900',
-                            '600': '#C55F00',
-                            '700': '#A44F00',
-                            '800': '#A44F00',
-                        },
-                        neutral: {
-                            'black': '#121212'
-                        }
-                    },
-                    fontFamily: {
-                        'header': ['Helvetica', 'Arial', 'sans-serif'],
-                        'body': ['Poppins', 'sans-serif']
-                    }
-                }
-            }
-        };
-    </script>
-    <style>
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-family: Helvetica, Arial, sans-serif;
-            color: #121212;
-        }
+{% block meta %}
+<title>Jadwal Pemeriksaan Kesehatan Hewan</title>
+{% endblock meta %}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: #121212;
-        }
-    </style>
-</head>
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="dokter_hewan" %}
+{% endblock navbar %}
 
-<body class="bg-accent-cream-50">
-    <nav class="bg-primary text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <a href="/dashboard/" class="font-bold text-xl">Sizopi</a>
+{% block content %}
+<div class="bg-secondary min-h-screen px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+        <h3 class="text-2xl font-bold text-primary mb-6 flex items-center">
+            <div class="bg-primary-20 p-2.5 rounded-full mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+            </div>
+            Jadwal Pemeriksaan Kesehatan Hewan
+        </h3>
+
+        <!-- Animal Info Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <p class="text-sm font-medium text-primary mb-2">Nama Hewan</p>
+                    <p class="text-neutral-black font-semibold text-lg">Molly</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-primary mb-2">Spesies</p>
+                    <p class="text-neutral-black font-semibold text-lg">Gajah</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-primary mb-2">ID Hewan</p>
+                    <p class="text-neutral-black text-sm font-mono tracking-tight">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frequency & Button Section -->
+        <div class="flex flex-col md:flex-row justify-between mb-6">
+            <div class="bg-white p-4 rounded-lg shadow-md flex items-center mb-4 md:mb-0 md:mr-4 md:flex-grow">
+                <div class="w-10 h-10 rounded-full bg-primary-20 flex items-center justify-center mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-neutral-black/60 text-sm">Frekuensi Pemeriksaan Rutin</p>
+                    <div class="flex items-center">
+                        <span class="font-semibold text-neutral-black">3 bulan sekali</span>
+                        <button id="editFrekuensiBtn"
+                            class="ml-3 text-primary hover:text-accent-500 font-medium text-sm">[Edit]</button>
                     </div>
                 </div>
-
-                <div class="hidden sm:flex sm:items-center justify-center flex-grow">
-                    <a href="/dashboard/"
-                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Dashboard</a>
-
-                    <a href="/rekam-medis/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Rekam
-                        Medis Hewan</a>
-                    <a href="/pengaturan-profil/"
-                        class="bg-primary-80 px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-60">
-                        Pengaturan Profil
-                    </a>
-                </div>
-
-                <div class="hidden sm:flex sm:items-center space-x-4">
-                    <a href="/logout/"
-                        class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-                        role="button">
-                        Logout
-                    </a>
-                </div>
-
-                <div class="-mr-2 flex items-center sm:hidden">
-                    <button type="button"
-                        class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-primary-80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                        aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
             </div>
-        </div>
-
-        <div class="mobile-menu hidden sm:hidden">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="/dashboard/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Dashboard</a>
-
-                <a href="/rekam-medis/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Rekam Medis Hewan</a>
-
-                <a href="/pengaturan-profil/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Pengaturan Profil</a>
-                <a href="/logout/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Logout</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mx-auto px-4 py-6">
-        <h1 class="text-primary-100 text-xl font-bold mb-6">JADWAL PEMERIKSAAN HEWAN</h1>
-
-        <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-primary-100">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">Nama Hewan</div>
-                    <p class="text-gray-800">Molly</p>
-                </div>
-                <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">Spesies</div>
-                    <p class="text-gray-800">Gajah</p>
-                </div>
-                <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">ID Hewan</div>
-                    <p class="text-gray-800">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c</p>
-                </div>
-            </div>
-        </div>
-        <div class="flex justify-end mb-4">
-            <button
-                class="bg-accent-500 hover:bg-accent-600 focus:bg-accent-600 active:bg-accent-700 text-white font-medium py-1.5 px-4 rounded-full text-sm transition duration-150 ease-in-out flex items-center space-x-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <button id="openCreateModal"
+                class="bg-accent-500 hover:bg-accent-600 text-white font-medium px-5 py-2.5 rounded-full flex items-center shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                         d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                         clip-rule="evenodd" />
                 </svg>
-                <span>CREATE JADWAL PEMERIKSAAN</span>
+                <span>Tambah Jadwal</span>
             </button>
         </div>
 
-        <div class="mt-6 overflow-x-auto">
-            <table class="mx-auto w-full max-w-2xl border border-gray-300 shadow-lg rounded-lg overflow-hidden">
-                <thead class="bg-gradient-to-r from-primary-100 to-primary-80">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-sm font-bold text-white border-b border-primary-60">
-                            Tanggal Pemeriksaan Selanjutnya
-                        </th>
+        <!-- Table -->
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+            <table class="min-w-full">
+                <thead>
+                    <tr class="bg-primary-20 text-primary border-b border-primary-40">
+                        <th class="px-6 py-4 text-left text-sm font-medium">Tanggal Pemeriksaan Selanjutnya</th>
+                        <th class="px-6 py-4 text-center text-sm font-medium w-32">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <tr class="hover:bg-accent-blue-50 transition duration-200">
-                        <td class="px-6 py-4 text-gray-800 font-medium">2025-03-20</td>
+                <tbody class="divide-y divide-secondary">
+                    <tr class="hover:bg-secondary-20 transition-colors duration-200">
+                        <td class="px-6 py-4 text-sm text-neutral-black font-medium">2025-03-20</td>
+                        <td class="px-6 py-4 text-sm">
+                            <div class="flex justify-center space-x-3">
+                                <button
+                                    class="text-primary hover:text-accent-500 font-medium edit-jadwal-btn">Edit</button>
+                                <button
+                                    class="text-red-500 hover:text-red-700 font-medium delete-jadwal-btn">Hapus</button>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
 
-</body>
+<!-- MODALS -->
+<!-- Tambah Jadwal Modal -->
+<div id="createModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="createModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <div class="flex items-center">
+                <div class="bg-primary-20 p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </div>
+                <h6 class="text-lg font-bold text-primary">Tambah Jadwal Pemeriksaan</h6>
+            </div>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
+        </div>
 
-</html>
+        <form class="p-6">
+            <div class="mb-4">
+                <label class="block text-primary font-medium mb-1.5 text-sm" for="tanggal">Tanggal Pemeriksaan
+                    Selanjutnya</label>
+                <div class="relative">
+                    <input type="date" id="tanggal" name="tanggal" value="2025-05-05"
+                        class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 text-sm">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-4 mt-6 pt-4 border-t border-gray-100">
+                <button type="button"
+                    class="text-neutral-black font-medium hover:text-accent-700 text-sm close-modal">Batal</button>
+                <button type="submit"
+                    class="bg-accent-500 hover:bg-accent-600 text-white px-5 py-2.5 rounded-full font-medium text-sm">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Jadwal Modal -->
+<div id="editJadwalModal"
+    class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="editJadwalModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <h5 class="text-lg font-bold text-primary">Edit Jadwal Pemeriksaan</h5>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
+        </div>
+
+        <form class="p-6">
+            <div class="mb-4">
+                <label class="block text-primary font-medium mb-1.5 text-sm" for="edit_tanggal">Tanggal Pemeriksaan
+                    Selanjutnya</label>
+                <div class="relative">
+                    <input type="date" id="edit_tanggal" name="edit_tanggal" value="2025-03-20"
+                        class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 text-sm">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-4 mt-6 pt-4 border-t border-gray-100">
+                <button type="button"
+                    class="text-neutral-black font-medium hover:text-accent-700 text-sm close-modal">Batal</button>
+                <button type="submit"
+                    class="bg-accent-500 hover:bg-accent-600 text-white px-5 py-2.5 rounded-full font-medium text-sm">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Frekuensi Modal -->
+<div id="editFrekuensiModal"
+    class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="editFrekuensiModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <h5 class="text-lg font-bold text-primary">Edit Frekuensi Pemeriksaan</h5>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
+        </div>
+
+        <form class="p-6">
+            <div>
+                <label class="block text-primary font-medium mb-1.5 text-sm" for="frekuensi">Frekuensi
+                    Pemeriksaan</label>
+                <div class="flex items-center">
+                    <input type="number" id="frekuensi" name="frekuensi" min="1" value="3"
+                        class="w-20 border border-secondary rounded-md p-2.5 focus:border-primary focus:ring-2 focus:ring-primary-20 text-sm">
+                    <span class="ml-3 text-neutral-black">bulan sekali</span>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-4 mt-6 pt-4 border-t border-gray-100">
+                <button type="button"
+                    class="text-neutral-black font-medium hover:text-accent-700 text-sm close-modal">Batal</button>
+                <button type="submit"
+                    class="bg-accent-500 hover:bg-accent-600 text-white px-5 py-2.5 rounded-full font-medium text-sm">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="deleteModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <h6 class="text-lg font-bold text-red-600">Hapus Jadwal Pemeriksaan</h6>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
+        </div>
+
+        <div class="p-6 text-center">
+            <p class="text-sm text-neutral-black mb-6">Apakah Anda yakin ingin menghapus jadwal pemeriksaan ini?</p>
+            <div class="flex justify-center space-x-4">
+                <button id="confirmDeleteBtn"
+                    class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-full font-medium text-sm">Ya,
+                    Hapus</button>
+                <button class="text-neutral-black font-medium hover:text-accent-700 text-sm close-modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modals = {
+            create: { modal: document.getElementById('createModal'), content: document.getElementById('createModalContent') },
+            editJadwal: { modal: document.getElementById('editJadwalModal'), content: document.getElementById('editJadwalModalContent') },
+            editFrekuensi: { modal: document.getElementById('editFrekuensiModal'), content: document.getElementById('editFrekuensiModalContent') },
+            delete: { modal: document.getElementById('deleteModal'), content: document.getElementById('deleteModalContent') }
+        };
+
+        // Button listeners
+        document.getElementById('openCreateModal').addEventListener('click', () => openModal('create'));
+        document.getElementById('editFrekuensiBtn').addEventListener('click', () => openModal('editFrekuensi'));
+        document.querySelectorAll('.edit-jadwal-btn').forEach(btn => btn.addEventListener('click', () => openModal('editJadwal')));
+        document.querySelectorAll('.delete-jadwal-btn').forEach(btn => btn.addEventListener('click', () => openModal('delete')));
+        document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', closeActiveModal));
+
+        // Close on background click
+        window.addEventListener('click', function (event) {
+            for (const key in modals) {
+                if (event.target === modals[key].modal) {
+                    closeModal(key);
+                }
+            }
+        });
+
+        // Helper functions
+        function openModal(modalKey) {
+            modals[modalKey].modal.classList.remove('hidden');
+            setTimeout(() => {
+                modals[modalKey].content.classList.remove('scale-95', 'opacity-0');
+                modals[modalKey].content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal(modalKey) {
+            modals[modalKey].content.classList.remove('scale-100', 'opacity-100');
+            modals[modalKey].content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modals[modalKey].modal.classList.add('hidden'), 300);
+        }
+
+        function closeActiveModal() {
+            for (const key in modals) {
+                if (!modals[key].modal.classList.contains('hidden')) {
+                    closeModal(key);
+                    break;
+                }
+            }
+        }
+    });
+</script>
+{% endblock content %}

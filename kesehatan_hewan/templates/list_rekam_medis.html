@@ -1,233 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Rekam Medis Hewan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            DEFAULT: '#91986E',
-                            '100': '#91986E',
-                            '80': '#91986ECC',
-                            '60': '#91986E99',
-                            '40': '#91986E66',
-                            '20': '#91986E33',
-                        },
-                        secondary: {
-                            DEFAULT: '#F5EFE0',
-                            '100': '#F5EFE0',
-                            '80': '#F5EEDBCC',
-                            '60': '#F5EEDB99',
-                            '40': '#F5EEDB66',
-                            '20': '#F5EEDB33',
-                        },
-                        accent: {
-                            '50': '#FBF0E6',
-                            '200': '#FAE9D9',
-                            '400': '#F2D4B9',
-                            '500': '#DB6900',
-                            '600': '#C55F00',
-                            '700': '#A44F00',
-                            '800': '#A44F00',
-                        },
-                        neutral: {
-                            'black': '#121212'
-                        }
-                    },
-                    fontFamily: {
-                        'header': ['Helvetica', 'Arial', 'sans-serif'],
-                        'body': ['Poppins', 'sans-serif']
-                    }
-                }
-            }
-        };
-    </script>
-    <style>
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-family: Helvetica, Arial, sans-serif;
-            color: #121212;
-        }
+{% block meta %}
+<title>Rekam Medis Hewan</title>
+{% endblock meta %}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: #121212;
-        }
-    </style>
-</head>
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="dokter_hewan" %}
+{% endblock navbar %}
 
-<body class="bg-accent-cream-50">
-    <nav class="bg-primary text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <a href="/dashboard/" class="font-bold text-xl">Sizopi</a>
-                    </div>
+{% block content %}
+<div class="bg-secondary min-h-screen px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+        <h3 class="text-2xl font-bold text-primary mb-6 flex items-center">
+            <div class="bg-primary-20 p-2.5 rounded-full mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+            Rekam Medis Hewan
+        </h3>
+
+        <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary mb-8 hover:shadow-lg transition-shadow duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <p class="text-sm font-medium text-primary mb-2">Nama Hewan</p>
+                    <p class="text-neutral-black font-semibold text-lg">Molly</p>
                 </div>
-
-                <div class="hidden sm:flex sm:items-center justify-center flex-grow">
-                    <a href="/dashboard/"
-                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Dashboard</a>
-
-                    <a href="/rekam-medis/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Rekam
-                        Medis Hewan</a>
-                    <a href="/pengaturan-profil/"
-                        class="bg-primary-80 px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-60">
-                        Pengaturan Profil
-                    </a>
+                <div>
+                    <p class="text-sm font-medium text-primary mb-2">Spesies</p>
+                    <p class="text-neutral-black font-semibold text-lg">Gajah</p>
                 </div>
-
-                <div class="hidden sm:flex sm:items-center space-x-4">
-                    <a href="/logout/"
-                        class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-                        role="button">
-                        Logout
-                    </a>
-                </div>
-
-                <div class="-mr-2 flex items-center sm:hidden">
-                    <button type="button"
-                        class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-primary-80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                        aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
+                <div>
+                    <p class="text-sm font-medium text-primary mb-2">ID Hewan</p>
+                    <p class="text-neutral-black text-sm font-mono tracking-tight">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c
+                    </p>
                 </div>
             </div>
         </div>
 
-        <div class="mobile-menu hidden sm:hidden">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="/dashboard/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Dashboard</a>
-
-                <a href="/rekam-medis/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Rekam Medis Hewan</a>
-
-                <a href="/pengaturan-profil/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Pengaturan Profil</a>
-                <a href="/logout/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Logout</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mx-auto px-4 py-6">
-        <h1 class="text-primary-100 text-xl font-bold mb-6">REKAM MEDIS HEWAN</h1>
-
-        <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-primary-100">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">Nama Hewan</div>
-                    <p class="text-gray-800">Molly</p>
-                </div>
-                <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">Spesies</div>
-                    <p class="text-gray-800">Gajah</p>
-                </div>
-                <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">ID Hewan</div>
-                    <p class="text-gray-800">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex justify-end mb-4">
-            <button
-                class="bg-accent-500 hover:bg-accent-600 focus:bg-accent-600 active:bg-accent-700 text-white font-medium py-1.5 px-4 rounded-full text-sm transition duration-150 ease-in-out flex items-center space-x-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+        <div class="flex justify-end mb-6">
+            <button id="openCreateModal"
+                class="bg-accent-500 hover:bg-accent-600 text-white font-medium px-5 py-2.5 rounded-full flex items-center space-x-2 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                         d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                         clip-rule="evenodd" />
                 </svg>
-                <span>CREATE REKAM MEDIS</span>
+                <span>Create Rekam Medis</span>
             </button>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded-md shadow overflow-hidden">
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+            <table class="min-w-full">
                 <thead>
-                    <tr>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Tanggal Pemeriksaan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Nama Dokter
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Status Kesehatan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Diagnosa
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Pengobatan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Catatan Tindak Lanjut
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Aksi
-                        </th>
+                    <tr class="bg-primary-20 text-primary border-b border-primary-40">
+                        <th class="px-6 py-4 text-left text-sm font-medium">Tanggal Pemeriksaan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Nama Dokter</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Status Kesehatan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Diagnosa</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Pengobatan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Catatan Tindak Lanjut</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-accent-50">
-                    <tr class="hover:bg-accent-50">
-                        <td class="px-4 py-3 text-sm text-gray-800">24/04/2025</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">drh. Siti Diana</td>
-                        <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-1 text-xs rounded-full font-medium">
-                                Sakit
-                            </span>
+                <tbody class="divide-y divide-secondary">
+                    <tr class="hover:bg-secondary-20 transition-colors duration-200">
+                        <td class="px-6 py-4 text-sm text-neutral-black">24/04/2025</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">drh. Siti Diana</td>
+                        <td class="px-6 py-4 text-sm">
+                            <span
+                                class="px-3 py-1.5 bg-accent-200 text-accent-700 text-xs rounded-full font-medium">Sakit</span>
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Luka di kaki kiri depan</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Antibiotik topikal, Balutan ganti setiap hari</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Kontrol dalam 1 minggu</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">
-                            <div class="flex space-x-2">
-                                <button class="text-primary-100 hover:text-primary-80">Edit</button>
-                                <button class="text-red-500 hover:text-red-400">Hapus</button>
+                        <td class="px-6 py-4 text-sm text-neutral-black">Luka di kaki kiri depan</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">Antibiotik topikal, balutan ganti setiap hari
+                        </td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">Kontrol dalam 1 minggu</td>
+                        <td class="px-6 py-4 text-sm">
+                            <div class="flex space-x-3">
+                                <!-- Edit button only for "Sakit" status -->
+                                <button
+                                    class="text-primary hover:text-accent-500 font-medium transition-colors duration-200 flex items-center edit-record-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button
+                                    class="text-red-500 delete-record-btn hover:text-red-700 font-medium transition-colors duration-200 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Hapus
+                                </button>
                             </div>
                         </td>
                     </tr>
-                    <tr class="bg-secondary-20 hover:bg-secondary-40">
-                        <td class="px-4 py-3 text-sm text-gray-800">15/04/2025</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">drh. Ari Santoso</td>
-                        <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-1 text-xs rounded-full font-medium">
-                                Sehat
-                            </span>
+                    <tr class="bg-primary-20 hover:bg-primary-40 transition-colors duration-200">
+                        <td class="px-6 py-4 text-sm text-neutral-black">15/04/2025</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">drh. Ari Santoso</td>
+                        <td class="px-6 py-4 text-sm">
+                            <span
+                                class="px-3 py-1.5 bg-primary-20 text-primary text-xs rounded-full font-medium">Sehat</span>
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-800"></td>
-                        <td class="px-4 py-3 text-sm text-gray-800"></td>
-                        <td class="px-4 py-3 text-sm text-gray-800"></td>
-                        <td class="px-4 py-3 text-sm text-gray-800">
-                            <div class="flex space-x-2">
-                                <button class="text-primary-100 hover:text-primary-80">Edit</button>
-                                <button class="text-red-500 hover:text-red-400">Hapus</button>
+                        <td class="px-6 py-4 text-sm text-neutral-black"></td>
+                        <td class="px-6 py-4 text-sm text-neutral-black"></td>
+                        <td class="px-6 py-4 text-sm text-neutral-black"></td>
+                        <td class="px-6 py-4 text-sm">
+                            <div class="flex space-x-3">
+                                <button
+                                    class="text-red-500 delete-record-btn hover:text-red-700 font-medium transition-colors duration-200 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Hapus
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -235,6 +131,436 @@
             </table>
         </div>
     </div>
-</body>
+</div>
 
-</html>
+<!-- Create Modal -->
+<div id="createModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="createModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <div class="flex items-center">
+                <div class="bg-primary-20 p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </div>
+                <h6 class="text-lg font-bold text-primary">Tambah Rekam Medis Baru</h6>
+            </div>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form class="p-6 space-y-5">
+            <div class="border-b border-secondary pb-3 mb-4">
+                <div class="text-base font-semibold text-primary flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Detail Rekam Medis
+                </div>
+                <p class="text-xs text-neutral-black opacity-70 mt-1">Isi informasi rekam medis untuk pemeriksaan hewan
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-primary font-medium mb-1.5 text-sm" for="tanggal">Tanggal
+                        Pemeriksaan</label>
+                    <div class="relative">
+                        <input type="date" id="tanggal" name="tanggal" value="2025-05-05"
+                            class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 transition-all duration-300 text-sm">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-primary font-medium mb-1.5 text-sm" for="status">Status Kesehatan</label>
+                <div class="relative">
+                    <select id="status" name="status"
+                        class="w-full border border-secondary rounded-md p-2.5 pl-9 pr-10 focus:border-primary focus:ring-2 focus:ring-primary-20 transition-all duration-300 text-sm appearance-none bg-white">
+                        <option value="sehat" selected>Sehat</option>
+                        <option value="sakit">Sakit</option>
+                    </select>
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-primary font-medium mb-1.5 text-sm" for="diagnosa">Diagnosa <span
+                            class="text-xs text-accent-400">(Opsional)</span></label>
+                    <div class="relative">
+                        <input type="text" id="diagnosa" name="diagnosa" value="Pemeriksaan rutin"
+                            class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 transition-all duration-300 text-sm"
+                            placeholder="Masukkan diagnosa">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-primary font-medium mb-1.5 text-sm" for="pengobatan">Pengobatan <span
+                            class="text-xs text-accent-400">(Opsional)</span></label>
+                    <div class="relative">
+                        <input type="text" id="pengobatan" name="pengobatan" value="Vitamin dan mineral"
+                            class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 transition-all duration-300 text-sm"
+                            placeholder="Masukkan pengobatan">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 flex justify-end space-x-4 items-center border-t border-gray-100 mt-6">
+                <button type="button"
+                    class="text-neutral-black font-medium hover:text-accent-700 transition-colors duration-300 flex items-center text-sm close-modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Batal
+                </button>
+                <button type="submit"
+                    class="bg-accent-500 hover:bg-accent-600 focus:ring-3 focus:ring-accent-400 focus:ring-opacity-50 text-white px-5 py-2.5 rounded-full font-medium transition-all duration-300 flex items-center shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Simpan Rekam Medis
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="editModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <div class="flex items-center">
+                <div class="bg-primary-20 p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </div>
+                <h5 class="text-lg font-bold text-primary">Edit Rekam Medis</h>
+            </div>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <!-- Current Medical Record Info Box -->
+            <div class="bg-secondary-20 p-4 rounded-lg border-l-4 border-primary mb-6">
+                <h6 class="text-primary font-medium text-sm mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    DATA REKAM MEDIS SAAT INI
+                </h6>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-white p-3 rounded-md shadow-sm">
+                        <div class="text-primary-60 text-xs mb-1">Tanggal Pemeriksaan</div>
+                        <div class="font-medium text-neutral-black">24/04/2025</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-md shadow-sm">
+                        <div class="text-primary-60 text-xs mb-1">Nama Dokter</div>
+                        <div class="font-medium text-neutral-black">drh. Siti Diana</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-md shadow-sm">
+                        <div class="text-primary-60 text-xs mb-1">Status Kesehatan</div>
+                        <div class="flex items-center">
+                            <span class="inline-block w-2 h-2 rounded-full bg-accent-500 mr-2"></span>
+                            <span class="font-medium text-neutral-black">Sakit</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-3 rounded-md shadow-sm">
+                        <div class="text-primary-60 text-xs mb-1">Diagnosa Awal</div>
+                        <div class="font-medium text-neutral-black">Luka di kaki kiri depan</div>
+                    </div>
+                    <div class="md:col-span-2 bg-white p-3 rounded-md shadow-sm">
+                        <div class="text-primary-60 text-xs mb-1">Pengobatan Awal</div>
+                        <div class="font-medium text-neutral-black">Antibiotik topikal, Balutan ganti setiap hari</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Form -->
+            <form class="space-y-5">
+                <div class="border-b border-secondary pb-3 mb-4">
+                    <div class="text-base font-semibold text-accent-700 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Perbarui Informasi
+                    </div>
+                    <p class="text-xs text-neutral-black opacity-70 mt-1">Update data rekam medis dengan informasi
+                        terbaru</p>
+                </div>
+
+                <div>
+                    <label class="block text-primary font-medium mb-1.5 text-sm" for="diagnosa-baru">Diagnosa
+                        Baru</label>
+                    <div class="relative">
+                        <input type="text" id="diagnosa-baru" name="diagnosa-baru" value="Luka mulai sembuh"
+                            class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 transition-all duration-300 text-sm"
+                            placeholder="Masukkan diagnosa baru">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-primary font-medium mb-1.5 text-sm" for="pengobatan-baru">Pengobatan
+                        Baru</label>
+                    <div class="relative">
+                        <input type="text" id="pengobatan-baru" name="pengobatan-baru"
+                            value="Melanjutkan antibiotik, ganti balutan setiap 2 hari"
+                            class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 transition-all duration-300 text-sm"
+                            placeholder="Masukkan pengobatan baru">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-primary font-medium mb-1.5 text-sm" for="tindaklanjut">Catatan Tindak
+                        Lanjut <span class="text-xs text-accent-400">(Opsional)</span></label>
+                    <div class="relative">
+                        <textarea id="tindaklanjut" name="tindaklanjut" rows="3"
+                            class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 transition-all duration-300 text-sm"
+                            placeholder="Masukkan catatan tindak lanjut">Kontrol dalam 2 minggu, perhatikan tanda-tanda infeksi</textarea>
+                        <div class="absolute top-3 left-0 flex items-start pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-4 items-center border-t border-gray-100 mt-6">
+                    <button type="button"
+                        class="text-neutral-black font-medium hover:text-accent-700 transition-colors duration-300 flex items-center text-sm close-modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="bg-accent-500 hover:bg-accent-600 focus:ring-3 focus:ring-accent-400 focus:ring-opacity-50 text-white px-5 py-2.5 rounded-full font-medium transition-all duration-300 flex items-center shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="deleteModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <div class="flex items-center">
+                <div class="bg-red-100 p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                <h6 class="text-lg font-bold text-red-600">Hapus Rekam Medis</h6>
+            </div>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6 text-center">
+            <p class="text-sm text-neutral-black mb-6">Apakah Anda yakin ingin menghapus rekam medis ini?</p>
+            <div class="flex justify-center space-x-4">
+                <button id="confirmDeleteBtn"
+                    class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-full font-medium text-sm shadow-md hover:shadow-lg transition-all duration-300">
+                    Ya, Hapus
+                </button>
+                <button type="button"
+                    class="close-modal text-neutral-black font-medium hover:text-accent-700 transition-colors duration-300 text-sm">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Modal variables
+        const createModal = document.getElementById('createModal');
+        const createModalContent = document.getElementById('createModalContent');
+        const editModal = document.getElementById('editModal');
+        const editModalContent = document.getElementById('editModalContent');
+        const createButton = document.getElementById('openCreateModal');
+        const editButtons = document.querySelectorAll('.edit-record-btn');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteButtons = document.querySelectorAll('.delete-record-btn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+
+        // Open Create Modal
+        createButton.addEventListener('click', function () {
+            createModal.classList.remove('hidden');
+            setTimeout(() => {
+                createModalContent.classList.remove('scale-95', 'opacity-0');
+                createModalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        });
+
+        // Open Edit Modal
+        editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                editModal.classList.remove('hidden');
+                setTimeout(() => {
+                    editModalContent.classList.remove('scale-95', 'opacity-0');
+                    editModalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            });
+        });
+
+        // Close Modals
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Create Modal
+                if (createModal.classList.contains('hidden') === false) {
+                    createModalContent.classList.remove('scale-100', 'opacity-100');
+                    createModalContent.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        createModal.classList.add('hidden');
+                    }, 300);
+                }
+
+                // Edit Modal
+                if (editModal.classList.contains('hidden') === false) {
+                    editModalContent.classList.remove('scale-100', 'opacity-100');
+                    editModalContent.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        editModal.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        });
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                deleteModal.classList.remove('hidden');
+                setTimeout(() => {
+                    deleteModalContent.classList.remove('scale-95', 'opacity-0');
+                    deleteModalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            });
+        });
+
+        cancelDeleteBtn.addEventListener('click', function () {
+            deleteModal.classList.add('hidden');
+        });
+
+        // Close on background click
+        window.addEventListener('click', function (event) {
+            if (event.target === createModal) {
+                createModalContent.classList.remove('scale-100', 'opacity-100');
+                createModalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    createModal.classList.add('hidden');
+                }, 300);
+            }
+            if (event.target === editModal) {
+                editModalContent.classList.remove('scale-100', 'opacity-100');
+                editModalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    editModal.classList.add('hidden');
+                }, 300);
+            }
+        });
+
+        // Mobile menu script (carried over from original)
+        const btn = document.querySelector('.mobile-menu-button');
+        const menu = document.querySelector('.mobile-menu');
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+    });
+</script>
+{% endblock content %}
