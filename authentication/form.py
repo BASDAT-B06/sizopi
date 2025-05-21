@@ -16,13 +16,13 @@ SPESIALIS_CHOICES = [
 ]
 
 class LoginForm(forms.Form):
-    email = forms.EmailInput(
-        widget=forms.EmailInput(),
-        label='email',
+    email = forms.EmailField(
+        label='Email',
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
     password = forms.CharField(
-        widget=forms.PasswordInput, 
-        label='Password'
+        label='Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
 
 class BaseRegisterForm(forms.Form):

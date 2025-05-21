@@ -7,19 +7,42 @@ from django.contrib import messages
 # from .form import LoginForm, BaseRegisterForm, RegisterDokterForm, RegisterPengunjungForm, RegisterStaffForm
 import uuid
 from datetime import datetime, date
+import os
+from dotenv import load_dotenv
 
+load_dotenv(override=True) 
+
+# For deployment
+# DB_POOL = psycopg2.pool.SimpleConnectionPool(
+#     1, 20,
+#     dbname="railway",
+#     user="postgres",
+#     password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
+#     host="postgres.railway.internal",
+#     port="5432",
+#     database="-c search_path=sizopi"
+# )
+
+# For development
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
     1, 20,
-    dbname="railway",
-    user="postgres",
-    password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
-    host="postgres.railway.internal",
-    port="5432",
-    database="-c search_path=sizopi"
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
 )
 
+# For development
 def get_db_connection():
-    return DB_POOL.getconn()
+    conn = DB_POOL.getconn()
+    with conn.cursor() as cur:
+        cur.execute("SET search_path TO sizopi")
+    return conn
+
+# For development
+# def get_db_connection():
+#     return DB_POOL.getconn()
 
 def release_db_connection(conn):
     DB_POOL.putconn(conn)
@@ -31,7 +54,7 @@ def login_view(request):
     
 
     if request.method == 'POST':
-        username_or_email = request.POST.get('username_or_email')
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
         conn = get_db_connection()
@@ -43,7 +66,7 @@ def login_view(request):
                            no_telepon, password
                     FROM PENGGUNA
                     WHERE (username = %s OR email = %s) AND password = %s
-                """, (username_or_email, username_or_email, password))
+                """, (email, email, password))
                 
                 user = cur.fetchone()
                 
