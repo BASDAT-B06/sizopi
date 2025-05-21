@@ -4,7 +4,7 @@ from psycopg2 import pool
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .form import LoginForm, BaseRegisterForm, RegisterDokterForm, RegisterPengunjungForm, RegisterStaffForm
+# from .form import LoginForm, BaseRegisterForm, RegisterDokterForm, RegisterPengunjungForm, RegisterStaffForm
 import uuid
 from datetime import datetime, date
 
