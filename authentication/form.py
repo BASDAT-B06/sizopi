@@ -17,8 +17,8 @@ SPESIALIS_CHOICES = [
 
 class LoginForm(forms.Form):
     email = forms.EmailInput(
+        widget=forms.EmailInput(),
         label='email',
-        widget=forms.EmailInput()
     )
     password = forms.CharField(
         widget=forms.PasswordInput, 
