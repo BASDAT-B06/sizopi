@@ -1,0 +1,73 @@
+{% comment %}
+Usage:
+{% include "components/button.html" with 
+    type="primary" (or "secondary" or "ghost")
+    text="Button Text" 
+    icon_left=True (optional)
+    icon_right=True (optional)
+    arrow_up=True (optional)
+    disabled=True (optional)
+    href="#" (optional)
+    icon_class="fas fa-user" (optional, for Font Awesome icons)
+%}
+{% endcomment %}
+
+{% with btn_type=type|default:"primary" %}
+{% with is_disabled=disabled|default:False %}
+{% with has_left_icon=icon_left|default:False %}
+{% with has_right_icon=icon_right|default:False %}
+{% with has_arrow_up=arrow_up|default:False %}
+{% with button_text=text|default:"" %}
+{% with button_href=href|default:"#" %}
+{% with fa_icon=icon_class|default:"" %}
+
+    {% if btn_type == "primary" %}
+        {% if is_disabled %}
+            <a class="inline-flex items-center justify-center px-6 py-4 rounded-full bg-gray-200 text-gray-400 cursor-not-allowed">
+        {% else %}
+            <a href="{{ button_href }}" class="inline-flex items-center justify-center px-6 py-4 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors">
+        {% endif %}
+    {% elif btn_type == "secondary" %}
+        {% if is_disabled %}
+            <a class="inline-flex items-center justify-center px-6 py-4 rounded-full border bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed">
+        {% else %}
+        <a href="{{ button_href }}" class="inline-flex items-center justify-center px-6 py-4 rounded-full bg-secondary text-primary border border-transparent hover:border-primary-80 hover:bg-secondary-80 active:bg-primary-20 transition-colors">
+        {% endif %}
+    {% elif btn_type == "ghost" %}
+        {% if is_disabled %}
+            <a class="inline-flex items-center justify-center px-6 py-4 rounded-full text-gray-400 cursor-not-allowed">
+        {% else %}
+            <a href="{{ button_href }}" class="inline-flex items-center justify-center px-6 py-4 rounded-full bg-transparent text-accent-500 hover:bg-accent-50 active:bg-accent-200 transition-colors">
+        {% endif %}
+    {% endif %}
+        {% if fa_icon %}
+            <i class="{{ fa_icon }} {% if button_text %}mr-2{% endif %}"></i>
+        {% elif has_left_icon %}
+            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+        {% endif %}
+        
+        {{ button_text }}
+        
+        {% if has_right_icon %}
+            <svg class="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+        {% endif %}
+        
+        {% if has_arrow_up %}
+            <svg class="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+        {% endif %}
+    </a>
+
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}

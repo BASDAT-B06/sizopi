@@ -16,8 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from datasatwa import views 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('', views.home, name='home'),  
+    path('datasatwa/', include('datasatwa.urls')), 
+    path('datahabitat/', include('datahabitat.urls')),
+    path('profil/', include('profil.urls')),
     path("", include("main.urls")),
+    path('kesehatan_hewan/', include('kesehatan_hewan.urls')), 
+    path('pakan_hewan/', include('pakan_hewan.urls')), 
+    path("auth/", include("authentication.urls")),
+    path("atraksi_wahana/", include("atraksi_wahana.urls")),
+    path("booking_tiket/", include("booking_tiket.urls")),
+    path('dashboard/', include('dashboard.urls')),
+    path('adopsi/', include('adopsi.urls')),
 ]

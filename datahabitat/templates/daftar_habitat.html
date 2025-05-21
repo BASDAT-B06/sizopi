@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Habitat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              100: '#91986E',
+              80: '#91986ECC',
+              60: '#91986E99',
+              40: '#91986E66',
+              20: '#91986E33',
+            },
+            secondary: {
+              100: '#F5EFE0',
+              80: '#F5EEDBCC',
+              60: '#F5EEDB99',
+              40: '#F5EEDB66',
+              20: '#F5EEDB33',
+            },
+            accent: {
+              50: '#FBF0E6',
+              200: '#FAE9D9',
+              400: '#F2D4B9',
+              500: '#DB6900',
+              600: '#C55F00',
+              700: '#A44F00',
+              800: '#A44F00',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+    }
+    .btn-primary {
+      background-color: #DB6900;
+      color: white;
+      border-radius: 28px;
+      padding: 10px 20px;
+    }
+    .btn-secondary {
+      background-color: #A7AD8B;
+      color: #1C2628;
+      border: 1.5px solid #D3D6C5;
+      border-radius: 28px;
+      padding: 8px 18px;
+      font-size: 14px;
+    }
+    .btn-edit, .btn-hapus {
+      color: #1C2628;
+      border-radius: 12px;
+      padding: 3px 6px;
+      font-size: 12px;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    .btn-edit {
+      background-color: #D7DACB;
+      border: 1.5px solid #193e30;
+    }
+    .btn-hapus {
+      background-color: #FDECEC;
+      border: 1.5px solid #EE443F;
+    }
+    .status-lingkungan {
+      width: 300px;
+    }
+    .custom-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 2rem !important; /* Custom size */
+    font-weight: 700 !important; /* Custom weight */
+    }
+
+  </style>
+</head>
+
+{% extends "base.html" %}
+
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True%}
+{% endblock %}
+
+{% block content %}
+<body class="min-h-screen bg-white">
+    
+
+  <div class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="custom-title text-primary-100 text-center mb-8">Daftar Habitat</h2>
+
+    <div class="flex justify-end mb-6">
+      <a href="{% url 'datahabitat:tambah_habitat' %}" class="btn-primary">+ Tambah Habitat</a>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full table-auto rounded-lg overflow-hidden text-sm">
+        <thead class="bg-secondary-60 text-primary-100 uppercase text-xs tracking-wider">
+          <tr>
+            <th class="p-4 text-left">Nama Habitat</th>
+            <th class="p-4 text-left">Luas Area (m²)</th>
+            <th class="p-4 text-left">Kapasitas Maksimal</th>
+            <th class="p-4 text-left status-lingkungan">Status Lingkungan</th>
+            <th class="p-4 text-left">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for habitat in habitats %}
+          <tr class="bg-white border-b border-gray-200">
+            <td class="p-4">{{ habitat.nama }}</td>
+            <td class="p-4">{{ habitat.luas_area }} m²</td>
+            <td class="p-4">{{ habitat.kapasitas_maksimal }}</td>
+            <td class="p-4 status-lingkungan">
+              Suhu: {{ habitat.suhu }}°C, Kelembapan: {{ habitat.kelembapan }}%, Vegetasi: {{ habitat.vegetasi }}
+            </td>
+            <td class="p-4 space-x-2">
+              <a href="{% url 'datahabitat:detail_habitat' habitat.id %}" class="btn-edit">Detail</a>
+              <a href="{% url 'datahabitat:edit_habitat' habitat.id %}" class="btn-edit">Edit</a>
+              <a href="{% url 'datahabitat:hapus_habitat' habitat.id %}" class="btn-hapus">Hapus</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+{% endblock %}
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pelatih</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '100': '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '100': '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        },
+                        neutral: {
+                            'black': '#121212'
+                        }
+                    },
+                    fontFamily: {
+                        'header': ['Helvetica', 'Arial', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #121212;
+        }
+    </style>
+</head>
+
+<body class="bg-secondary-20">
+    <nav class="bg-primary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard/" class="font-bold text-xl">Sizopi</a>
+                    </div>
+                </div>
+
+                <div class="hidden sm:flex sm:items-center justify-center flex-grow">
+                    <a href="/dashboard/"
+                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Dashboard</a>
+
+                    <a href="/jadwal-pertunjukan/"
+                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Jadwal Pertunjukan</a>
+                    <a href="/pengaturan-profil/"
+                        class="bg-primary-80 px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-60">
+                        Pengaturan Profil
+                    </a>
+                </div>
+
+                <div class="hidden sm:flex sm:items-center space-x-4">
+                    <a href="/logout/"
+                        class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                        role="button">
+                        Logout
+                    </a>
+                </div>
+
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button"
+                        class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-primary-80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                        aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-menu hidden sm:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="/dashboard/"
+                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Dashboard</a>
+
+                <a href="/jadwal-pertunjukan/"
+                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Jadwal Pertunjukan</a>
+
+                <a href="/pengaturan-profil/"
+                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Pengaturan Profil</a>
+                <a href="/logout/"
+                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="p-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-primary-100 text-xl font-bold mb-6">DASHBOARD STAF PELATIH PERTUNJUKAN</h1>
+
+            <div class="bg-white p-5 shadow-md mb-5">
+                <h2 class="text-lg font-semibold text-primary mb-4">Profil Pengguna</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Nama Lengkap</p>
+                        <p class="text-base font-medium">Thornie Loree Borrie</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Username</p>
+                        <p class="text-base font-medium">lborrie23</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Email</p>
+                        <p class="text-base font-medium">lborrie23@alibaba.com</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Nomor Telepon</p>
+                        <p class="text-base font-medium">9429960954</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">ID Staf</p>
+                        <p class="text-base font-medium">efd4160e-9cad-4d5c-b24a-77cf29163e63</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Peran</p>
+                        <p class="text-base font-medium">Pelatih Pertunjukan</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 shadow-md mb-5">
+                <h2 class="text-lg font-semibold text-primary mb-4">Informasi Pelatih</h2>
+
+                <div class="mb-5">
+                    <h3 class="text-md font-semibold text-primary mb-3">Jadwal Pertunjukan Hari Ini</h3>
+                    <div class="space-y-2">
+                        <div class="p-3 bg-secondary-20 rounded-md">
+                            <span class="text-sm font-medium">Pertunjukan Gajah</span>
+                            <p class="text-xs text-gray-500">10:00 - 10:30</p>
+                        </div>
+                        <div class="p-3 bg-secondary-20 rounded-md">
+                            <span class="text-sm font-medium">Pertunjukan Lumba-lumba</span>
+                            <p class="text-xs text-gray-500">13:00 - 13:45</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-md font-semibold text-primary mb-3">Daftar Hewan yang Dilatih</h3>
+                <div class="space-y-2">
+                    <div class="p-3 bg-secondary-20 rounded-md">
+                        <span class="text-sm font-medium">Molly (Gajah)</span>
+                    </div>
+                    <div class="p-3 bg-secondary-20 rounded-md">
+                        <span class="text-sm font-medium">Dolphy (Lumba-lumba)</span>
+                    </div>
+                </div>
+
+                <h3 class="text-md font-semibold text-primary mb-3 mt-5">Status Latihan Terakhir</h3>
+                <div class="space-y-2">
+                    <div class="p-3 bg-secondary-20 rounded-md flex justify-between">
+                        <span class="text-sm">Molly (Gajah)</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full">Siap Tampil</span>
+                    </div>
+                    <div class="p-3 bg-secondary-20 rounded-md flex justify-between">
+                        <span class="text-sm">Dolphy (Lumba-lumba)</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full">Perlu Latihan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.querySelector('.mobile-menu');
+
+            mobileMenuButton.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+
+</html>

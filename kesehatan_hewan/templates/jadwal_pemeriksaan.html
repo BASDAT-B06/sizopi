@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Rekam Medis Hewan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '100': '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '100': '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        },
+                        neutral: {
+                            'black': '#121212'
+                        }
+                    },
+                    fontFamily: {
+                        'header': ['Helvetica', 'Arial', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #121212;
+        }
+    </style>
+</head>
+
+<body class="bg-accent-cream-50">
+    <nav class="bg-primary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard/" class="font-bold text-xl">Sizopi</a>
+                    </div>
+                </div>
+
+                <div class="hidden sm:flex sm:items-center justify-center flex-grow">
+                    <a href="/dashboard/"
+                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Dashboard</a>
+
+                    <a href="/rekam-medis/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Rekam
+                        Medis Hewan</a>
+                    <a href="/pengaturan-profil/"
+                        class="bg-primary-80 px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-60">
+                        Pengaturan Profil
+                    </a>
+                </div>
+
+                <div class="hidden sm:flex sm:items-center space-x-4">
+                    <a href="/logout/"
+                        class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                        role="button">
+                        Logout
+                    </a>
+                </div>
+
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button"
+                        class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-primary-80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                        aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-menu hidden sm:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="/dashboard/"
+                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Dashboard</a>
+
+                <a href="/rekam-medis/"
+                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Rekam Medis Hewan</a>
+
+                <a href="/pengaturan-profil/"
+                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Pengaturan Profil</a>
+                <a href="/logout/"
+                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-6">
+        <h1 class="text-primary-100 text-xl font-bold mb-6">JADWAL PEMERIKSAAN HEWAN</h1>
+
+        <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-primary-100">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">Nama Hewan</div>
+                    <p class="text-gray-800">Molly</p>
+                </div>
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">Spesies</div>
+                    <p class="text-gray-800">Gajah</p>
+                </div>
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">ID Hewan</div>
+                    <p class="text-gray-800">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end mb-4">
+            <button
+                class="bg-accent-500 hover:bg-accent-600 focus:bg-accent-600 active:bg-accent-700 text-white font-medium py-1.5 px-4 rounded-full text-sm transition duration-150 ease-in-out flex items-center space-x-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                        clip-rule="evenodd" />
+                </svg>
+                <span>CREATE JADWAL PEMERIKSAAN</span>
+            </button>
+        </div>
+
+        <div class="mt-6 overflow-x-auto">
+            <table class="mx-auto w-full max-w-2xl border border-gray-300 shadow-lg rounded-lg overflow-hidden">
+                <thead class="bg-gradient-to-r from-primary-100 to-primary-80">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-bold text-white border-b border-primary-60">
+                            Tanggal Pemeriksaan Selanjutnya
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="hover:bg-accent-blue-50 transition duration-200">
+                        <td class="px-6 py-4 text-gray-800 font-medium">2025-03-20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+</body>
+
+</html>

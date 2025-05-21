@@ -1,0 +1,42 @@
+<div id="adoptionFormModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-h6">Formulir Adopsi Satwa</h3>
+        <button onclick="closeModal('adoptionFormModal{{ animal.id }}')" class="text-black hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form class="mt-4 space-y-4">
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Nama Hewan</label>
+          <input type="text" value="{{ animal.name }}" disabled class="w-full border rounded px-3 py-2 bg-gray-100">
+        </div>
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Jenis Hewan</label>
+          <input type="text" value="{{ animal.type }}" disabled class="w-full border rounded px-3 py-2 bg-gray-100">
+        </div>
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Nominal Kontribusi</label>
+          <input type="number" placeholder="Masukkan nominal kontribusi" class="w-full border rounded px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Periode Adopsi</label>
+          <select class="w-full border rounded px-3 py-2">
+            <option value="3">3 bulan</option>
+            <option value="6">6 bulan</option>
+            <option value="12">12 bulan</option>
+          </select>
+        </div>
+        <div class="flex justify-between mt-6">
+          <button type="button" class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition-colors"
+            onclick="closeModal('adoptionFormModal{{ animal.id }}')">
+            Batal
+          </button>
+          <button type="submit" class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors">
+            Submit Form
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
