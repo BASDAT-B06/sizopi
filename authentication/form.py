@@ -31,6 +31,9 @@ class BaseRegisterForm(forms.Form):
         label='Username',
         validators=[RegexValidator(r'^[a-zA-Z0-9_]+$', 'Username must contain only letters, numbers, and underscores.')]
     )
+    email = forms.EmailField(  # Add this field
+        label='Email'
+    )
     password1 = forms.CharField(
         widget=forms.PasswordInput, 
         label='Password',
@@ -83,9 +86,10 @@ class RegisterPenggunjungForm(BaseRegisterForm):
     )
 
 class RegisterStaffForm(BaseRegisterForm):
-    posisi = forms.CharField(
+    job_role = forms.ChoiceField(
         choices=POSISI_CHOICES,
         label='Posisi',
+        widget=forms.Select(attrs={'id': 'job_role', 'onchange': 'updateStaffId()'})
     )
 
 class RegisterDokterForm(BaseRegisterForm):
