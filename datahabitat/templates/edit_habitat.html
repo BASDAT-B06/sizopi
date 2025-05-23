@@ -97,14 +97,11 @@
 {% extends "base.html" %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True %}
+  {% include "components/navbar.html" with is_logged_in=True %}
 {% endblock %}
 
 {% block content %}
-
 <body class="min-h-screen bg-white">
-
-
   <div class="max-w-3xl mx-auto form-container mt-4">
     <h2 class="custom-title text-primary-100 text-center mb-8">Form Edit Habitat</h2>
 
@@ -113,7 +110,7 @@
 
       <div class="mb-6">
         <label for="nama_habitat" class="form-label">Nama Habitat</label>
-        <input type="text" name="nama_habitat" id="nama_habitat" value="{{ habitat.nama }}" class="form-input">
+        <input type="text" name="nama_habitat" id="nama_habitat" value="{{ habitat.nama }}" class="form-input" readonly>
       </div>
 
       <div class="mb-6">
@@ -122,13 +119,13 @@
       </div>
 
       <div class="mb-6">
-        <label for="kapasitas_maksimal" class="form-label">Kapasitas Maksimal</label>
-        <input type="number" name="kapasitas_maksimal" id="kapasitas_maksimal" value="{{ habitat.kapasitas_maksimal }}" class="form-input">
+        <label for="kapasitas" class="form-label">Kapasitas Maksimal</label>
+        <input type="number" name="kapasitas" id="kapasitas" value="{{ habitat.kapasitas }}" class="form-input">
       </div>
 
       <div class="mb-6">
-        <label for="status_lingkungan" class="form-label">Status Lingkungan</label>
-        <textarea name="status_lingkungan" id="status_lingkungan" rows="4" class="form-input">{{ habitat.status_lingkungan }}</textarea>
+        <label for="status" class="form-label">Status Lingkungan</label>
+        <textarea name="status" id="status" rows="4" class="form-input">{{ habitat.status }}</textarea>
       </div>
 
       <div class="flex justify-center space-x-4 mt-8">
@@ -137,8 +134,8 @@
       </div>
     </form>
   </div>
-
 </body>
 {% endblock %}
+
 
 </html>
