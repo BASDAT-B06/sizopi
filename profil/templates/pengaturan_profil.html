@@ -105,94 +105,116 @@
 {% extends "base.html" %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True %}
+  {% include "components/navbar.html" with is_logged_in=True %}
 {% endblock %}
 
 {% block content %}
-
-
-<body class="min-h-screen bg-white">
-    <!-- {% with user_role='dokter_hewan' %} -->
-
+<div class="min-h-screen bg-white">
   <div class="max-w-3xl mx-auto form-container mt-4">
     <h2 class="custom-title text-primary-100 text-center mb-8">Pengaturan Profil</h2>
+    
+
 
     <form method="POST">
       {% csrf_token %}
 
       <div class="mb-6">
         <label for="username" class="form-label">Username</label>
-        <input type="text" name="username" id="username" value="john_doe" class="form-input" readonly>
+        <input type="text" name="username" id="username" value="{{ username }}" class="form-input" readonly>
       </div>
 
       <div class="mb-6">
         <label for="email" class="form-label">Email</label>
-        <input type="email" name="email" id="email" value="john.doe@example.com" class="form-input" readonly>
+        <input type="email" name="email" id="email" value="{{ email }}" class="form-input" readonly>
       </div>
 
       <div class="mb-6">
         <label for="nama_depan" class="form-label">Nama Depan</label>
-        <input type="text" name="nama_depan" id="nama_depan" value="John" class="form-input">
+        <input type="text" name="nama_depan" value="{{ nama_depan }}" class="form-input">
       </div>
 
       <div class="mb-6">
         <label for="nama_tengah" class="form-label">Nama Tengah</label>
-        <input type="text" name="nama_tengah" id="nama_tengah" value="Doe" class="form-input">
+        <input type="text" name="nama_tengah" id="nama_tengah" value="{{ nama_tengah }}" class="form-input">
       </div>
 
       <div class="mb-6">
         <label for="nama_belakang" class="form-label">Nama Belakang</label>
-        <input type="text" name="nama_belakang" id="nama_belakang" value="Doe" class="form-input">
+        <input type="text" name="nama_belakang" id="nama_belakang" value="{{ nama_belakang }}" class="form-input">
       </div>
 
       <div class="mb-6">
         <label for="nomor_telepon" class="form-label">Nomor Telepon</label>
-        <input type="text" name="nomor_telepon" id="nomor_telepon" value="081234567890" class="form-input">
+        <input type="text" name="nomor_telepon" id="nomor_telepon" value="{{ no_telepon }}" class="form-input">
       </div>
 
-      <!-- Show fields based on role -->
       {% if user_role == 'pengunjung' %}
-        <div class="mb-6">
-          <label for="alamat_lengkap" class="form-label">Alamat Lengkap</label>
-          <input type="text" name="alamat_lengkap" id="alamat_lengkap" class="form-input">
-        </div>
+      <div class="mb-6 border-t pt-6">
+        <p><strong>[Untuk Pengunjung]</strong></p>
+        <label for="alamat_lengkap" class="form-label">Alamat Lengkap</label>
+        <input type="text" name="alamat_lengkap" id="alamat_lengkap" value="{{ pengunjung_data.alamat }}" class="form-input">
+      </div>
 
-        <div class="mb-6">
-          <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-          <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-input">
-        </div>
-      {% elif user_role == 'dokter_hewan' %}
-        <div class="mb-6">
-          <label for="nomor_sertifikasi" class="form-label">Nomor Sertifikasi Profesional</label>
-          <input type="text" name="nomor_sertifikasi" id="nomor_sertifikasi" class="form-input" readonly>
-        </div>
-
-        <div class="mb-8 checkbox-group">
-          <label class="form-label">Spesialisasi</label>
-          <label><input type="checkbox" name="spesialisasi" value="Mammalia" checked> Mammalia Besar</label>
-          <label><input type="checkbox" name="spesialisasi" value="Reptil" checked> Reptil</label>
-          <label><input type="checkbox" name="spesialisasi" value="Aves"> Burung Eksotis</label>
-          <label><input type="checkbox" name="spesialisasi" value="Primata"> Primata</label>
-          <label><input type="checkbox" name="spesialisasi" value="Lainnya"> Lainnya:
-            <input type="text" name="spesialisasi_lain" class="form-input mt-2" placeholder="Spesialisasi Lainnya">
-          </label>
-        </div>
-      {% elif user_role == 'penjaga_hewan' or user_role == 'staf_administrasi' or user_role == 'pelatih_pertunjukan' %}
-        <div class="mb-6">
-          <label for="id_staf" class="form-label">ID Staf</label>
-          <input type="text" name="id_staf" id="id_staf" class="form-input" readonly>
-        </div>
+      <div class="mb-6">
+        <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+        <input type="date" name="tanggal_lahir" id="tanggal_lahir" value="{{ pengunjung_data.tgl_lahir|date:'Y-m-d' }}" class="form-input">
+      </div>
       {% endif %}
 
-      <div class="flex justify-center space-x-4">
-        <button type="submit" class="btn-primary">Simpan</button>
-        <a href="{% url 'profil:ubah_password' %}" class="btn-secondary">Ubah Password</a>
+      {% if user_role == 'dokter_hewan' %}
+      <div class="mb-6 border-t pt-6">
+        <p><strong>[Untuk Dokter Hewan]</strong></p>
+        
+        <label class="form-label">Nomor Sertifikasi Profesional</label>
+        <input type="text" value="{{ no_str }}" class="form-input" readonly>
+
+        <label class="form-label mt-4">Spesialisasi</label>
+        <div class="checkbox-group space-y-2">
+          <label>
+            <input type="checkbox" name="mamalia_besar" {% if "Mamalia Besar" in spesialisasi %}checked{% endif %}>
+            Mamalia Besar
+          </label>
+          <label>
+            <input type="checkbox" name="reptil" {% if "Reptil" in spesialisasi %}checked{% endif %}>
+            Reptil
+          </label>
+          <label>
+            <input type="checkbox" name="burung_eksotis" {% if "Burung Eksotis" in spesialisasi %}checked{% endif %}>
+            Burung Eksotis
+          </label>
+          <label>
+            <input type="checkbox" name="primata" {% if "Primata" in spesialisasi %}checked{% endif %}>
+            Primata
+          </label>
+          <label>
+            <input type="checkbox" name="lainnya" {% if spesialisasi_lain %}checked{% endif %}>
+            Lainnya:
+          </label>
+          <input type="text" name="spesialisasi_lain" class="form-input mt-2" value="{{ spesialisasi_lain }}">
+        </div>
       </div>
+
+      {% endif %}
+
+      {% if user_role == 'penjaga_hewan' or user_role == 'pelatih_hewan' or user_role == 'staf_admin' %}
+
+      <div class="mb-6 border-t pt-6">
+        <p><strong>[Untuk Penjaga Hewan, Staf Administrasi, Pelatih Pertunjukan]</strong></p>
+        <label class="form-label">ID Staf</label>
+        <input type="text" value="{{ id_staf }}" class="form-input" readonly>
+      </div>
+      {% endif %}
+
+    <div class="flex justify-center space-x-4 mt-6">
+      <button type="submit" class="btn-primary">Simpan</button>
+      <a href="{% url 'profil:ubah_password' %}" class="btn-secondary">Ubah Password</a>
+    </div>
+
     </form>
   </div>
-
-    <!-- {% endwith %} -->
-</body>
+</div>
 {% endblock %}
+
+
 
 </html>

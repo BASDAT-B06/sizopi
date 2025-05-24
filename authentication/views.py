@@ -4,7 +4,7 @@ from psycopg2 import pool
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-# from .form import LoginForm, BaseRegisterForm, RegisterDokterForm, RegisterPengunjungForm, RegisterStaffForm
+from .form import LoginForm, BaseRegisterForm, RegisterDokterForm, RegisterPenggunjungForm, RegisterStaffForm
 import uuid
 from datetime import datetime, date
 import os
@@ -31,14 +31,17 @@ DB_POOL = psycopg2.pool.SimpleConnectionPool(
     password=os.getenv("DB_PASSWORD"),
     host=os.getenv("DB_HOST"),
     port=os.getenv("DB_PORT"),
+    options="-c search_path=sizopi"
 )
 
-# For development
+# # For development
 def get_db_connection():
     conn = DB_POOL.getconn()
     with conn.cursor() as cur:
         cur.execute("SET search_path TO sizopi")
     return conn
+
+
 
 # For development
 # def get_db_connection():
@@ -51,7 +54,6 @@ def release_db_connection(conn):
 def login_view(request):
     if request.session.get('is_authenticated', False):
         return redirect('main:main')
-    
 
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -148,10 +150,220 @@ def login_view(request):
     return render(request, 'login.html')
 
 def register_dokter_view(request):
-    return render(request, 'register_dokter_hewan.html')
+    if request.method == 'POST':
+        form = RegisterDokterForm(request.POST)
+        if form.is_valid():
+            conn = get_db_connection()
+            try:
+                # Pastikan search_path sudah diatur sebelum transaksi dimulai
+                with conn.cursor() as cur:
+                    # Check if username already exists
+                    cur.execute('SELECT 1 FROM PENGGUNA WHERE username = %s OR email = %s', 
+                            (form.cleaned_data['username'], form.cleaned_data['email']))
+                    if cur.fetchone():
+                        messages.error(request, 'Username or email already registered.')
+                        return render(request, 'register_dokter_hewan.html', {'form': form})
+                
+                # Mulai transaksi setelah pengecekan
+                conn.autocommit = False
+                
+                with conn.cursor() as cur:
+                    # Insert into PENGGUNA table
+                    cur.execute("""
+                        INSERT INTO PENGGUNA (
+                            username, email, password, nama_depan, 
+                            nama_tengah, nama_belakang, no_telepon
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        form.cleaned_data['username'],
+                        form.cleaned_data['email'],
+                        form.cleaned_data['password1'],
+                        form.cleaned_data['nama_depan'],
+                        form.cleaned_data['nama_tengah'] if form.cleaned_data.get('nama_tengah') else None,
+                        form.cleaned_data['nama_belakang'],
+                        form.cleaned_data['no_hp']
+                    ))
+                    no_str_formatted = f"STR-DOC-{form.cleaned_data['no_izin_praktek']}"
+                    # Insert into DOKTER_HEWAN table
+                    cur.execute("""
+                        INSERT INTO DOKTER_HEWAN (username_DH, no_STR)
+                        VALUES (%s, %s)
+                    """, (
+                        form.cleaned_data['username'],
+                        no_str_formatted
+                    ))
+                    
+                    # Insert specialization information
+                    specialization = form.cleaned_data['spesialis']
+                    if specialization == 'Lainnya':
+                        specialization = form.cleaned_data['spesialis_lainnya']
+                    
+                    cur.execute("""
+                        INSERT INTO SPESIALISASI (username_SH, nama_spesialisasi)
+                        VALUES (%s, %s)
+                    """, (
+                        form.cleaned_data['username'],
+                        specialization
+                    ))
+                
+                # Commit transaction
+                conn.commit()
+                messages.success(request, 'Registration successful. Please login.')
+                return redirect('authentication:login')
+            except Exception as e:
+                if not conn.autocommit:
+                    conn.rollback()
+                messages.error(request, f'Registration failed: {str(e)}')
+            finally:
+                conn.autocommit = True
+                release_db_connection(conn)
+    else:
+        form = RegisterDokterForm()
+    
+    return render(request, 'register_dokter_hewan.html', {'form': form})
 
 def register_pengunjung_view(request):
-    return render(request, 'register_pengunjung.html')
+    if request.method == 'POST':
+        form = RegisterPenggunjungForm(request.POST)
+        if form.is_valid():
+            conn = get_db_connection()
+            try:
+                # Pastikan search_path sudah diatur sebelum transaksi dimulai
+                with conn.cursor() as cur:
+                    # Check if username already exists
+                    cur.execute('SELECT 1 FROM PENGGUNA WHERE username = %s OR email = %s', 
+                             (form.cleaned_data['username'], form.cleaned_data['email']))
+                    if cur.fetchone():
+                        messages.error(request, 'Username or email already registered.')
+                        return render(request, 'register_pengunjung.html', {'form': form})
+                
+                # Mulai transaksi setelah pengecekan
+                conn.autocommit = False
+                
+                with conn.cursor() as cur:
+                    # Insert into PENGGUNA table
+                    cur.execute("""
+                        INSERT INTO PENGGUNA (
+                            username, email, password, nama_depan, 
+                            nama_tengah, nama_belakang, no_telepon
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        form.cleaned_data['username'],
+                        form.cleaned_data['email'],
+                        form.cleaned_data['password1'],
+                        form.cleaned_data['nama_depan'],
+                        form.cleaned_data['nama_tengah'] if form.cleaned_data.get('nama_tengah') else None,
+                        form.cleaned_data['nama_belakang'],
+                        form.cleaned_data['no_hp']
+                    ))
+                    
+                    # Insert into PENGUNJUNG table
+                    cur.execute("""
+                        INSERT INTO PENGUNJUNG (username_P, alamat, tgl_lahir)
+                        VALUES (%s, %s, %s)
+                    """, (
+                        form.cleaned_data['username'],
+                        form.cleaned_data['alamat'],
+                        form.cleaned_data['tgl_lahir']
+                    ))
+                
+                # Commit transaction
+                conn.commit()
+                messages.success(request, 'Registration successful. Please login.')
+                return redirect('authentication:login')
+            except Exception as e:
+                if not conn.autocommit:
+                    conn.rollback()
+                messages.error(request, f'Registration failed: {str(e)}')
+            finally:
+                conn.autocommit = True
+                release_db_connection(conn)
+    else:
+        form = RegisterPenggunjungForm()
+    
+    return render(request, 'register_pengunjung.html', {'form': form})
 
 def register_staf_view(request):
-    return render(request, 'register_staff.html')
+    if request.method == 'POST':
+        form = RegisterStaffForm(request.POST)
+        if form.is_valid():
+            conn = get_db_connection()
+            try:
+                # Pastikan search_path sudah diatur sebelum transaksi dimulai
+                with conn.cursor() as cur:
+                    # Check if username already exists
+                    cur.execute('SELECT 1 FROM PENGGUNA WHERE username = %s OR email = %s', 
+                            (form.cleaned_data['username'], form.cleaned_data['email']))
+                    if cur.fetchone():
+                        messages.error(request, 'Username or email already registered.')
+                        return render(request, 'register_staff.html', {'form': form})
+                
+                # Mulai transaksi setelah pengecekan
+                conn.autocommit = False
+                
+                with conn.cursor() as cur:
+                    # Insert into PENGGUNA table
+                    cur.execute("""
+                        INSERT INTO PENGGUNA (
+                            username, email, password, nama_depan, 
+                            nama_tengah, nama_belakang, no_telepon
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        form.cleaned_data['username'],
+                        form.cleaned_data['email'],
+                        form.cleaned_data['password1'],
+                        form.cleaned_data['nama_depan'],
+                        form.cleaned_data['nama_tengah'] if form.cleaned_data.get('nama_tengah') else None,
+                        form.cleaned_data['nama_belakang'],
+                        form.cleaned_data['no_hp']
+                    ))
+                    
+                    # Generate UUID untuk id_staf
+                    id_staf = uuid.uuid4()
+                    
+                    # Insert ke tabel staff yang sesuai berdasarkan job_role
+                    job_role = form.cleaned_data['job_role']
+                    if job_role == 'Penjaga Hewan':
+                        cur.execute("""
+                            INSERT INTO PENJAGA_HEWAN (username_jh, id_staf)
+                            VALUES (%s, %s)
+                        """, (
+                            form.cleaned_data['username'],
+                            id_staf
+                        ))
+                    elif job_role == 'Staff Administrasi':
+                        cur.execute("""
+                            INSERT INTO STAF_ADMIN (username_sa, id_staf)
+                            VALUES (%s, %s)
+                        """, (
+                            form.cleaned_data['username'],
+                            id_staf
+                        ))
+                    elif job_role == 'Pelatih Pertunjukan':
+                        cur.execute("""
+                            INSERT INTO PELATIH_HEWAN (username_lh, id_staf)
+                            VALUES (%s, %s)
+                        """, (
+                            form.cleaned_data['username'],
+                            id_staf
+                        ))
+                
+                # Commit transaction
+                conn.commit()
+                messages.success(request, 'Registration successful. Please login.')
+                return redirect('authentication:login')
+            except Exception as e:
+                if not conn.autocommit:
+                    conn.rollback()
+                messages.error(request, f'Registration failed: {str(e)}')
+            finally:
+                conn.autocommit = True
+                release_db_connection(conn)
+    else:
+        form = RegisterStaffForm()
+    
+    return render(request, 'register_staff.html', {'form': form})
+
+def logout_view(request):
+    request.session.flush()
+    return redirect(reverse('main:main'))
