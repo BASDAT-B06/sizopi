@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+{% extends "base.html" %}
 
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="dokter_hewan" %}
+{% endblock %}
+
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,68 +74,9 @@
 </head>
 
 <body class="bg-accent-cream-50">
-    <nav class="bg-primary text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <a href="/dashboard/" class="font-bold text-xl">Sizopi</a>
-                    </div>
-                </div>
-
-                <div class="hidden sm:flex sm:items-center justify-center flex-grow">
-                    <a href="/dashboard/"
-                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Dashboard</a>
-
-                    <a href="/rekam-medis/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-80">Rekam
-                        Medis Hewan</a>
-                    <a href="/pengaturan-profil/"
-                        class="bg-primary-80 px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-60">
-                        Pengaturan Profil
-                    </a>
-                </div>
-
-                <div class="hidden sm:flex sm:items-center space-x-4">
-                    <a href="/logout/"
-                        class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-                        role="button">
-                        Logout
-                    </a>
-                </div>
-
-                <div class="-mr-2 flex items-center sm:hidden">
-                    <button type="button"
-                        class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-primary-80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                        aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="mobile-menu hidden sm:hidden">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="/dashboard/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Dashboard</a>
-
-                <a href="/rekam-medis/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Rekam Medis Hewan</a>
-
-                <a href="/pengaturan-profil/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Pengaturan Profil</a>
-                <a href="/logout/"
-                    class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-80">Logout</a>
-            </div>
-        </div>
-    </nav>
 
     <div class="container mx-auto px-4 py-6">
-        <h1 class="text-primary-100 text-xl font-bold mb-6">REKAM MEDIS HEWAN</h1>
+        <h3 class="text-primary-100 text-sm font-bold mb-12">Rekam Medis Hewan</h3>
 
         <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-primary-100">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -236,5 +183,7 @@
         </div>
     </div>
 </body>
-
+{% endblock %}
 </html>
+
+

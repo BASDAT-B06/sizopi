@@ -37,7 +37,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
 
                 <!-- Role-specific links -->
                 {% if role == "dokter_hewan" %}
-                <a href="/rekam-medis/" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'kesehatan_hewan:list_rekam_medis' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-notes-medical mr-2"></i>Rekam Medis Hewan
                 </a>
                 {% elif role == "penjaga_hewan" %}
@@ -61,6 +61,11 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 {% elif role == "pengunjung" %}
                 <a href="" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-info-circle mr-2"></i>Informasi Kebun Binatang
+                    
+                </a>
+                <a href="" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>Reservasi Tiket
+                    
                 </a>
                 {% if adopter %}
                 <a href="{% url 'adoption:user_list' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
@@ -93,7 +98,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
 
                 <!-- Logout button  -->
                 <div class="relative group">
-                    <a href="/" class="flex items-center justify-center w-10 h-10 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
+                    <a href="/auth/logout/" class="flex items-center justify-center w-10 h-10 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
                         <i class="fas fa-sign-out-alt text-white"></i>
                     </a>
                     <div class="absolute -bottom-10 right-0 bg-white text-primary rounded-md py-1 px-2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
@@ -141,7 +146,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
 
             <!-- Role-specific links -->
             {% if role == "dokter_hewan" %}
-            <a href="/rekam-medis/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'kesehatan_hewan:list_rekam_medis' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-notes-medical w-6 mr-2"></i>Rekam Medis Hewan
             </a>
             {% elif role == "penjaga_hewan" %}
@@ -178,7 +183,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
             <a href="{% url 'profil:pengaturan_profil' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-user-cog w-6 mr-2"></i>Pengaturan Profil
             </a>
-            <a href="/logout/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="/auth/logout/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-sign-out-alt w-6 mr-2"></i>Logout
             </a>
             {% else %}

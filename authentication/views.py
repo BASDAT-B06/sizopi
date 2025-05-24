@@ -95,6 +95,10 @@ def login_view(request):
                                 'alamat': pengunjung_details[0],
                                 'tgl_lahir': pengunjung_details[1].strftime('%Y-%m-%d')
                             })
+
+                 
+                        cur.execute("SELECT 1 FROM ADOPTER WHERE username_AP = %s", (username,))
+                        user_dict["is_adopter"] = cur.fetchone() is not None
                     
                     cur.execute("SELECT 1 FROM DOKTER_HEWAN WHERE username_DH = %s", (username,))
                     if cur.fetchone():
