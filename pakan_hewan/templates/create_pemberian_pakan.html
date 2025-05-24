@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
+{% extends "base.html" %}
 
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
+{% endblock %}
+
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -118,5 +124,5 @@
         </div>
     </div>
 </body>
-
+{% endblock %}
 </html>

@@ -2,7 +2,7 @@
 Usage:
 {% include "components/navbar.html" with
 is_logged_in=True/False (required)
-user_role="dokter_hewan"/"penjaga_hewan"/"staf_administrasi"/"pelatih_pertunjukan"/"pengunjung" (optional)
+user_role="dokter_hewan"/"penjaga_hewan"/"staf_admin"/"pelatih_hewan"/"pengunjung" (optional)
 is_adopter=True/False (optional, only needed if user_role is "pengunjung")
 %}
 {% endcomment %}
@@ -44,7 +44,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <a href="{% url 'pakan_hewan:pakan_per_hewan' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-paw mr-2"></i>Catatan Perawatan Hewan
                 </a>
-                {% elif role == "staf_administrasi" %}
+                {% elif role == "staf_admin" %}
                 <a href="" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-users mr-2"></i>Kelola Pengunjung
                 </a>
@@ -54,7 +54,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <a href="{% url 'adoption:adopter_list' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-user-friends mr-2"></i>Kelola Adopter
                 </a>
-                {% elif role == "pelatih_pertunjukan" %}
+                {% elif role == "pelatih_hewan" %}
                 <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-calendar-alt mr-2"></i>Jadwal Pertunjukan
                 </a>
@@ -153,7 +153,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
             <a href="{% url 'pakan_hewan:pakan_per_hewan' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-paw w-6 mr-2"></i>Catatan Perawatan Hewan
             </a>
-            {% elif role == "staf_administrasi" %}
+            {% elif role == "staf_admin" %}
             <a href="" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-users w-6 mr-2"></i>Kelola Pengunjung
             </a>
@@ -163,7 +163,7 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
             <a href="/adopsi/kelola-adopter/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-user-friends w-6 mr-2"></i>Kelola Adopter
             </a>
-            {% elif role == "pelatih_pertunjukan" %}
+            {% elif role == "pelatih_hewan" %}
             <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-calendar-alt w-6 mr-2"></i>Jadwal Pertunjukan
             </a>

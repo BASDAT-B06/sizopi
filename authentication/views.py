@@ -93,12 +93,13 @@ def login_view(request):
                         if pengunjung_details:
                             user_dict.update({
                                 'alamat': pengunjung_details[0],
-                                'tgl_lahir': pengunjung_details[1].strftime('%Y-%m-%d')
+                                'tgl_lahir': pengunjung_details[1].strftime('%Y-%m-%d') if pengunjung_details[1] else None
                             })
 
-                 
-                        cur.execute("SELECT 1 FROM ADOPTER WHERE username_AP = %s", (username,))
+                        # Cek apakah dia adopter
+                        cur.execute("SELECT 1 FROM ADOPTER WHERE username_adopter = %s", (username,))
                         user_dict["is_adopter"] = cur.fetchone() is not None
+
                     
                     cur.execute("SELECT 1 FROM DOKTER_HEWAN WHERE username_DH = %s", (username,))
                     if cur.fetchone():

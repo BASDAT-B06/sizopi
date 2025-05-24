@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
+{% extends "base.html" %}
 
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
+{% endblock %}
+
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,7 +78,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
-            <h1 class="text-primary-100 text-xl font-bold">EDIT PEMBERIAN PAKAN</h1>
+            <h3 class="text-primary-100 text-xl font-bold">EDIT PEMBERIAN PAKAN</h3>
         </div>
 
         <div class="max-w-2xl mx-auto">
@@ -119,5 +125,5 @@
         </div>
     </div>
 </body>
-
+{% endblock %}
 </html>
