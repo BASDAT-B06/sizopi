@@ -36,6 +36,7 @@ def main_view(request):
         "is_logged_in": is_authenticated,
         "user_role": user.get("role", ""),
         "is_adopter": user.get("is_adopter", False),
+        "username": user.get("username", ""), 
     }
     return render(request, "main.html", context)
 
