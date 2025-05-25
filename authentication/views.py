@@ -88,6 +88,7 @@ def login_view(request):
                     cur.execute("SELECT 1 FROM PENGUNJUNG WHERE username_P = %s", (username,))
                     if cur.fetchone():
                         user_dict['role'] = 'pengunjung'
+
                         cur.execute("SELECT alamat, tgl_lahir FROM PENGUNJUNG WHERE username_P = %s", (username,))
                         pengunjung_details = cur.fetchone()
                         if pengunjung_details:
@@ -98,7 +99,7 @@ def login_view(request):
 
                         # Cek apakah dia adopter
                         cur.execute("SELECT 1 FROM ADOPTER WHERE username_adopter = %s", (username,))
-                        user_dict["is_adopter"] = cur.fetchone() is not None
+                        user_dict['is_adopter'] = cur.fetchone() is not None
 
                     
                     cur.execute("SELECT 1 FROM DOKTER_HEWAN WHERE username_DH = %s", (username,))

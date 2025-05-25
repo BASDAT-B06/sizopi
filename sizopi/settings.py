@@ -97,7 +97,9 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
-            'options': '-c search_path=sizopi'
+            'options': '-c search_path=sizopi',
+            
+            
         }
     }
 }

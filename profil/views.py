@@ -30,12 +30,15 @@ def release_db_connection(conn):
 
 
 def pengaturan_profil(request):
+
     if not request.session.get("is_authenticated"):
         return redirect("authentication:login")
 
     user = request.session.get("user")
     username = user.get("username")
     role = user.get("role")
+    is_adopter = user.get("is_adopter", False)
+
 
     conn = get_db_connection()
     try:
@@ -45,6 +48,7 @@ def pengaturan_profil(request):
             nama_tengah = request.POST.get("nama_tengah") or None
             nama_belakang = request.POST.get("nama_belakang")
             nomor_telepon = request.POST.get("nomor_telepon")
+
 
             with conn.cursor() as cursor:
                 cursor.execute("""
@@ -60,12 +64,17 @@ def pengaturan_profil(request):
                 if role == "pengunjung":
                     alamat_lengkap = request.POST.get("alamat_lengkap")
                     tanggal_lahir = request.POST.get("tanggal_lahir")
+
                     cursor.execute("""
                         UPDATE PENGUNJUNG SET
                             alamat = %s,
                             tgl_lahir = %s
                         WHERE username_P = %s
                     """, (alamat_lengkap, tanggal_lahir, username))
+
+                    user['alamat'] = alamat_lengkap
+                    user['tgl_lahir'] = tanggal_lahir
+                    request.session['user'] = user
 
                 elif role == "dokter_hewan":
                     spesialisasi_baru = []
@@ -84,12 +93,16 @@ def pengaturan_profil(request):
                         """, (username, spesialisasi))
 
                 conn.commit()
+                
                 messages.success(request, "Profil berhasil diperbarui.")
+
                 return redirect("profil:pengaturan_profil")
 
         context = {
             "username": username,
             "user_role": role,
+            "is_logged_in": request.session.get("is_authenticated", False),
+            "is_adopter": is_adopter,  
         }
 
         with conn.cursor() as cursor:
@@ -106,10 +119,20 @@ def pengaturan_profil(request):
             if role == "pengunjung":
                 cursor.execute("SELECT alamat, tgl_lahir FROM PENGUNJUNG WHERE username_P = %s", (username,))
                 pengunjung = cursor.fetchone()
-                context["pengunjung_data"] = {
-                    "alamat": pengunjung[0],
-                    "tgl_lahir": pengunjung[1].strftime("%Y-%m-%d") if pengunjung[1] else ""
-                }
+                if pengunjung:
+                    context["pengunjung_data"] = {
+                        "alamat": pengunjung[0],
+                        "tgl_lahir": pengunjung[1].strftime("%Y-%m-%d") if pengunjung[1] else ""
+                    }
+                else:
+                    context["pengunjung_data"] = {
+                        "alamat": "",
+                        "tgl_lahir": ""
+                    }
+                # context["pengunjung_data"] = {
+                #     "alamat": pengunjung[0],
+                #     "tgl_lahir": pengunjung[1].strftime("%Y-%m-%d") if pengunjung[1] else ""
+                # }
 
             elif role == "dokter_hewan":
                 cursor.execute("SELECT no_STR FROM DOKTER_HEWAN WHERE username_DH = %s", (username,))
