@@ -16,13 +16,13 @@ SPESIALIS_CHOICES = [
 ]
 
 class LoginForm(forms.Form):
-    email = forms.EmailInput(
-        widget=forms.EmailInput(),
-        label='email',
+    email = forms.EmailField(
+        label='Email',
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
     password = forms.CharField(
-        widget=forms.PasswordInput, 
-        label='Password'
+        label='Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
 
 class BaseRegisterForm(forms.Form):
@@ -30,6 +30,9 @@ class BaseRegisterForm(forms.Form):
         max_length=150, 
         label='Username',
         validators=[RegexValidator(r'^[a-zA-Z0-9_]+$', 'Username must contain only letters, numbers, and underscores.')]
+    )
+    email = forms.EmailField(  # Add this field
+        label='Email'
     )
     password1 = forms.CharField(
         widget=forms.PasswordInput, 
@@ -83,9 +86,10 @@ class RegisterPenggunjungForm(BaseRegisterForm):
     )
 
 class RegisterStaffForm(BaseRegisterForm):
-    posisi = forms.CharField(
+    job_role = forms.ChoiceField(
         choices=POSISI_CHOICES,
         label='Posisi',
+        widget=forms.Select(attrs={'id': 'job_role', 'onchange': 'updateStaffId()'})
     )
 
 class RegisterDokterForm(BaseRegisterForm):

@@ -75,14 +75,30 @@ WSGI_APPLICATION = 'sizopi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# For deployment
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': 'NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt', 
+#         'HOST': 'postgres.railway.internal',
+#         'PORT': '5432',
+#     }
+# }
+
+# For development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt', 
-        'HOST': 'postgres.railway.internal',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'), 
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+        'OPTIONS': {
+            'options': '-c search_path=sizopi'
+        }
     }
 }
 
