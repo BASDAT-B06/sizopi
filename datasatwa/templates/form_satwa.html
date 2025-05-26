@@ -117,9 +117,9 @@
     <h2 class="custom-title text-primary-100 text-center mb-8">Form Tambah Data Satwa</h2>
 
     {% if error %}
-      <div class="mb-4 text-red-600 font-semibold text-center">
+    <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
         {{ error }}
-      </div>
+    </div>
     {% endif %}
     <form method="POST">
       {% csrf_token %}

@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from uuid import UUID 
 import uuid
+from django.contrib import messages
+from django.http import HttpResponse
 
 
 def dictfetchall(cursor):
@@ -34,8 +36,9 @@ def daftar_satwa(request):
 def home(request):
     return render(request, 'home.html')
 
+
 def tambah_satwa(request):
-    # Ambil daftar habitat dari DB
+    # Ambil pilihan habitat dari DB
     with connection.cursor() as cursor:
         cursor.execute("SET search_path TO SIZOPI")
         cursor.execute("SELECT nama FROM HABITAT ORDER BY nama")
@@ -44,7 +47,7 @@ def tambah_satwa(request):
     status_choices = ["Sehat", "Sakit", "Dalam Pemantauan", "Lainnya"]
 
     if request.method == 'POST':
-        # Ambil input dari form
+        # Ambil data dari form
         nama = request.POST.get('nama_individu') or None
         spesies = request.POST.get('spesies')
         asal = request.POST.get('asal_hewan')
@@ -53,35 +56,32 @@ def tambah_satwa(request):
         habitat = request.POST.get('habitat')
         url_foto = request.POST.get('url_foto') or None
 
-        # Validasi duplikat: cek apakah data hewan dengan kombinasi tersebut sudah ada
-        with connection.cursor() as cursor:
-            cursor.execute("SET search_path TO SIZOPI")
-            cursor.execute("""
-                SELECT COUNT(*) FROM HEWAN
-                WHERE nama = %s AND spesies = %s AND tanggal_lahir = %s
-            """, [nama, spesies, tgl_lahir])
-            exists = cursor.fetchone()[0] > 0
+        try:
+            # Simpan ke DB — trigger akan validasi duplikat
+            with connection.cursor() as cursor:
+                cursor.execute("SET search_path TO SIZOPI")
+                cursor.execute("""
+                    INSERT INTO HEWAN (id, nama, spesies, asal_hewan, tanggal_lahir, status_kesehatan, nama_habitat, url_foto)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """, [str(uuid.uuid4()), nama, spesies, asal, tgl_lahir, status, habitat, url_foto])
 
-        if exists:
+            return redirect('datasatwa:daftar_satwa')
+
+        except Exception as e:
+            error_msg = str(e).split('CONTEXT:')[0].strip()  
             return render(request, 'form_satwa.html', {
-                'error': "Data hewan tersebut sudah terdaftar.",
+                'error': error_msg,
                 'habitat_choices': habitat_choices,
                 'status_choices': status_choices
             })
 
-        with connection.cursor() as cursor:
-            cursor.execute("SET search_path TO SIZOPI")
-            cursor.execute("""
-                INSERT INTO HEWAN (id, nama, spesies, asal_hewan, tanggal_lahir, status_kesehatan, nama_habitat, url_foto)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """, [str(uuid.uuid4()), nama, spesies, asal, tgl_lahir, status, habitat, url_foto])
-
-        return redirect('datasatwa:daftar_satwa')
 
     return render(request, 'form_satwa.html', {
         'habitat_choices': habitat_choices,
         'status_choices': status_choices
     })
+
+
 
 def edit_satwa(request, id):
     with connection.cursor() as cursor:
@@ -89,7 +89,8 @@ def edit_satwa(request, id):
         cursor.execute("SELECT * FROM HEWAN WHERE id = %s", [str(id)])
         result = cursor.fetchone()
         if not result:
-            return HttpResponse("Satwa not found", status=404)
+            return HttpResponse("Satwa tidak ditemukan", status=404)
+        
         columns = [col[0] for col in cursor.description]
         satwa = dict(zip(columns, result))
 
@@ -101,19 +102,22 @@ def edit_satwa(request, id):
         spesies = request.POST.get("spesies")
         asal = request.POST.get("asal_hewan")
         tgl = request.POST.get("tanggal_lahir")
-        status = request.POST.get("status_kesehatan")
-        habitat = request.POST.get("nama_habitat")
+        after_status = request.POST.get("status_kesehatan")
+        after_habitat = request.POST.get("nama_habitat")
         foto = request.POST.get("url_foto")
 
         with connection.cursor() as cursor:
             cursor.execute("SET search_path TO SIZOPI")
             cursor.execute("""
-                UPDATE HEWAN
-                SET nama = %s, spesies = %s, asal_hewan = %s,
-                    tanggal_lahir = %s, status_kesehatan = %s,
-                    nama_habitat = %s, url_foto = %s
-                WHERE id = %s
-            """, [nama, spesies, asal, tgl, status, habitat, foto, str(id)])
+                SELECT update_satwa_dan_log(%s, %s, %s, %s, %s, %s, %s, %s)
+            """, [
+                str(id), nama, spesies, asal, tgl,
+                after_status, after_habitat, foto
+            ])
+            result = cursor.fetchone()
+            if result and result[0]:
+                messages.success(request, result[0])
+
         return redirect('datasatwa:daftar_satwa')
 
     return render(request, 'edit_satwa.html', {

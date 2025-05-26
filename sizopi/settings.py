@@ -98,7 +98,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
             'options': '-c search_path=sizopi',
-            
+            'sslmode': 'require',
             
         }
     }
