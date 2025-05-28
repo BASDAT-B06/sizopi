@@ -192,7 +192,7 @@ def register_dokter_view(request):
                         no_str
                     ))
 
-                    # Tangani spesialisasi
+                    # Handle spesialisasi
                     spesialis_list = form.cleaned_data['spesialis']
                     if 'Lainnya' in spesialis_list and form.cleaned_data.get('spesialis_lainnya'):
                         spesialis_list.remove('Lainnya')
@@ -296,7 +296,7 @@ def register_staf_view(request):
         if form.is_valid():
             conn = get_db_connection()
             try:
-                conn.autocommit = False  # Start transaction
+                conn.autocommit = False  
 
                 with conn.cursor() as cur:
                     # Insert ke tabel PENGGUNA
