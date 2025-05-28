@@ -63,7 +63,7 @@
                                 <i class="fas fa-times mr-2"></i>Berhenti Adopsi
                             </button>
                             <button class="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow"
-                                    onclick="showModal('extendModal{{ animal.id }}')">
+                                    onclick="showExtendModal('{{ animal.id }}')">
                                 <i class="fas fa-redo mr-2"></i>Perpanjang
                             </button>
                         </div>
@@ -96,67 +96,22 @@
 
         <!-- Modal Extend Adoption -->
         <div id="extendModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
-            <div class="relative top-24 mx-auto p-8 w-full max-w-2xl shadow-xl rounded-2xl bg-white border border-secondary-40">
-                <div class="flex justify-between items-center border-b border-secondary-40 pb-4 mb-6">
-                    <h5 class="text-h5 text-primary font-header font-bold">Form Perpanjang Periode Adopsi Satwa</h5>
-                    <button onclick="closeModal('extendModal{{ animal.id }}')" class="text-gray-700 hover:text-accent-500 transition">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
+                <div class="relative top-16 mx-auto p-8 w-full max-w-3xl shadow-xl rounded-2xl bg-white border border-secondary-40">
+                    <div class="flex justify-between items-center border-b border-secondary-40 pb-4 mb-6">
+                        <h5 class="text-h5 text-primary font-header font-bold">Form Perpanjang Periode Adopsi Satwa</h5>
+                        <button onclick="closeModal('extendModal{{ animal.id }}')" class="text-gray-700 hover:text-accent-500 transition">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Form will be populated by JavaScript -->
+                    <div id="extendFormContent{{ animal.id }}">
+                        <div class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-2xl text-primary"></i>
+                            <p class="mt-2 text-gray-600">Memuat form...</p>
+                        </div>
+                    </div>
                 </div>
-                <form>
-                    <div class="mb-4">
-                        <label class="block text-primary font-semibold mb-2">Nama:</label>
-                        <input type="text" value="Bambang" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-                    </div>
-                    <div class="mb-4 flex flex-col md:flex-row gap-4">
-                        <div class="flex-1">
-                            <label class="block text-primary font-semibold mb-2">NIK:</label>
-                            <input type="text" value="3175021234567890" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-primary font-semibold mb-2">Nomor Telepon:</label>
-                            <input type="text" value="081234567890" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-primary font-semibold mb-2">Alamat:</label>
-                        <input type="text" value="Jl. Merdeka No. 123, Jakarta" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-                    </div>
-                    <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
-                    <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk mengadopsi secara simbolis satwa</p>
-                    <div class="mb-4">
-                        <label class="block text-primary font-semibold mb-2">Nama Satwa:</label>
-                        <input type="text" value="{{ animal.nama }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-primary font-semibold mb-2">Jenis Satwa:</label>
-                        <input type="text" value="{{ animal.type }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-                    </div>
-                    <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
-                    <div class="mb-4">
-                        <label class="block text-primary font-semibold mb-2" for="nominal">Nominal Kontribusi:</label>
-                        <input class="w-full border border-secondary-40 rounded px-3 py-2" id="nominal" type="number" placeholder="Masukkan nominal kontribusi">
-                    </div>
-                    <div class="mb-8">
-                        <label class="block text-primary font-semibold mb-2" for="period">Perpanjang untuk:</label>
-                        <select class="w-full border border-secondary-40 rounded px-3 py-2" id="period">
-                            <option value="3">3 bulan</option>
-                            <option value="6">6 bulan</option>
-                            <option value="12">12 bulan</option>
-                        </select>
-                    </div>
-                    <div class="flex justify-between gap-4">
-                        <button type="button"
-                                class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow"
-                                onclick="closeModal('extendModal{{ animal.id }}')">
-                            Batal
-                        </button>
-                        <button type="submit"
-                                class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
-                            Submit Form
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
         {% endfor %}
@@ -195,6 +150,233 @@ function confirmStopAdoption(animalId) {
                 });
         }
     }
+function showExtendModal(animalId) {
+    showModal('extendModal' + animalId);
+    loadExtendForm(animalId);
+}
+
+function loadExtendForm(animalId) {
+    fetch(`{% url "adoption:extend_adoption" %}?animal_id=${animalId}`, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const adopterInfo = data.adopter_info;
+            const formContent = document.getElementById('extendFormContent' + animalId);
+            
+            if (adopterInfo.adopter_type === 'individual') {
+                formContent.innerHTML = generateIndividualExtendForm(animalId, adopterInfo);
+            } else if (adopterInfo.adopter_type === 'organization') {
+                formContent.innerHTML = generateOrganizationExtendForm(animalId, adopterInfo);
+            }
+        } else {
+            alert(data.message);
+            closeModal('extendModal' + animalId);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memuat form.');
+        closeModal('extendModal' + animalId);
+    });
+}
+
+function generateIndividualExtendForm(animalId, adopterInfo) {
+    return `
+        <form onsubmit="submitExtendAdoption(event, '${animalId}')">
+            <p class="mb-4 text-base text-neutral-black/90">Pihak di bawah ini,</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Nama:</label>
+                    <input type="text" value="${adopterInfo.individual_name}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+                <div>
+                    <label class="block text-primary font-semibold mb-2">NIK:</label>
+                    <input type="text" value="${adopterInfo.individual_nik}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Alamat:</label>
+                    <input type="text" value="${adopterInfo.address || ''}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Nomor Telepon:</label>
+                    <input type="text" value="${adopterInfo.phone || ''}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+            </div>
+            
+            <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
+            <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk lanjut mengadopsi secara simbolis satwa</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Nama Satwa:</label>
+                    <input type="text" value="${adopterInfo.animal_name || 'Belum Diberi Nama'}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Jenis Satwa:</label>
+                    <input type="text" value="${adopterInfo.animal_type}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+            </div>
+            
+            <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Nominal Kontribusi:</label>
+                    <input type="number" name="nominal" min="1" required
+                           class="w-full border border-secondary-40 rounded px-3 py-2" 
+                           placeholder="Masukkan nominal kontribusi">
+                </div>
+                <div>
+                    <label class="block text-primary font-semibold mb-2">untuk memperpanjang periode adopsi selama:</label>
+                    <select name="periode" required class="w-full border border-secondary-40 rounded px-3 py-2">
+                        <option value="3">3 bulan</option>
+                        <option value="6">6 bulan</option>
+                        <option value="12">12 bulan</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex justify-between gap-4">
+                <button type="button" onclick="closeModal('extendModal${animalId}')"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow">
+                    Batal
+                </button>
+                <button type="submit"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
+                    Submit Form
+                </button>
+            </div>
+            
+            <input type="hidden" name="animal_id" value="${animalId}">
+        </form>
+    `;
+}
+
+function generateOrganizationExtendForm(animalId, adopterInfo) {
+    return `
+        <form onsubmit="submitExtendAdoption(event, '${animalId}')">
+            <p class="mb-4 text-base text-neutral-black/90">Pihak di bawah ini, selaku organisasi/perusahaan</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Nama:</label>
+                    <input type="text" value="${adopterInfo.organization_name}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+                <div>
+                    <label class="block text-primary font-semibold mb-2">NPP:</label>
+                    <input type="text" value="${adopterInfo.organization_npp}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Alamat:</label>
+                    <input type="text" value="${adopterInfo.address || ''}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Kontak:</label>
+                    <input type="text" value="${adopterInfo.phone || ''}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+            </div>
+            
+            <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
+            <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk lanjut mengadopsi secara simbolis satwa</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Nama Satwa:</label>
+                    <input type="text" value="${adopterInfo.animal_name || 'Belum Diberi Nama'}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Jenis Satwa:</label>
+                    <input type="text" value="${adopterInfo.animal_type}" disabled 
+                           class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                </div>
+            </div>
+            
+            <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div>
+                    <label class="block text-primary font-semibold mb-2">Nominal Kontribusi:</label>
+                    <input type="number" name="nominal" min="1" required
+                           class="w-full border border-secondary-40 rounded px-3 py-2" 
+                           placeholder="Masukkan nominal kontribusi">
+                </div>
+                <div>
+                    <label class="block text-primary font-semibold mb-2">untuk memperpanjang periode adopsi selama:</label>
+                    <select name="periode" required class="w-full border border-secondary-40 rounded px-3 py-2">
+                        <option value="3">3 bulan</option>
+                        <option value="6">6 bulan</option>
+                        <option value="12">12 bulan</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex justify-between gap-4">
+                <button type="button" onclick="closeModal('extendModal${animalId}')"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow">
+                    Batal
+                </button>
+                <button type="submit"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
+                    Submit Form
+                </button>
+            </div>
+            
+            <input type="hidden" name="animal_id" value="${animalId}">
+        </form>
+    `;
+}
+
+function submitExtendAdoption(event, animalId) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    fetch('{% url "adoption:extend_adoption" %}', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Adopsi berhasil diperpanjang!');
+            closeModal('extendModal' + animalId);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memperpanjang adopsi.');
+    });
+}
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {

@@ -394,7 +394,26 @@ def extend_adoption(request):
     if not user_context["is_logged_in"]:
         return JsonResponse({'success': False, 'message': 'Unauthorized'})
     
-    if request.method == 'POST':
+    if request.method == 'GET':
+        # Untuk menampilkan form perpanjang adopsi
+        animal_id = request.GET.get('animal_id')
+        if not animal_id:
+            return JsonResponse({'success': False, 'message': 'Animal ID required'})
+        
+        # Get adopter info untuk pre-fill form
+        adopter_info = AdopsiService.get_adopter_type_and_info(
+            user_context["username"], animal_id
+        )
+        
+        if not adopter_info:
+            return JsonResponse({'success': False, 'message': 'Adopsi tidak ditemukan'})
+        
+        return JsonResponse({
+            'success': True,
+            'adopter_info': adopter_info
+        })
+    
+    elif request.method == 'POST':
         try:
             # Untuk admin yang membantu user extend
             if user_context["user_role"] == "staf_admin":
@@ -404,8 +423,34 @@ def extend_adoption(request):
                 username = user_context["username"]
             
             animal_id = request.POST.get('animal_id')
-            nominal = int(request.POST.get('nominal'))
-            periode = int(request.POST.get('periode'))
+            
+            # Validasi nominal
+            try:
+                nominal = int(request.POST.get('nominal'))
+                if nominal <= 0:
+                    return JsonResponse({
+                        'success': False, 
+                        'message': 'Nominal kontribusi harus lebih dari 0'
+                    })
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    'success': False, 
+                    'message': 'Nominal kontribusi harus berupa angka yang valid'
+                })
+            
+            # Validasi periode
+            try:
+                periode = int(request.POST.get('periode'))
+                if periode not in [3, 6, 12]:
+                    return JsonResponse({
+                        'success': False, 
+                        'message': 'Periode adopsi harus 3, 6, atau 12 bulan'
+                    })
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    'success': False, 
+                    'message': 'Periode adopsi tidak valid'
+                })
             
             success, message = AdopsiService.extend_adoption(
                 username, animal_id, nominal, periode

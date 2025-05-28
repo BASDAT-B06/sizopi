@@ -508,15 +508,51 @@ class AdopsiService:
             return False
     
     @staticmethod
+    def get_adopter_type_and_info(username, animal_id):
+        """Mengambil tipe adopter dan info untuk form perpanjang adopsi"""
+        with connection.cursor() as cursor:
+            cursor.execute("SET search_path TO SIZOPI")
+            cursor.execute("""
+                SELECT 
+                    h.id,
+                    h.nama as animal_name,
+                    h.spesies as animal_type,
+                    a.status_pembayaran,
+                    a.tgl_berhenti_adopsi,
+                    CASE 
+                        WHEN ind.nama IS NOT NULL THEN 'individual'
+                        WHEN org.nama_organisasi IS NOT NULL THEN 'organization'
+                        ELSE NULL
+                    END as adopter_type,
+                    ind.nama as individual_name,
+                    ind.nik as individual_nik,
+                    org.nama_organisasi as organization_name,
+                    org.npp as organization_npp,
+                    pg.alamat as address,
+                    p.no_telepon as phone
+                FROM ADOPSI a
+                JOIN HEWAN h ON a.id_hewan = h.id
+                JOIN ADOPTER ad ON a.id_adopter = ad.id_adopter
+                LEFT JOIN INDIVIDU ind ON ad.id_adopter = ind.id_adopter
+                LEFT JOIN ORGANISASI org ON ad.id_adopter = org.id_adopter
+                LEFT JOIN PENGUNJUNG pg ON ad.username_adopter = pg.username_p
+                LEFT JOIN PENGGUNA p ON ad.username_adopter = p.username
+                WHERE ad.username_adopter = %s AND a.id_hewan = %s
+                    AND a.tgl_berhenti_adopsi > CURRENT_DATE
+            """, [username, animal_id])
+            result = dictfetchall(cursor)
+            return result[0] if result else None
+
+    @staticmethod
     def extend_adoption(username, animal_id, nominal, periode):
-        """Perpanjang periode adopsi"""
+        """Perpanjang periode adopsi - DIPERBAIKI untuk UPDATE bukan INSERT"""
         try:
             with connection.cursor() as cursor:
                 cursor.execute("SET search_path TO SIZOPI")
                 
                 # Cek status pembayaran adopsi saat ini
                 cursor.execute("""
-                    SELECT a.status_pembayaran, a.tgl_berhenti_adopsi
+                    SELECT a.status_pembayaran, a.tgl_berhenti_adopsi, a.kontribusi_finansial
                     FROM ADOPSI a
                     JOIN ADOPTER ad ON a.id_adopter = ad.id_adopter
                     WHERE a.id_hewan = %s AND ad.username_adopter = %s
@@ -532,17 +568,28 @@ class AdopsiService:
                 if current_adoption['status_pembayaran'] != 'Lunas':
                     return False, 'Harap lunasi pembayaran adopsi saat ini terlebih dahulu'
                 
-                # Update tanggal berakhir adopsi
+                # Hitung tanggal baru dan kontribusi total
                 current_end_date = current_adoption['tgl_berhenti_adopsi']
                 new_end_date = current_end_date + timedelta(days=periode * 30)
+                total_contribution = current_adoption['kontribusi_finansial'] + nominal
                 
+                # UPDATE record yang sudah ada
                 cursor.execute("""
                     UPDATE ADOPSI 
                     SET tgl_berhenti_adopsi = %s,
-                        kontribusi_finansial = kontribusi_finansial + %s,
+                        kontribusi_finansial = %s,
                         status_pembayaran = 'Tertunda'
-                    WHERE id_hewan = %s AND tgl_berhenti_adopsi > CURRENT_DATE
-                """, [new_end_date, nominal, animal_id])
+                    WHERE id_hewan = %s 
+                        AND id_adopter = (
+                            SELECT id_adopter FROM ADOPTER 
+                            WHERE username_adopter = %s
+                        )
+                        AND tgl_berhenti_adopsi > CURRENT_DATE
+                """, [new_end_date, total_contribution, animal_id, username])
+                
+                # Cek apakah update berhasil
+                if cursor.rowcount == 0:
+                    return False, 'Gagal mengupdate adopsi'
             
             return True, 'Adopsi berhasil diperpanjang'
         except Exception as e:
