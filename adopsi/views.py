@@ -307,9 +307,6 @@ def update_payment_status(request):
 
 def stop_adoption(request):
     """Menghentikan adopsi"""
-    user_context = get_user_context(request)
-    if not user_context["is_logged_in"] or user_context["user_role"] != "staf_admin":
-        return JsonResponse({'success': False, 'message': 'Unauthorized'})
     
     if request.method == 'POST':
         try:
