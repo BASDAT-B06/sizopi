@@ -174,25 +174,25 @@
         <input type="text" value="{{ no_str }}" class="form-input" readonly>
 
         <label class="form-label mt-4">Spesialisasi</label>
-        <div class="flex flex-col space-y-2">
+        <div class="checkbox-group space-y-2">
           <label>
-            <input type="radio" name="spesialisasi_pilihan" value="Mamalia Besar" {% if "Mamalia Besar" in spesialisasi %}checked{% endif %}>
+            <input type="checkbox" name="mamalia_besar" {% if "Mamalia Besar" in spesialisasi %}checked{% endif %}>
             Mamalia Besar
           </label>
           <label>
-            <input type="radio" name="spesialisasi_pilihan" value="Reptil" {% if "Reptil" in spesialisasi %}checked{% endif %}>
+            <input type="checkbox" name="reptil" {% if "Reptil" in spesialisasi %}checked{% endif %}>
             Reptil
           </label>
           <label>
-            <input type="radio" name="spesialisasi_pilihan" value="Burung Eksotis" {% if "Burung Eksotis" in spesialisasi %}checked{% endif %}>
+            <input type="checkbox" name="burung_eksotis" {% if "Burung Eksotis" in spesialisasi %}checked{% endif %}>
             Burung Eksotis
           </label>
           <label>
-            <input type="radio" name="spesialisasi_pilihan" value="Primata" {% if "Primata" in spesialisasi %}checked{% endif %}>
+            <input type="checkbox" name="primata" {% if "Primata" in spesialisasi %}checked{% endif %}>
             Primata
           </label>
           <label>
-            <input type="radio" name="spesialisasi_pilihan" value="lainnya" {% if spesialisasi_lain %}checked{% endif %}>
+            <input type="checkbox" name="lainnya" {% if spesialisasi_lain %}checked{% endif %}>
             Lainnya:
           </label>
           <input type="text" name="spesialisasi_lain" class="form-input mt-2" value="{{ spesialisasi_lain }}">

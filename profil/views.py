@@ -85,17 +85,20 @@ def pengaturan_profil(request):
                     request.session['user'] = user
 
                 elif role == "dokter_hewan":
-                    spesialisasi_terpilih = request.POST.get("spesialisasi_pilihan")
+                    spesialisasi_baru = []
+                    for item in ["Mamalia Besar", "Reptil", "Burung Eksotis", "Primata"]:
+                        if request.POST.get(item.lower().replace(" ", "_")):
+                            spesialisasi_baru.append(item)
                     spesialisasi_lain = request.POST.get("spesialisasi_lain")
+                    if spesialisasi_lain:
+                        spesialisasi_baru.append(spesialisasi_lain)
 
-                    spesialisasi_final = spesialisasi_lain if spesialisasi_terpilih == "lainnya" else spesialisasi_terpilih
-
-                    if spesialisasi_final:
-                        cursor.execute("DELETE FROM SPESIALISASI WHERE username_SH = %s", (username,))
+                    cursor.execute("DELETE FROM SPESIALISASI WHERE username_SH = %s", (username,))
+                    for spesialisasi in spesialisasi_baru:
                         cursor.execute("""
                             INSERT INTO SPESIALISASI (username_SH, nama_spesialisasi)
                             VALUES (%s, %s)
-                        """, (username, spesialisasi_final))
+                        """, (username, spesialisasi))
 
 
                 conn.commit()
