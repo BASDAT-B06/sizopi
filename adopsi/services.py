@@ -290,19 +290,39 @@ class AdopsiService:
                 existing_adopter = cursor.fetchone()
                 
                 if existing_adopter:
-                    # Gunakan adopter yang sudah ada
                     adopter_id = existing_adopter[0]
                     print(f"Using existing adopter: {adopter_id}")
                     
-                    # Cek apakah sudah ada record individu dengan NIK yang sama untuk adopter ini
+                    # Cek apakah sudah ada record individu
                     cursor.execute("""
                         SELECT COUNT(*) FROM INDIVIDU 
-                        WHERE id_adopter = %s AND nik = %s
-                    """, [adopter_id, nik])
-                    individu_exists = cursor.fetchone()[0]
+                        WHERE id_adopter = %s
+                    """, [adopter_id])
+                    individu_count = cursor.fetchone()[0]
                     
-                    if individu_exists == 0:
-                        # Insert record individu baru jika NIK berbeda
+                    if individu_count > 0:
+                        # Cek apakah NIK sama dengan yang sudah ada
+                        cursor.execute("""
+                            SELECT nik FROM INDIVIDU 
+                            WHERE id_adopter = %s
+                        """, [adopter_id])
+                        existing_nik = cursor.fetchone()[0]
+                        
+                        if existing_nik != nik:
+                            raise ValueError("User sudah terdaftar sebagai adopter individu dengan NIK berbeda. Tidak dapat menggunakan NIK yang berbeda.")
+                    
+                    # Cek apakah sudah ada record organisasi
+                    cursor.execute("""
+                        SELECT COUNT(*) FROM ORGANISASI 
+                        WHERE id_adopter = %s
+                    """, [adopter_id])
+                    organisasi_count = cursor.fetchone()[0]
+                    
+                    if organisasi_count > 0:
+                        raise ValueError("User sudah terdaftar sebagai adopter organisasi. Tidak dapat mendaftar sebagai individu.")
+                    
+                    # Jika belum ada record individu, insert baru
+                    if individu_count == 0:
                         cursor.execute("""
                             INSERT INTO INDIVIDU (nik, nama, id_adopter)
                             VALUES (%s, %s, %s)
@@ -313,11 +333,11 @@ class AdopsiService:
                     adopter_id = str(uuid.uuid4())
                     print(f"Creating new adopter: {adopter_id}")
                     
-                    # Insert ke tabel ADOPTER
+                    # Insert ke tabel ADOPTER dengan total_kontribusi = 0
                     cursor.execute("""
                         INSERT INTO ADOPTER (id_adopter, username_adopter, total_kontribusi)
                         VALUES (%s, %s, %s)
-                    """, [adopter_id, username, nominal])
+                    """, [adopter_id, username, 0])  # Set 0, akan diupdate oleh trigger
                     
                     # Insert ke tabel INDIVIDU
                     cursor.execute("""
@@ -353,7 +373,7 @@ class AdopsiService:
     @staticmethod
     def create_organization_adoption(username, animal_id, npp, nama_organisasi, 
                                 alamat, kontak, nominal, periode):
-        """Membuat adopsi baru untuk organisasi"""
+        """Membuat adopsi baru untuk organisasi - STRICT: Satu identity per adopter"""
         try:
             # Validasi nominal dan periode
             if nominal <= 0:
@@ -375,19 +395,39 @@ class AdopsiService:
                 existing_adopter = cursor.fetchone()
                 
                 if existing_adopter:
-                    # Gunakan adopter yang sudah ada
                     adopter_id = existing_adopter[0]
                     print(f"Using existing adopter: {adopter_id}")
                     
-                    # Cek apakah sudah ada record organisasi dengan NPP yang sama untuk adopter ini
+                    # Cek apakah sudah ada record organisasi
                     cursor.execute("""
                         SELECT COUNT(*) FROM ORGANISASI 
-                        WHERE id_adopter = %s AND npp = %s
-                    """, [adopter_id, npp])
-                    organisasi_exists = cursor.fetchone()[0]
+                        WHERE id_adopter = %s
+                    """, [adopter_id])
+                    organisasi_count = cursor.fetchone()[0]
                     
-                    if organisasi_exists == 0:
-                        # Insert record organisasi baru jika NPP berbeda
+                    if organisasi_count > 0:
+                        # Cek apakah NPP sama dengan yang sudah ada
+                        cursor.execute("""
+                            SELECT npp FROM ORGANISASI 
+                            WHERE id_adopter = %s
+                        """, [adopter_id])
+                        existing_npp = cursor.fetchone()[0]
+                        
+                        if existing_npp != npp:
+                            raise ValueError("User sudah terdaftar sebagai adopter organisasi dengan NPP berbeda. Tidak dapat menggunakan NPP yang berbeda.")
+                    
+                    # Cek apakah sudah ada record individu
+                    cursor.execute("""
+                        SELECT COUNT(*) FROM INDIVIDU 
+                        WHERE id_adopter = %s
+                    """, [adopter_id])
+                    individu_count = cursor.fetchone()[0]
+                    
+                    if individu_count > 0:
+                        raise ValueError("User sudah terdaftar sebagai adopter individu. Tidak dapat mendaftar sebagai organisasi.")
+                    
+                    # Jika belum ada record organisasi, insert baru
+                    if organisasi_count == 0:
                         cursor.execute("""
                             INSERT INTO ORGANISASI (npp, nama_organisasi, id_adopter)
                             VALUES (%s, %s, %s)
@@ -398,11 +438,11 @@ class AdopsiService:
                     adopter_id = str(uuid.uuid4())
                     print(f"Creating new adopter: {adopter_id}")
                     
-                    # Insert ke tabel ADOPTER
+                    # Insert ke tabel ADOPTER dengan total_kontribusi = 0
                     cursor.execute("""
                         INSERT INTO ADOPTER (id_adopter, username_adopter, total_kontribusi)
                         VALUES (%s, %s, %s)
-                    """, [adopter_id, username, nominal])
+                    """, [adopter_id, username, 0])  # Set 0, akan diupdate oleh trigger
                     
                     # Insert ke tabel ORGANISASI
                     cursor.execute("""
@@ -446,16 +486,6 @@ class AdopsiService:
                     SET status_pembayaran = %s
                     WHERE id_hewan = %s AND tgl_berhenti_adopsi > CURRENT_DATE
                 """, [status, animal_id])
-                
-                # Debug: Cek apakah ada row yang ter-update
-                affected_rows = cursor.rowcount
-                print(f"Rows affected: {affected_rows}")
-                
-                if affected_rows > 0:
-                    return True
-                else:
-                    print(f"No rows updated for animal_id: {animal_id}")
-                    return False
                     
         except Exception as e:
             print(f"Error updating payment status: {e}")
