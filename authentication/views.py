@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .form import LoginForm, BaseRegisterForm, RegisterDokterForm, RegisterPenggunjungForm, RegisterStaffForm
+from .form import LoginForm, BaseRegisterForm, RegisterDokterForm, RegisterPenggunjungForm, RegisterStaffForm
 import uuid
 from datetime import datetime, date
 import os

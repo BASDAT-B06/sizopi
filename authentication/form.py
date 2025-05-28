@@ -46,32 +46,6 @@ class RegisterStaffForm(BaseRegisterForm):
 
 
 
-# class RegisterDokterForm(BaseRegisterForm):
-#     spesialis = forms.ChoiceField(
-#         choices=SPESIALIS_CHOICES,
-#         label='Spesialis',
-#     )
-#     spesialis_lainnya = forms.CharField(
-#         label='Spesifikasi Spesialis Lainnya',
-#         required=False,
-#     )
-#     no_izin_praktek = forms.CharField(
-#         label='No Izin Praktek',
-        
-#     )
-
-#     def clean(self):
-#         cleaned_data = super().clean()
-#         spesialis = cleaned_data.get('spesialis')
-#         spesialis_lainnya = cleaned_data.get('spesialis_lainnya')
-
-#         if spesialis == 'Lainnya' and not spesialis_lainnya:
-#             raise forms.ValidationError(
-#                 "Harap tentukan spesialis lainnya."
-#             )
-        
-#         return cleaned_data
-
 class RegisterDokterForm(BaseRegisterForm):
     spesialis = forms.MultipleChoiceField(
         choices=SPESIALIS_CHOICES,

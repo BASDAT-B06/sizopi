@@ -1,273 +1,254 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-import json
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponseForbidden
 from datetime import datetime, timedelta
+import psycopg2
+import os
+from dotenv import load_dotenv
 
-# Create your views here.
+load_dotenv(override=True)
+
+DB_POOL = psycopg2.pool.SimpleConnectionPool(
+    1, 20,
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
+    options="-c search_path=sizopi"
+)
+
+def get_db_connection():
+    conn = DB_POOL.getconn()
+    with conn.cursor() as cur:
+        cur.execute("SET search_path TO sizopi")
+    return conn
+
+def release_db_connection(conn):
+    DB_POOL.putconn(conn)
+
+def check_role(request, allowed_roles):
+    user_role = request.session.get('role')
+    if user_role not in allowed_roles:
+        return False
+    return True
+
 def reservasi(request):
-    """
-    View untuk menampilkan halaman reservasi atraksi
-    """
-    # Dummy data for prototype
-    # In a real implementation, this would come from the database
-    atraksi_list = [
-        {
-            'pk': 1,
-            'nama': "Pertunjukan Lumba-lumba",
-            'lokasi': "Kolam Utama",
-            'jadwal': "14:00",
-        },
-        {
-            'pk': 2,
-            'nama': "Atraksi Simpanse",
-            'lokasi': "Panggung A",
-            'jadwal': "10:30",
-        },
-        {
-            'pk': 3,
-            'nama': "Parade Gajah",
-            'lokasi': "Area Tengah",
-            'jadwal': "16:00",
-        }
-    ]
-    
-    # Dummy reservasi data (in a real implementation, this would be the user's reservations)
-    # For prototyping, let's just create a few reservations
-    today = datetime.now().date()
-    reservasi_list = [
-        {
-            'id': 101,
-            'nama_atraksi': "Pertunjukan Lumba-lumba",
-            'lokasi': "Kolam Utama",
-            'jam': "14:00",
-            'tanggal': (today + timedelta(days=2)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 3,
-            'status': "Terjadwal"
-        },
-        {
-            'id': 102,
-            'nama_atraksi': "Atraksi Simpanse",
-            'lokasi': "Panggung A",
-            'jam': "10:30",
-            'tanggal': (today + timedelta(days=5)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 2,
-            'status': "Terjadwal"
-        },
-        {
-            'id': 103,
-            'nama_atraksi': "Parade Gajah",
-            'lokasi': "Area Tengah",
-            'jam': "16:00",
-            'tanggal': (today + timedelta(days=1)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 4,
-            'status': "Dibatalkan"
-        }
-    ]
-    
+    if not check_role(request, ['pengunjung', 'staf_admin']):
+        return HttpResponseForbidden("You do not have permission to access this page.")
+
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            # Ambil semua atraksi
+            cur.execute("""
+                SELECT f.nama, f.jadwal, a.lokasi, f.kapasitas_max, 
+                       COALESCE(SUM(r.jumlah_tiket), 0) AS total_tiket_terpesan
+                FROM FASILITAS f
+                JOIN ATRAKSI a ON f.nama = a.nama_atraksi
+                LEFT JOIN RESERVASI r ON f.nama = r.nama_fasilitas
+                GROUP BY f.nama, f.jadwal, a.lokasi, f.kapasitas_max
+            """)
+            atraksi_list = [
+                {
+                    'nama': row[0],
+                    'jadwal': row[1].strftime("%Y-%m-%d"),
+                    'jam': row[1].strftime("%H:%M"),
+                    'lokasi': row[2],
+                    'kapasitas_max': row[3],
+                    'total_tiket_terpesan': row[4],
+                    'kapasitas_tersisa': row[3] - row[4]
+                }
+                for row in cur.fetchall()
+            ]
+
+            # Ambil semua wahana
+            cur.execute("""
+                SELECT f.nama, w.peraturan, f.kapasitas_max, 
+                       COALESCE(SUM(r.jumlah_tiket), 0) AS total_tiket_terpesan
+                FROM FASILITAS f
+                JOIN WAHANA w ON f.nama = w.nama_wahana
+                LEFT JOIN RESERVASI r ON f.nama = r.nama_fasilitas
+                GROUP BY f.nama, w.peraturan, f.kapasitas_max
+            """)
+            wahana_list = [
+                {
+                    'nama': row[0],
+                    'peraturan': row[1],
+                    'kapasitas_max': row[2],
+                    'total_tiket_terpesan': row[3],
+                    'kapasitas_tersisa': row[2] - row[3]
+                }
+                for row in cur.fetchall()
+            ]
+
+            # Ambil reservasi pengguna
+            cur.execute("""
+                SELECT r.nama_fasilitas, r.tanggal_kunjungan, r.jumlah_tiket, r.status
+                FROM RESERVASI r
+                WHERE r.username_p = %s
+            """, (request.session.get('user')['username'],))
+            user_reservasi = [
+                {
+                    'nama_fasilitas': row[0],
+                    'tanggal_kunjungan': row[1].strftime("%Y-%m-%d"),
+                    'jumlah_tiket': row[2],
+                    'status': row[3],
+                    'lokasi_peraturan': next(
+                        (atraksi['lokasi'] for atraksi in atraksi_list if atraksi['nama'] == row[0]),
+                        next((wahana['peraturan'] for wahana in wahana_list if wahana['nama'] == row[0]), None)
+                    )
+                }
+                for row in cur.fetchall()
+            ]
+    finally:
+        release_db_connection(conn)
+
     context = {
         'atraksi_list': atraksi_list,
+        'wahana_list': wahana_list,
+        'user_reservasi': user_reservasi
+    }
+    return render(request, 'reservasi.html', context)
+def manajemen_data_reservasi(request):
+    if not check_role(request, ['staf_admin']):
+        return HttpResponseForbidden("You do not have permission to access this page.")
+
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT r.username_p, r.nama_fasilitas, r.tanggal_kunjungan, r.jumlah_tiket, r.status
+                FROM RESERVASI r
+            """)
+            reservasi_list = [
+                {
+                    'username': row[0],
+                    'nama_atraksi': row[1],
+                    'tanggal': row[2].strftime("%Y-%m-%d"),
+                    'jumlah_tiket': row[3],
+                    'status': row[4]
+                }
+                for row in cur.fetchall()
+            ]
+    finally:
+        release_db_connection(conn)
+
+    context = {
         'reservasi_list': reservasi_list
     }
-    
-    return render(request, 'reservasi.html', context)
-
-def reservasi_detail(request, pk):
-    """
-    View untuk menampilkan detail reservasi berdasarkan ID
-    """
-    # In a real implementation, this would fetch the reservation detail from the database
-    # For prototype, we'll just return a JSON response with dummy data
-    
-    # Pretend we're looking up the reservation
-    today = datetime.now().date()
-    
-    if pk == 101:
-        detail = {
-            'id': 101,
-            'nama_atraksi': "Pertunjukan Lumba-lumba",
-            'lokasi': "Kolam Utama",
-            'jam': "14:00",
-            'tanggal': (today + timedelta(days=2)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 3,
-            'status': "Terjadwal"
-        }
-    elif pk == 102:
-        detail = {
-            'id': 102,
-            'nama_atraksi': "Atraksi Simpanse",
-            'lokasi': "Panggung A",
-            'jam': "10:30",
-            'tanggal': (today + timedelta(days=5)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 2,
-            'status': "Terjadwal"
-        }
-    elif pk == 103:
-        detail = {
-            'id': 103,
-            'nama_atraksi': "Parade Gajah",
-            'lokasi': "Area Tengah",
-            'jam': "16:00",
-            'tanggal': (today + timedelta(days=1)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 4,
-            'status': "Dibatalkan"
-        }
-    else:
-        # Return 404 if not found
-        return JsonResponse({'error': 'Reservasi tidak ditemukan'}, status=404)
-    
-    return JsonResponse(detail)
+    return render(request, 'manajemen_data_reservasi.html', context)
 
 def create_reservasi(request):
-    """
-    View untuk membuat reservasi baru
-    """
-    if request.method == 'POST':
-        # In a real implementation, this would create a new reservation in the database
-        # For prototype, we'll just redirect back to the appropriate page
-        
-        # Process form data
-        # atraksi_id = request.POST.get('atraksi')
-        # tanggal = request.POST.get('tanggal')
-        # jumlah_tiket = request.POST.get('jumlah_tiket')
-        # username = request.POST.get('username')
-        
-        # Create new reservation
-        # ...
-        
-        # Determine the referrer to redirect appropriately
-        referer = request.META.get('HTTP_REFERER', '')
-        if 'manajemen-reservasi' in referer:
-            return redirect('booking_tiket:manajemen_data_reservasi')
-        else:
-            return redirect('booking_tiket:reservasi')
-    
-    # If not POST, redirect to referrer or default page
-    referer = request.META.get('HTTP_REFERER', '')
-    if 'manajemen-reservasi' in referer:
-        return redirect('booking_tiket:manajemen_data_reservasi')
-    else:
-        return redirect('booking_tiket:reservasi')
+    if not check_role(request, ['pengunjung']):
+        return HttpResponseForbidden("You do not have permission to access this page.")
 
-def update_reservasi(request, pk):
-    """
-    View untuk mengupdate reservasi
-    """
-    if request.method == 'POST':
-        # In a real implementation, this would update the reservation in the database
-        # For prototype, we'll just redirect back to the appropriate page
-        
-        # Process form data
-        # atraksi_id = request.POST.get('atraksi')
-        # tanggal = request.POST.get('tanggal')
-        # jumlah_tiket = request.POST.get('jumlah_tiket')
-        
-        # Update reservation
-        # ...
-        
-        # Determine the referrer to redirect appropriately
-        referer = request.META.get('HTTP_REFERER', '')
-        if 'manajemen-reservasi' in referer:
-            return redirect('booking_tiket:manajemen_data_reservasi')
-        else:
-            return redirect('booking_tiket:reservasi')
-    
-    # If not POST, redirect to referrer or default page
-    referer = request.META.get('HTTP_REFERER', '')
-    if 'manajemen-reservasi' in referer:
-        return redirect('booking_tiket:manajemen_data_reservasi')
-    else:
-        return redirect('booking_tiket:reservasi')
+    if request.method == 'GET':
+        nama_fasilitas = request.GET.get('nama', '')
+        lokasi_peraturan = request.GET.get('lokasi', '') or request.GET.get('peraturan', '')
+        kategori = request.GET.get('kategori', '')
 
-def cancel_reservasi(request, pk):
-    """
-    View untuk membatalkan reservasi
-    """
-    if request.method == 'POST':
-        # In a real implementation, this would set the reservation status to 'Dibatalkan'
-        # For prototype, we'll just redirect back to the appropriate page
-        
-        # Update reservation status
-        # ...
-        
-        # Determine the referrer to redirect appropriately
-        referer = request.META.get('HTTP_REFERER', '')
-        if 'manajemen-reservasi' in referer:
-            return redirect('booking_tiket:manajemen_data_reservasi')
-        else:
-            return redirect('booking_tiket:reservasi')
-    
-    # If not POST, redirect to referrer or default page
-    referer = request.META.get('HTTP_REFERER', '')
-    if 'manajemen-reservasi' in referer:
-        return redirect('booking_tiket:manajemen_data_reservasi')
-    else:
-        return redirect('booking_tiket:reservasi')
-
-def manajemen_data_reservasi(request):
-    """
-    View untuk menampilkan halaman manajemen data reservasi
-    """
-    # Dummy data for prototype
-    # In a real implementation, this would come from the database
-    atraksi_list = [
-        {
-            'pk': 1,
-            'nama': "Pertunjukan Lumba-lumba",
-            'lokasi': "Kolam Utama",
-            'jadwal': "14:00",
-        },
-        {
-            'pk': 2,
-            'nama': "Atraksi Simpanse",
-            'lokasi': "Panggung A",
-            'jadwal': "10:30",
-        },
-        {
-            'pk': 3,
-            'nama': "Parade Gajah",
-            'lokasi': "Area Tengah",
-            'jadwal': "16:00",
+        context = {
+            'nama_fasilitas': nama_fasilitas,
+            'lokasi_peraturan': lokasi_peraturan,
+            'kategori': kategori,
         }
-    ]
+        return render(request, 'create_reservasi.html', context)
+
+    elif request.method == 'POST':
+        username = request.session.get('user')['username']
+        nama_fasilitas = request.POST.get('nama_fasilitas')
+        tanggal_kunjungan = request.POST.get('tanggal_kunjungan')
+        jumlah_tiket = request.POST.get('jumlah_tiket')
+
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO RESERVASI (username_p, nama_fasilitas, tanggal_kunjungan, jumlah_tiket, status)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (username, nama_fasilitas, tanggal_kunjungan, jumlah_tiket, "Terjadwal"))
+                conn.commit()
+        finally:
+            release_db_connection(conn)
+
+        return redirect('booking_tiket:reservasi')
+
+    return HttpResponseForbidden("Invalid request method.")
+
+def edit_reservasi(request):
+    if not check_role(request, ['pengunjung', 'staf_admin']):
+        return HttpResponseForbidden("You do not have permission to access this page.")
     
-    # Dummy reservasi data with username added
-    today = datetime.now().date()
-    reservasi_list = [
-        {
-            'id': 101,
-            'username': 'johndoe123',
-            'nama_atraksi': "Pertunjukan Lumba-lumba",
-            'lokasi': "Kolam Utama",
-            'jam': "14:00",
-            'tanggal': (today + timedelta(days=2)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 3,
-            'status': "Terjadwal"
-        },
-        {
-            'id': 102,
-            'username': 'janedoe456',
-            'nama_atraksi': "Atraksi Simpanse",
-            'lokasi': "Panggung A",
-            'jam': "10:30",
-            'tanggal': (today + timedelta(days=5)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 2,
-            'status': "Terjadwal"
-        },
-        {
-            'id': 103,
-            'username': 'bobsmith789',
-            'nama_atraksi': "Parade Gajah",
-            'lokasi': "Area Tengah",
-            'jam': "16:00",
-            'tanggal': (today + timedelta(days=1)).strftime("%Y-%m-%d"),
-            'jumlah_tiket': 4,
-            'status': "Dibatalkan"
+    if request.method == 'GET':
+        user_role = request.session.get('role')
+        if user_role == 'staf_admin':
+            username = request.GET.get('username', '')
+        else:
+            username = request.session.get('user')['username']
+        nama_fasilitas = request.GET.get('nama', '')
+        lokasi_peraturan = request.GET.get('lokasi_peraturan', '')
+        tanggal_kunjungan = request.GET.get('tanggal_kunjungan')
+        jumlah_tiket = request.GET.get('jumlah_tiket')
+
+        context = {
+            'username': username,
+            'nama_fasilitas': nama_fasilitas,
+            'lokasi_peraturan': lokasi_peraturan,
+            'tanggal_kunjungan': tanggal_kunjungan,
+            'jumlah_tiket': jumlah_tiket,
         }
-    ]
-    
-    context = {
-        'atraksi_list': atraksi_list,
-        'reservasi_list': reservasi_list
-    }
-    
-    return render(request, 'manajemen_data_reservasi.html', context)
+        return render(request, 'edit_reservasi.html', context)
+
+    elif request.method == 'POST':
+        username = request.POST.get('username')
+        nama_fasilitas = request.POST.get('nama_fasilitas')
+        tanggal_kunjungan = request.POST.get('tanggal_kunjungan')
+        jumlah_tiket = request.POST.get('jumlah_tiket')
+        
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE RESERVASI
+                    SET tanggal_kunjungan = %s, jumlah_tiket = %s
+                    WHERE username_p = %s AND nama_fasilitas = %s
+                """, (tanggal_kunjungan, jumlah_tiket, username, nama_fasilitas))
+                conn.commit()
+        finally:
+            release_db_connection(conn)
+
+        user_role = request.session.get('role')
+        if user_role == 'staf_admin':
+            return redirect('booking_tiket:manajemen_data_reservasi')
+        elif user_role == 'pengunjung':
+            return redirect('booking_tiket:reservasi')
+    return HttpResponseForbidden("Invalid request method.")
+
+def cancel_reservasi(request):
+    if not check_role(request, ['pengunjung', 'staf_admin']):
+        return HttpResponseForbidden("You do not have permission to access this page.")
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        nama_fasilitas = request.POST.get('nama_fasilitas')
+        tanggal_kunjungan = request.POST.get('tanggal_kunjungan')
+
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE RESERVASI
+                    SET status = 'Dibatalkan'
+                    WHERE username_p = %s AND nama_fasilitas = %s AND tanggal_kunjungan = %s
+                """, (username, nama_fasilitas, tanggal_kunjungan))
+                conn.commit()
+        finally:
+            release_db_connection(conn)
+
+        user_role = request.session.get('role')
+        if user_role == 'staf_admin':
+            return redirect('booking_tiket:manajemen_data_reservasi')
+        elif user_role == 'pengunjung':
+            return redirect('booking_tiket:reservasi')
+
+    return HttpResponseForbidden("Invalid request method.")

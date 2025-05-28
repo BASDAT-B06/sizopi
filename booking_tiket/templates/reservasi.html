@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,6 +50,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #ffffff;
         }
+
         .popup {
             background-color: white;
             opacity: 1;
@@ -71,373 +73,137 @@
 
 
     <div class="container mx-auto max-w-6xl mt-8">
-        <h1 class="text-3xl font-bold text-primary-80 mb-6 text-center">Reservasi Atraksi</h1>
-        
-        <div class="mb-6 flex justify-end">
-            <button id="tambahReservasiBtn" class="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-80 transition duration-300">
-                Tambahkan Reservasi
-            </button>
-        </div>
-        
-        <!-- Card reservasi container -->
-        <div id="reservasiContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% if reservasi_list %}
-                {% for reservasi in reservasi_list %}
-                <div class="bg-white bg-opacity-100 rounded-lg shadow-md overflow-hidden cursor-pointer reservasi-card" 
-                     data-id="{{ reservasi.id }}"
-                     data-nama="{{ reservasi.nama_atraksi }}"
-                     data-lokasi="{{ reservasi.lokasi }}"
-                     data-jam="{{ reservasi.jam }}"
-                     data-tanggal="{{ reservasi.tanggal }}"
-                     data-jumlah="{{ reservasi.jumlah_tiket }}"
-                     data-status="{{ reservasi.status }}">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-primary mb-2">{{ reservasi.nama_atraksi }}</h3>
-                        <p class="text-gray-600 mb-1"><span class="font-medium">Lokasi:</span> {{ reservasi.lokasi }}</p>
-                        <p class="text-gray-600 mb-1"><span class="font-medium">Tanggal:</span> {{ reservasi.tanggal }}</p>
-                        <p class="text-gray-600 mb-1"><span class="font-medium">Jam:</span> {{ reservasi.jam }}</p>
-                        <div class="mt-3 flex justify-between items-center">
-                            <span class="text-sm font-medium {% if reservasi.status == 'Terjadwal' %}text-green-600{% else %}text-red-600{% endif %}">
-                                {{ reservasi.status }}
-                            </span>
-                            <span class="text-sm font-medium">{{ reservasi.jumlah_tiket }} tiket</span>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-span-full text-center py-12">
-                    <p class="text-xl text-gray-600">Anda belum pernah melakukan reservasi.</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
 
-    <!-- Modal tambah reservasi -->
-    <div id="tambahReservasiModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="popup w-full max-w-2xl mx-4 overflow-y-auto max-h-[90vh]">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-primary" id="modalTitle">Tambah Reservasi</h2>
-                    <button id="closeModal" class="text-gray-500 hover:text-gray-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+        <h1 class="text-3xl font-bold text-primary-80 mb-6 text-center">Reservasi Anda</h1>
+        <div id="userReservasiContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for reservasi in user_reservasi %}
+            <div class="bg-white bg-opacity-100 rounded-lg shadow-md overflow-hidden reservasi-card">
+                <div class="p-6">
+                    <h5 class="text-xl font-semibold text-primary mb-2">{{ reservasi.nama_fasilitas }}</h5>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Tanggal:</span> {{reservasi.tanggal_kunjungan }}</p>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Jumlah Tiket yang Ingin Dibeli:</span> {{reservasi.jumlah_tiket }}</p>
+                    <p class="text-gray-600 mb-1">
+                        <span class="font-medium">
+                            {% if reservasi.lokasi_peraturan %}
+                            Lokasi/Peraturan:
+                            {% endif %}
+                        </span>
+                        {{ reservasi.lokasi_peraturan }}
+                    </p>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Status:</span> {{ reservasi.status }}</p>
+                    <div class="mt-3 flex justify-between items-center">
+                        <a href="{% url 'booking_tiket:edit_reservasi' %}?nama={{ reservasi.nama_fasilitas }}&lokasi_peraturan={{ reservasi.lokasi_peraturan }}&tanggal_kunjungan={{ reservasi.tanggal_kunjungan }}&jumlah_tiket={{ reservasi.jumlah_tiket }}"
+                            class="bg-accent-500 text-white py-1 px-3 rounded-md hover:bg-accent-600 transition duration-300">
+                            Edit
+                        </a>
+                        <button
+                            onclick="cancelReservasi('{{ reservasi.username }}', '{{ reservasi.nama_atraksi }}', '{{ reservasi.tanggal }}')"
+                            class="btn-hapus">
+                            Batalkan
+                        </button>
+                    </div>
                 </div>
-                
-                <form id="reservasiForm" class="space-y-4">
-                    <input type="hidden" id="reservasiId" name="reservasiId">
-                    
-                    <div class="mb-4">
-                        <label for="atraksi" class="block text-sm font-medium text-gray-700 mb-1">
-                            Nama Atraksi <span class="text-red-500">*</span>
-                        </label>
-                        <select id="atraksi" name="atraksi" 
-                               class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                               required>
-                            <option value="" disabled selected>Pilih Atraksi</option>
-                            {% for atraksi in atraksi_list %}
-                            <option value="{{ atraksi.pk }}" data-lokasi="{{ atraksi.lokasi }}" data-jadwal="{{ atraksi.jadwal }}">
-                                {{ atraksi.nama }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="lokasi" class="block text-sm font-medium text-gray-700 mb-1">
-                            Lokasi
-                        </label>
-                        <input type="text" id="lokasi" name="lokasi" 
-                               class="w-full px-3 py-2 border border-black rounded-md bg-gray-50 focus:outline-none"
-                               readonly>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="jam" class="block text-sm font-medium text-gray-700 mb-1">
-                            Jam
-                        </label>
-                        <input type="text" id="jam" name="jam" 
-                               class="w-full px-3 py-2 border border-black rounded-md bg-gray-50 focus:outline-none"
-                               readonly>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-1">
-                            Tanggal <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" id="tanggal" name="tanggal" 
-                               class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                               required>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="jumlahTiket" class="block text-sm font-medium text-gray-700 mb-1">
-                            Jumlah Tiket <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" id="jumlahTiket" name="jumlahTiket" min="1"
-                               class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                               required>
-                    </div>
-                    
-                    <div id="statusContainer" class="mb-4 hidden">
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">
-                            Status
-                        </label>
-                        <input type="text" id="status" name="status" 
-                               class="w-full px-3 py-2 border border-black rounded-md bg-gray-50 focus:outline-none"
-                               readonly>
-                    </div>
-                    
-                    <div class="flex justify-end gap-3">
-                        <div id="detailButtonsContainer" class="hidden">
-                            <button type="button" id="batalkanBtn" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300">
-                                Batalkan Reservasi
-                            </button>
-                            <button type="button" id="editBtn" class="bg-accent-500 text-white py-2 px-4 rounded-md hover:bg-accent-600 transition duration-300 ml-2">
-                                Edit Reservasi
-                            </button>
-                        </div>
-                        <div id="formButtonsContainer">
-                            <button type="button" id="cancelBtn" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition duration-300 mr-2">
-                                Batal
-                            </button>
-                            <button type="submit" id="submitBtn" class="bg-primary-80 text-white py-2 px-4 rounded-md hover:bg-primary-80 transition duration-300">
-                                Simpan
-                            </button>
-                        </div>
-                    </div>
-                </form>
             </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-12">
+        </div>
+
+        <h1 class="text-3xl font-bold text-primary-80 mb-6 text-center">Reservasi Atraksi</h1>
+
+        <div class="mt-12">
+        </div>
+
+        <!-- Card reservasi atraksi -->
+        <div id="reservasiContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for atraksi in atraksi_list %}
+            <div class="bg-white bg-opacity-100 rounded-lg shadow-md overflow-hidden reservasi-card">
+                <div class="p-6">
+                    <h5 class="text-xl font-semibold text-primary mb-2">{{ atraksi.nama }}</h5>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Lokasi:</span> {{ atraksi.lokasi }}</p>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Tanggal:</span> {{ atraksi.jadwal }}</p>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Kapasitas:</span>
+                        {{ atraksi.kapasitas_tersisa }} dari {{ atraksi.kapasitas_max }}
+                    </p>
+                    <div class="mt-3 flex justify-between items-center">
+                        <a href="{% url 'booking_tiket:create_reservasi' %}?nama={{ atraksi.nama }}&lokasi={{ atraksi.lokasi }}&kategori=Atraksi"
+                            class="bg-primary-80 text-white py-1 px-3 rounded-md hover:bg-primary-60 transition duration-300">
+                            Pesan Tiket
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-12">
+        </div>
+
+        <h1 class="text-3xl font-bold text-primary-80 mb-6 text-center">Reservasi Wahana</h1>
+
+        <div class="mt-12">
+        </div>
+
+        <!-- Card reservasi wahana -->
+        <div id="reservasiContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for wahana in wahana_list %}
+            <div class="bg-white bg-opacity-100 rounded-lg shadow-md overflow-hidden reservasi-card">
+                <div class="p-6">
+                    <h5 class="text-xl font-semibold text-primary mb-2">{{ wahana.nama }}</h5>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Peraturan:</span> {{ wahana.peraturan }}</p>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Kapasitas:</span>
+                        {{ wahana.kapasitas_tersisa }} dari {{ wahana.kapasitas_max }}
+                    </p>
+                    <div class="mt-3 flex justify-between items-center">
+                        <a href="{% url 'booking_tiket:create_reservasi' %}?nama={{ wahana.nama }}&peraturan={{ wahana.peraturan }}&kategori=Wahana"
+                            class="bg-primary-80 text-white py-1 px-3 rounded-md hover:bg-primary-60 transition duration-300">
+                            Pesan Tiket
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elements
-            const tambahReservasiBtn = document.getElementById('tambahReservasiBtn');
-            const tambahReservasiModal = document.getElementById('tambahReservasiModal');
-            const closeModal = document.getElementById('closeModal');
-            const cancelBtn = document.getElementById('cancelBtn');
-            const reservasiForm = document.getElementById('reservasiForm');
-            const atraksiSelect = document.getElementById('atraksi');
-            const lokasiInput = document.getElementById('lokasi');
-            const jamInput = document.getElementById('jam');
-            const modalTitle = document.getElementById('modalTitle');
-            const detailButtonsContainer = document.getElementById('detailButtonsContainer');
-            const formButtonsContainer = document.getElementById('formButtonsContainer');
-            const statusContainer = document.getElementById('statusContainer');
-            const statusInput = document.getElementById('status');
-            const batalkanBtn = document.getElementById('batalkanBtn');
-            const editBtn = document.getElementById('editBtn');
-            const reservasiId = document.getElementById('reservasiId');
-            
-            // Initialize date picker
-            flatpickr("#tanggal", {
-                dateFormat: "Y-m-d",
-                minDate: "today"
-            });
-            
-            // Update location and time when atraksi is selected
-            atraksiSelect.addEventListener('change', function() {
-                const selectedOption = this.options[this.selectedIndex];
-                lokasiInput.value = selectedOption.dataset.lokasi || '';
-                jamInput.value = selectedOption.dataset.jadwal || '';
-            });
-            
-            // Show modal when "Tambah Reservasi" button is clicked
-            tambahReservasiBtn.addEventListener('click', function() {
-                showModal('add');
-            });
-            
-            // Close modal when close button is clicked
-            closeModal.addEventListener('click', closeReservasiModal);
-            cancelBtn.addEventListener('click', closeReservasiModal);
-            
-            // Handle form submission
-            reservasiForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                // Submit form logic would go here in a real implementation
-                
-                // For demo purposes, we'll just show a success message and close the modal
-                alert('Reservasi berhasil disimpan!');
-                closeReservasiModal();
-                
-                // In a real implementation, this would refresh the page or update the reservasi list
-                // For now, let's manually add a demo card
-                addDemoReservationCard();
-            });
-            
-            // Handle clicking on reservation cards
-            document.querySelectorAll('.reservasi-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const id = this.dataset.id;
-                    const nama = this.dataset.nama;
-                    const lokasi = this.dataset.lokasi;
-                    const jam = this.dataset.jam;
-                    const tanggal = this.dataset.tanggal;
-                    const jumlah = this.dataset.jumlah;
-                    const status = this.dataset.status;
-                    
-                    showReservasiDetail(id, nama, lokasi, jam, tanggal, jumlah, status);
-                });
-            });
-            
-            // Handle edit button
-            editBtn.addEventListener('click', function() {
-                modalTitle.textContent = 'Edit Reservasi';
-                detailButtonsContainer.classList.add('hidden');
-                formButtonsContainer.classList.remove('hidden');
-                statusContainer.classList.add('hidden');
-                
-                // Enable form fields for editing
-                atraksiSelect.disabled = false;
-                document.getElementById('tanggal').disabled = false;
-                document.getElementById('jumlahTiket').disabled = false;
-            });
-            
-            // Handle batalkan button
-            batalkanBtn.addEventListener('click', function() {
-                if (confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')) {
-                    statusInput.value = 'Dibatalkan';
-                    alert('Reservasi berhasil dibatalkan!');
-                    closeReservasiModal();
-                    
-                    // In a real implementation, this would update the status in the database
-                    // and update the UI accordingly
-                }
-            });
-            
-            // Function to show modal in different modes
-            function showModal(mode, data = null) {
-                tambahReservasiModal.classList.remove('hidden');
-                
-                if (mode === 'add') {
-                    // Reset form
-                    reservasiForm.reset();
-                    reservasiId.value = '';
-                    
-                    // Update UI elements
-                    modalTitle.textContent = 'Tambah Reservasi';
-                    detailButtonsContainer.classList.add('hidden');
-                    formButtonsContainer.classList.remove('hidden');
-                    statusContainer.classList.add('hidden');
-                    
-                    // Enable form fields
-                    atraksiSelect.disabled = false;
-                    document.getElementById('tanggal').disabled = false;
-                    document.getElementById('jumlahTiket').disabled = false;
-                } else if (mode === 'detail' && data) {
-                    // Fill form with data
-                    reservasiId.value = data.id;
-                    
-                    // Find and select the right atraksi option
-                    for (let i = 0; i < atraksiSelect.options.length; i++) {
-                        if (atraksiSelect.options[i].text === data.nama) {
-                            atraksiSelect.selectedIndex = i;
-                            break;
-                        }
-                    }
-                    
-                    lokasiInput.value = data.lokasi;
-                    jamInput.value = data.jam;
-                    document.getElementById('tanggal').value = data.tanggal;
-                    document.getElementById('jumlahTiket').value = data.jumlah;
-                    statusInput.value = data.status;
-                    
-                    // Update UI elements
-                    modalTitle.textContent = 'Detail Reservasi';
-                    detailButtonsContainer.classList.remove('hidden');
-                    formButtonsContainer.classList.add('hidden');
-                    statusContainer.classList.remove('hidden');
-                    
-                    // Disable form fields
-                    atraksiSelect.disabled = true;
-                    document.getElementById('tanggal').disabled = true;
-                    document.getElementById('jumlahTiket').disabled = true;
-                }
+        function cancelReservasi(username, nama, tanggal) {
+            if (confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{% url 'booking_tiket:cancel_reservasi' %}";
+
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = 'csrfmiddlewaretoken';
+                csrfToken.value = "{{ csrf_token }}";
+                form.appendChild(csrfToken);
+
+                const usernameInput = document.createElement('input');
+                usernameInput.type = 'hidden';
+                usernameInput.name = 'username';
+                usernameInput.value = username;
+                form.appendChild(usernameInput);
+
+                const namaInput = document.createElement('input');
+                namaInput.type = 'hidden';
+                namaInput.name = 'nama_fasilitas';
+                namaInput.value = nama;
+                form.appendChild(namaInput);
+
+                const tanggalInput = document.createElement('input');
+                tanggalInput.type = 'hidden';
+                tanggalInput.name = 'tanggal_kunjungan';
+                tanggalInput.value = tanggal;
+                form.appendChild(tanggalInput);
+
+                document.body.appendChild(form);
+                form.submit();
             }
-            
-            // Function to close the modal
-            function closeReservasiModal() {
-                tambahReservasiModal.classList.add('hidden');
-            }
-            
-            // Function to show reservation detail
-            function showReservasiDetail(id, nama, lokasi, jam, tanggal, jumlah, status) {
-                const data = {
-                    id: id,
-                    nama: nama,
-                    lokasi: lokasi,
-                    jam: jam,
-                    tanggal: tanggal,
-                    jumlah: jumlah,
-                    status: status
-                };
-                
-                showModal('detail', data);
-            }
-            
-            // Function to add a demo reservation card (for prototype purposes)
-            function addDemoReservationCard() {
-                const container = document.getElementById('reservasiContainer');
-                const emptyMessage = container.querySelector('p');
-                
-                if (emptyMessage) {
-                    container.innerHTML = ''; // Remove the empty message
-                }
-                
-                const atraksiSelect = document.getElementById('atraksi');
-                const selectedOption = atraksiSelect.options[atraksiSelect.selectedIndex];
-                const nama = selectedOption.text;
-                const lokasi = document.getElementById('lokasi').value;
-                const jam = document.getElementById('jam').value;
-                const tanggal = document.getElementById('tanggal').value;
-                const jumlahTiket = document.getElementById('jumlahTiket').value;
-                
-                const randomId = Math.floor(Math.random() * 1000);
-                
-                const cardHtml = `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer reservasi-card" 
-                     data-id="${randomId}"
-                     data-nama="${nama}"
-                     data-lokasi="${lokasi}"
-                     data-jam="${jam}"
-                     data-tanggal="${tanggal}"
-                     data-jumlah="${jumlahTiket}"
-                     data-status="Terjadwal">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-primary mb-2">${nama}</h3>
-                        <p class="text-gray-600 mb-1"><span class="font-medium">Lokasi:</span> ${lokasi}</p>
-                        <p class="text-gray-600 mb-1"><span class="font-medium">Tanggal:</span> ${tanggal}</p>
-                        <p class="text-gray-600 mb-1"><span class="font-medium">Jam:</span> ${jam}</p>
-                        <div class="mt-3 flex justify-between items-center">
-                            <span class="text-sm font-medium text-green-600">Terjadwal</span>
-                            <span class="text-sm font-medium">${jumlahTiket} tiket</span>
-                        </div>
-                    </div>
-                </div>
-                `;
-                
-                container.insertAdjacentHTML('afterbegin', cardHtml);
-                
-                // Add event listener to the new card
-                const newCard = container.querySelector('.reservasi-card');
-                newCard.addEventListener('click', function() {
-                    const id = this.dataset.id;
-                    const nama = this.dataset.nama;
-                    const lokasi = this.dataset.lokasi;
-                    const jam = this.dataset.jam;
-                    const tanggal = this.dataset.tanggal;
-                    const jumlah = this.dataset.jumlah;
-                    const status = this.dataset.status;
-                    
-                    showReservasiDetail(id, nama, lokasi, jam, tanggal, jumlah, status);
-                });
-            }
-        });
+        }
     </script>
 </body>
 {% endblock %}
+
 </html>

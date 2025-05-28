@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
-{% extends "base.html" %}
 
-{% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True user_role="pelatih_hewan" %}
-{% endblock %}
-
-{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,12 +53,14 @@
             font-family: 'Poppins', sans-serif;
             background-color: #ffffff;
         }
+
         .btn-primary {
             background-color: #DB6900;
             color: white;
             border-radius: 28px;
             padding: 10px 20px;
         }
+
         .btn-secondary {
             background-color: #A7AD8B;
             color: #1C2628;
@@ -73,7 +69,9 @@
             padding: 8px 18px;
             font-size: 14px;
         }
-        .btn-edit, .btn-hapus {
+
+        .btn-edit,
+        .btn-hapus {
             color: #1C2628;
             border-radius: 12px;
             padding: 3px 6px;
@@ -82,14 +80,17 @@
             display: inline-block;
             text-align: center;
         }
+
         .btn-edit {
             background-color: #D7DACB;
             border: 1.5px solid #193e30;
         }
+
         .btn-hapus {
             background-color: #FDECEC;
             border: 1.5px solid #EE443F;
         }
+
         .status-lingkungan {
             width: 300px;
         }
@@ -101,7 +102,10 @@
 
     <div class="max-w-6xl mx-auto bg-accent-100 p-6 rounded-lg shadow">
         <h2 class="text-xl font-semibold mb-6">Data Atraksi</h2>
-        <button id="btnTambahAtraksi" class="btn-primary mb-4 inline-block">Tambah Atraksi</button>
+        <button id="btnTambahAtraksi" class="btn-primary mb-4 inline-block"
+            onclick="window.location.href='{% url 'atraksi_wahana:tambah_atraksi' %}'">
+            Tambah Atraksi
+        </button>
 
         <table class="w-full border-collapse">
             <thead class="bg-primary-20">
@@ -117,239 +121,46 @@
             </thead>
             <tbody>
                 {% if atraksis %}
-                    {% for atraksi in atraksis %}
-                    <tr>
-                        <td class="border p-2">{{ atraksi.nama }}</td>
-                        <td class="border p-2">{{ atraksi.lokasi }}</td>
-                        <td class="border p-2">{{ atraksi.kapasitas }}</td>
-                        <td class="border p-2">{{ atraksi.jadwal }}</td>
-                        <td class="border p-2">{{ atraksi.hewan }}</td>
-                        <td class="border p-2">{{ atraksi.pelatih }}</td>
-                        <td class="border p-2 space-x-2">
-                            <button onclick="editAtraksi('{{ atraksi.pk }}', '{{ atraksi.nama }}', '{{ atraksi.lokasi }}', '{{ atraksi.kapasitas }}', '{{ atraksi.jadwal }}', '{{ atraksi.pelatih_id }}')" class="btn-edit">Edit</button>
-                            <form method="post" action="{% url 'atraksi_wahana:hapus_atraksi' atraksi.pk %}" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus atraksi ini?')">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-hapus">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                {% for atraksi in atraksis %}
+                <tr>
+                    <td class="border p-2">{{ atraksi.nama }}</td>
+                    <td class="border p-2">{{ atraksi.lokasi }}</td>
+                    <td class="border p-2">{{ atraksi.kapasitas }}</td>
+                    <td class="border p-2">{{ atraksi.jadwal }}</td>
+                    <td class="border p-2">{{ atraksi.hewan }}</td>
+                    <td class="border p-2">{{ atraksi.pelatih }}</td>
+                    <td class="border p-2 space-x-2">
+                        <button
+                            onclick="window.location.href='{% url 'atraksi_wahana:edit_atraksi' %}?nama={{ atraksi.nama }}&lokasi={{ atraksi.lokasi }}&kapasitas={{ atraksi.kapasitas }}&jadwal={{ atraksi.jadwal }}&hewan={{ atraksi.hewan }}&pelatih={{ atraksi.pelatih }}'"
+                            class="btn-edit">
+                            Edit
+                        </button>
+                        <button
+                            onclick="cancelReservasi('{{ atraksi.nama }}')"
+                            class="btn-hapus">
+                            Hapus
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
                 {% else %}
-                    <tr>
-                        <td colspan="7" class="border p-4 text-center text-gray-500">Tidak ada data atraksi</td>
-                    </tr>
+                <tr>
+                    <td colspan="7" class="border p-4 text-center text-gray-500">Tidak ada data atraksi</td>
+                </tr>
                 {% endif %}
             </tbody>
         </table>
     </div>
-
-    <!-- Modal Tambah Atraksi -->
-    <div id="modalTambah" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-6 rounded-lg w-full max-w-xl">
-            <h3 class="text-xl font-bold mb-4">Tambah Atraksi</h3>
-            <form action="{% url 'atraksi_wahana:tambah_atraksi' %}" method="post">
-                {% csrf_token %}
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="nama">Nama Atraksi</label>
-                    <input type="text" id="nama" name="nama" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="lokasi">Lokasi</label>
-                    <input type="text" id="lokasi" name="lokasi" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="kapasitas">Kapasitas Maksimum</label>
-                    <input type="number" id="kapasitas" name="kapasitas" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="pelatih">Pelatih Pertunjukan</label>
-                    <select id="pelatih" name="pelatih" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                        <option value="">Pilih Pelatih</option>
-                        {% for pelatih in pelatih_list %}
-                            <option value="{{ pelatih.id }}">{{ pelatih.nama }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="jadwal">Jadwal</label>
-                    <input type="text" id="jadwal" name="jadwal" class="time-picker shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="hewan">Hewan yang Terlibat</label>
-                    <select id="hewan" name="hewan" class="hewan-select shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" multiple required>
-                        {% for hewan in hewan_list %}
-                            <option value="{{ hewan.id }}">{{ hewan.nama }} ({{ hewan.jenis }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="flex items-center justify-end space-x-4">
-                    <button type="button" class="modal-cancel btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Edit Atraksi -->
-    <div id="modalEdit" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-6 rounded-lg w-full max-w-xl">
-            <h3 class="text-xl font-bold mb-4">Edit Atraksi</h3>
-            <form id="formEdit" method="post">
-                {% csrf_token %}
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_nama">Nama Atraksi</label>
-                    <input type="text" id="edit_nama" name="nama" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_lokasi">Lokasi</label>
-                    <input type="text" id="edit_lokasi" name="lokasi" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_kapasitas">Kapasitas Maksimum</label>
-                    <input type="number" id="edit_kapasitas" name="kapasitas" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_pelatih">Pelatih Pertunjukan</label>
-                    <select id="edit_pelatih" name="pelatih" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                        <option value="">Pilih Pelatih</option>
-                        {% for pelatih in pelatih_list %}
-                            <option value="{{ pelatih.id }}">{{ pelatih.nama }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_jadwal">Jadwal</label>
-                    <input type="text" id="edit_jadwal" name="jadwal" class="time-picker shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_hewan">Hewan yang Terlibat</label>
-                    <select id="edit_hewan" name="hewan" class="hewan-select shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" multiple required>
-                        {% for hewan in hewan_list %}
-                            <option value="{{ hewan.id }}">{{ hewan.nama }} ({{ hewan.jenis }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="flex items-center justify-end space-x-4">
-                    <button type="button" class="modal-cancel btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
-        // Initialize time picker and multi-select
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize time picker
-            flatpickr(".time-picker", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true
-            });
-
-            // Initialize Select2 multi-select for hewan
-            $('.hewan-select').select2({
-                placeholder: "Pilih hewan yang terlibat",
-                allowClear: true,
-                dropdownParent: $('.hewan-select').parent() // Fix for modal context
-            });
-
-            // Tambah Modal
-            const modalTambah = document.getElementById('modalTambah');
-            const btnTambah = document.getElementById('btnTambahAtraksi');
-            
-            btnTambah.addEventListener('click', function() {
-                modalTambah.classList.remove('hidden');
-                modalTambah.classList.add('flex');
-            });
-
-            // Close modals
-            document.querySelectorAll('.modal-cancel').forEach(button => {
-                button.addEventListener('click', function() {
-                    document.querySelectorAll('#modalTambah, #modalEdit').forEach(modal => {
-                        modal.classList.remove('flex');
-                        modal.classList.add('hidden');
-                    });
-                });
-            });
-
-            // Close modal when clicking outside the modal content
-            document.querySelectorAll('#modalTambah, #modalEdit').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        modal.classList.remove('flex');
-                        modal.classList.add('hidden');
-                    }
-                });
-            });
-        });
-
-        // Function to open edit modal
-        function editAtraksi(id, nama, lokasi, kapasitas, jadwal, pelatihId) {
-            const modal = document.getElementById('modalEdit');
-            const form = document.getElementById('formEdit');
-            
-            // Set form action - using the full URL pattern for reliability
-            form.action = `/atraksi_wahana/edit/${id}/`;
-            
-            // Fill form values
-            document.getElementById('edit_nama').value = nama;
-            document.getElementById('edit_lokasi').value = lokasi;
-            document.getElementById('edit_kapasitas').value = kapasitas;
-            document.getElementById('edit_jadwal').value = jadwal;
-            
-            // Set pelatih dropdown
-            const pelatihSelect = document.getElementById('edit_pelatih');
-            for (let i = 0; i < pelatihSelect.options.length; i++) {
-                if (pelatihSelect.options[i].value === pelatihId) {
-                    pelatihSelect.options[i].selected = true;
-                    break;
-                }
-            }
-            
-            // Show modal first so Select2 renders properly
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            
-            // Set selected hewan (requires a separate AJAX call to get current hewan)
-            fetch(`/atraksi_wahana/get_hewan/${id}/`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const hewanSelect = $('#edit_hewan');
-                    hewanSelect.val(data.hewan_ids).trigger('change');
-                })
-                .catch(error => {
-                    console.error('Error fetching hewan data:', error);
-                    alert('Gagal mengambil data hewan. Silakan coba lagi.');
-                });
-        }
-
-        // Function to safely delete atraksi
-        function hapusAtraksi(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus atraksi ini?')) {
-                // Create a form element
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/atraksi_wahana/hapus/${id}/`;
-                
-                // Add CSRF token
-                const csrfToken = document.createElement('input');
-                csrfToken.type = 'hidden';
-                csrfToken.name = 'csrfmiddlewaretoken';
-                csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                
-                form.appendChild(csrfToken);
-                document.body.appendChild(form);
-                form.submit();
+        function cancelReservasi(namaAtraksi) {
+            if (confirm("Apakah Anda yakin ingin menghapus atraksi " + namaAtraksi + "?")) {
+                // Redirect ke URL hapus atraksi dengan nama sebagai parameter
+                window.location.href = "{% url 'atraksi_wahana:hapus' %}?nama=" + encodeURIComponent(namaAtraksi);
             }
         }
     </script>
+    
 </body>
 {% endblock %}
+
 </html>
