@@ -391,7 +391,7 @@ def delete_adoption_history(request):
 def extend_adoption(request):
     """Perpanjang periode adopsi"""
     user_context = get_user_context(request)
-    if not user_context["is_logged_in"]:
+    if not user_context["is_logged_in"] or user_context["user_role"] != "pengunjung":
         return JsonResponse({'success': False, 'message': 'Unauthorized'})
     
     if request.method == 'GET':
@@ -415,13 +415,7 @@ def extend_adoption(request):
     
     elif request.method == 'POST':
         try:
-            # Untuk admin yang membantu user extend
-            if user_context["user_role"] == "staf_admin":
-                username = request.POST.get('username')
-            else:
-                # Untuk user yang extend sendiri
-                username = user_context["username"]
-            
+            username = user_context["username"]
             animal_id = request.POST.get('animal_id')
             
             # Validasi nominal
