@@ -140,7 +140,7 @@ def login_view(request):
                     request.session['role'] = user_dict['role']
                     return redirect('main:main')
                 else:
-                    messages.error(request, 'Invalid username/email or password.')
+                    messages.error(request, 'Invalid email or password.')
         except Exception as e:
             messages.error(request, f'Login error: {str(e)}')
         finally:

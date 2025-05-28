@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Wahana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="bg-secondary min-h-screen flex items-center justify-center py-8">
+    <div class="container max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold text-primary mb-6 text-center">Edit Wahana</h1>
+
+        <form method="post" action="{% url 'atraksi_wahana:edit_wahana' %}" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Nama Wahana -->
+            <div class="mb-4">
+                <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">
+                    Nama Wahana <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="nama" name="nama"
+                    class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    value="{{ nama }}" readonly>
+            </div>
+
+            <!-- Kapasitas -->
+            <div class="mb-4">
+                <label for="kapasitas" class="block text-sm font-medium text-gray-700 mb-1">
+                    Kapasitas Maksimum <span class="text-red-500">*</span>
+                </label>
+                <input type="number" id="kapasitas" name="kapasitas" min="1"
+                    class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    value="{{ kapasitas }}" required>
+            </div>
+
+            <!-- Jadwal -->
+            <div class="mb-4">
+                <label for="jadwal" class="block text-sm font-medium text-gray-700 mb-1">
+                    Jadwal <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="jadwal" name="jadwal"
+                    class="time-picker w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    value="{{ jadwal }}" required>
+            </div>
+
+            <!-- Peraturan -->
+            <div class="mb-4">
+                <label for="peraturan" class="block text-sm font-medium text-gray-700 mb-1 flex justify-between items-center">
+                    <span>Peraturan</span>
+                    <button type="button" id="tambah-peraturan" class="btn-secondary text-sm py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                        Tambah Peraturan
+                    </button>
+                </label>
+                <div id="peraturan-container">
+                    {% for rule in peraturan %}
+                    <div class="peraturan-item flex items-center mb-2">
+                        <input type="text" name="peraturan[]" class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                            value="{{ rule }}" required>
+                        <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white rounded p-2 remove-peraturan">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-80 transition duration-300">
+                Simpan Perubahan
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tambahPeraturanButton = document.getElementById('tambah-peraturan');
+            const peraturanContainer = document.getElementById('peraturan-container');
+
+            function tambahPeraturan() {
+                const index = peraturanContainer.querySelectorAll('.peraturan-item').length + 1;
+
+                const peraturanItem = document.createElement('div');
+                peraturanItem.className = 'peraturan-item flex items-center mb-2';
+                peraturanItem.innerHTML = `
+                    <input type="text" name="peraturan[]" class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="Peraturan ${index}" required>
+                    <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white rounded p-2 remove-peraturan">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+
+                peraturanContainer.appendChild(peraturanItem);
+
+                peraturanItem.querySelector('.remove-peraturan').addEventListener('click', function () {
+                    hapusPeraturan(peraturanItem);
+                });
+            }
+
+            function hapusPeraturan(item) {
+                if (peraturanContainer.querySelectorAll('.peraturan-item').length > 1) {
+                    item.remove();
+                } else {
+                    alert('Harus ada minimal satu peraturan!');
+                }
+            }
+
+            tambahPeraturanButton.addEventListener('click', tambahPeraturan);
+
+            document.querySelectorAll('.remove-peraturan').forEach(button => {
+                button.addEventListener('click', function () {
+                    hapusPeraturan(button.closest('.peraturan-item'));
+                });
+            });
+
+            flatpickr(".time-picker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true
+            });
+        });
+    </script>
+</body>
+
+</html>
