@@ -161,10 +161,7 @@ def create_adoption_individu(request):
             nama = request.POST.get('nama')
             alamat = request.POST.get('alamat')
             no_telepon = request.POST.get('no_telepon')
-            nominal = int(request.POST.get('nominal'))
-            periode = int(request.POST.get('periode'))
             
-            # Validasi nominal
             try:
                 nominal = int(request.POST.get('nominal'))
                 if nominal <= 0:
@@ -177,8 +174,7 @@ def create_adoption_individu(request):
                     'success': False, 
                     'message': 'Nominal kontribusi harus berupa angka yang valid'
                 })
-            
-            # Validasi periode
+
             try:
                 periode = int(request.POST.get('periode'))
                 if periode not in [3, 6, 12]:
@@ -203,7 +199,7 @@ def create_adoption_individu(request):
             else:
                 return JsonResponse({
                     'success': False, 
-                    'message': 'Gagal mendaftarkan adopsi'
+                    'message': 'Gagal mendaftarkan adopsi. Periksa apakah hewan sudah diadopsi atau data tidak valid.'
                 })
                 
         except Exception as e:
@@ -228,10 +224,8 @@ def create_adoption_organisasi(request):
             nama_organisasi = request.POST.get('nama_organisasi')
             alamat = request.POST.get('alamat')
             kontak = request.POST.get('kontak')
-            nominal = int(request.POST.get('nominal'))
-            periode = int(request.POST.get('periode'))
             
-            # Validasi nominal
+            # Validasi nominal (hapus duplikasi)
             try:
                 nominal = int(request.POST.get('nominal'))
                 if nominal <= 0:
@@ -245,7 +239,7 @@ def create_adoption_organisasi(request):
                     'message': 'Nominal kontribusi harus berupa angka yang valid'
                 })
             
-            # Validasi periode
+            # Validasi periode (hapus duplikasi)
             try:
                 periode = int(request.POST.get('periode'))
                 if periode not in [3, 6, 12]:
@@ -270,7 +264,7 @@ def create_adoption_organisasi(request):
             else:
                 return JsonResponse({
                     'success': False, 
-                    'message': 'Gagal mendaftarkan adopsi'
+                    'message': 'Gagal mendaftarkan adopsi. Periksa apakah hewan sudah diadopsi atau data tidak valid.'
                 })
                 
         except Exception as e:

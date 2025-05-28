@@ -267,40 +267,73 @@ class AdopsiService:
     
     @staticmethod
     def create_individual_adoption(username, animal_id, nik, nama, alamat, 
-                                 no_telepon, nominal, periode):
-        """Membuat adopsi baru untuk individu"""
+                                no_telepon, nominal, periode):
+        """Membuat adopsi baru untuk individu - DIPERBAIKI untuk multiple adoption"""
         try:
-            # Validasi nominal tidak boleh negatif atau nol
+            # Validasi nominal dan periode
             if nominal <= 0:
                 raise ValueError("Nominal kontribusi harus lebih dari 0")
-            
-            # Validasi periode
             if periode not in [3, 6, 12]:
                 raise ValueError("Periode adopsi harus 3, 6, atau 12 bulan")
             
-            adopter_id = str(uuid.uuid4())
             start_date = datetime.now().date()
             end_date = start_date + timedelta(days=periode * 30)
             
             with connection.cursor() as cursor:
                 cursor.execute("SET search_path TO SIZOPI")
                 
-                # Insert ke tabel ADOPTER
+                # Cek apakah user sudah pernah jadi adopter individu dengan NIK yang sama
                 cursor.execute("""
-                    INSERT INTO ADOPTER (id_adopter, username_adopter, total_kontribusi)
-                    VALUES (%s, %s, %s)
-                """, [adopter_id, username, nominal])
+                    SELECT ad.id_adopter 
+                    FROM ADOPTER ad
+                    JOIN INDIVIDU ind ON ad.id_adopter = ind.id_adopter
+                    WHERE ad.username_adopter = %s AND ind.nik = %s
+                """, [username, nik])
+                existing_adopter = cursor.fetchone()
                 
-                # Insert ke tabel INDIVIDU
+                if existing_adopter:
+                    # Gunakan adopter yang sudah ada
+                    adopter_id = existing_adopter[0]
+                    print(f"Using existing adopter: {adopter_id}")
+                    
+                    # Update total kontribusi
+                    cursor.execute("""
+                        UPDATE ADOPTER 
+                        SET total_kontribusi = total_kontribusi + %s
+                        WHERE id_adopter = %s
+                    """, [nominal, adopter_id])
+                    
+                else:
+                    # Buat adopter baru
+                    adopter_id = str(uuid.uuid4())
+                    print(f"Creating new adopter: {adopter_id}")
+                    
+                    # Insert ke tabel ADOPTER
+                    cursor.execute("""
+                        INSERT INTO ADOPTER (id_adopter, username_adopter, total_kontribusi)
+                        VALUES (%s, %s, %s)
+                    """, [adopter_id, username, nominal])
+                    
+                    # Insert ke tabel INDIVIDU
+                    cursor.execute("""
+                        INSERT INTO INDIVIDU (nik, nama, id_adopter)
+                        VALUES (%s, %s, %s)
+                    """, [nik, nama, adopter_id])
+                
+                # Cek apakah hewan sudah diadopsi saat ini
                 cursor.execute("""
-                    INSERT INTO INDIVIDU (nik, nama, id_adopter)
-                    VALUES (%s, %s, %s)
-                """, [nik, nama, adopter_id])
+                    SELECT COUNT(*) FROM ADOPSI 
+                    WHERE id_hewan = %s AND tgl_berhenti_adopsi > CURRENT_DATE
+                """, [animal_id])
+                active_adoption = cursor.fetchone()
                 
-                # Insert ke tabel ADOPSI
+                if active_adoption[0] > 0:
+                    raise ValueError("Hewan ini sedang diadopsi oleh adopter lain")
+                
+                # Insert ke tabel ADOPSI (selalu buat record adopsi baru)
                 cursor.execute("""
                     INSERT INTO ADOPSI (id_adopter, id_hewan, status_pembayaran, 
-                                       tgl_mulai_adopsi, tgl_berhenti_adopsi, kontribusi_finansial)
+                                    tgl_mulai_adopsi, tgl_berhenti_adopsi, kontribusi_finansial)
                     VALUES (%s, %s, %s, %s, %s, %s)
                 """, [adopter_id, animal_id, 'Tertunda', start_date, end_date, nominal])
             
@@ -311,43 +344,76 @@ class AdopsiService:
         except Exception as e:
             print(f"Error creating individual adoption: {e}")
             return False
-    
+
     @staticmethod
     def create_organization_adoption(username, animal_id, npp, nama_organisasi, 
-                                   alamat, kontak, nominal, periode):
-        """Membuat adopsi baru untuk organisasi"""
+                                alamat, kontak, nominal, periode):
+        """Membuat adopsi baru untuk organisasi - DIPERBAIKI untuk multiple adoption"""
         try:
-            # Validasi nominal tidak boleh negatif atau nol
+            # Validasi nominal dan periode
             if nominal <= 0:
                 raise ValueError("Nominal kontribusi harus lebih dari 0")
-            
-            # Validasi periode
             if periode not in [3, 6, 12]:
                 raise ValueError("Periode adopsi harus 3, 6, atau 12 bulan")
             
-            adopter_id = str(uuid.uuid4())
             start_date = datetime.now().date()
             end_date = start_date + timedelta(days=periode * 30)
             
             with connection.cursor() as cursor:
                 cursor.execute("SET search_path TO SIZOPI")
                 
-                # Insert ke tabel ADOPTER
+                # Cek apakah user sudah pernah jadi adopter organisasi dengan NPP yang sama
                 cursor.execute("""
-                    INSERT INTO ADOPTER (id_adopter, username_adopter, total_kontribusi)
-                    VALUES (%s, %s, %s)
-                """, [adopter_id, username, nominal])
+                    SELECT ad.id_adopter 
+                    FROM ADOPTER ad
+                    JOIN ORGANISASI org ON ad.id_adopter = org.id_adopter
+                    WHERE ad.username_adopter = %s AND org.npp = %s
+                """, [username, npp])
+                existing_adopter = cursor.fetchone()
                 
-                # Insert ke tabel ORGANISASI
+                if existing_adopter:
+                    # Gunakan adopter yang sudah ada
+                    adopter_id = existing_adopter[0]
+                    print(f"Using existing adopter: {adopter_id}")
+                    
+                    # Update total kontribusi
+                    cursor.execute("""
+                        UPDATE ADOPTER 
+                        SET total_kontribusi = total_kontribusi + %s
+                        WHERE id_adopter = %s
+                    """, [nominal, adopter_id])
+                    
+                else:
+                    # Buat adopter baru
+                    adopter_id = str(uuid.uuid4())
+                    print(f"Creating new adopter: {adopter_id}")
+                    
+                    # Insert ke tabel ADOPTER
+                    cursor.execute("""
+                        INSERT INTO ADOPTER (id_adopter, username_adopter, total_kontribusi)
+                        VALUES (%s, %s, %s)
+                    """, [adopter_id, username, nominal])
+                    
+                    # Insert ke tabel ORGANISASI
+                    cursor.execute("""
+                        INSERT INTO ORGANISASI (npp, nama_organisasi, id_adopter)
+                        VALUES (%s, %s, %s)
+                    """, [npp, nama_organisasi, adopter_id])
+                
+                # Cek apakah hewan sudah diadopsi saat ini
                 cursor.execute("""
-                    INSERT INTO ORGANISASI (npp, nama_organisasi, id_adopter)
-                    VALUES (%s, %s, %s)
-                """, [npp, nama_organisasi, adopter_id])
+                    SELECT COUNT(*) FROM ADOPSI 
+                    WHERE id_hewan = %s AND tgl_berhenti_adopsi > CURRENT_DATE
+                """, [animal_id])
+                active_adoption = cursor.fetchone()
                 
-                # Insert ke tabel ADOPSI
+                if active_adoption[0] > 0:
+                    raise ValueError("Hewan ini sedang diadopsi oleh adopter lain")
+                
+                # Insert ke tabel ADOPSI (selalu buat record adopsi baru)
                 cursor.execute("""
                     INSERT INTO ADOPSI (id_adopter, id_hewan, status_pembayaran, 
-                                       tgl_mulai_adopsi, tgl_berhenti_adopsi, kontribusi_finansial)
+                                    tgl_mulai_adopsi, tgl_berhenti_adopsi, kontribusi_finansial)
                     VALUES (%s, %s, %s, %s, %s, %s)
                 """, [adopter_id, animal_id, 'Tertunda', start_date, end_date, nominal])
             
@@ -358,7 +424,7 @@ class AdopsiService:
         except Exception as e:
             print(f"Error creating organization adoption: {e}")
             return False
-    
+
     @staticmethod
     def update_payment_status(animal_id, status):
         """Update status pembayaran adopsi"""
