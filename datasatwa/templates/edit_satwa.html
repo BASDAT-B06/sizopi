@@ -73,38 +73,42 @@
 {% extends "base.html" %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True %}
+  {% include "components/navbar.html" with is_logged_in=True %}
 {% endblock %}
 
 {% block content %}
-<body class="min-h-screen bg-white">
-
+<div class="min-h-screen bg-white">
 
   <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
     <h2 class="custom-title text-primary-100 text-center mb-8">Edit Satwa</h2>
 
-    <form method="POST" onsubmit="event.preventDefault(); handleSave();" class="space-y-6">
+
+
+
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
       <div>
         <label for="nama_individu" class="block text-sm font-semibold text-primary-100 mb-2">Nama Individu</label>
-        <input type="text" id="nama_individu" name="nama_individu" value="Simba"
+        <input type="text" id="nama_individu" name="nama_individu" value="{{ satwa.nama }}"
           class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary-100 focus:border-primary-100">
       </div>
 
       <div>
         <label for="spesies" class="block text-sm font-semibold text-primary-100 mb-2">Spesies</label>
-        <input type="text" id="spesies" name="spesies" value="Singa"
+        <input type="text" id="spesies" name="spesies" value="{{ satwa.spesies }}"
           class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary-100 focus:border-primary-100">
       </div>
 
       <div>
         <label for="asal_hewan" class="block text-sm font-semibold text-primary-100 mb-2">Asal Hewan</label>
-        <input type="text" id="asal_hewan" name="asal_hewan" value="Afrika"
+        <input type="text" id="asal_hewan" name="asal_hewan" value="{{ satwa.asal_hewan }}"
           class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary-100 focus:border-primary-100">
       </div>
 
       <div>
         <label for="tanggal_lahir" class="block text-sm font-semibold text-primary-100 mb-2">Tanggal Lahir</label>
-        <input type="date" id="tanggal_lahir" name="tanggal_lahir" value="2018-05-12"
+        <input type="date" id="tanggal_lahir" name="tanggal_lahir" value="{{ satwa.tanggal_lahir|date:'Y-m-d' }}"
           class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary-100 focus:border-primary-100">
       </div>
 
@@ -112,47 +116,37 @@
         <label for="status_kesehatan" class="block text-sm font-semibold text-primary-100 mb-2">Status Kesehatan</label>
         <select id="status_kesehatan" name="status_kesehatan"
           class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary-100 focus:border-primary-100">
-          <option value="Sehat" selected>Sehat</option>
-          <option value="Sakit">Sakit</option>
-          <option value="Dalam Pemantauan">Dalam Pemantauan</option>
-          <option value="Lainnya">Lainnya</option>
+          {% for status in status_choices %}
+            <option value="{{ status }}" {% if satwa.status_kesehatan == status %}selected{% endif %}>{{ status }}</option>
+          {% endfor %}
         </select>
       </div>
 
       <div>
-        <label for="habitat" class="block text-sm font-semibold text-primary-100 mb-2">Habitat</label>
-        <select id="habitat" name="habitat"
+        <label for="nama_habitat" class="block text-sm font-semibold text-primary-100 mb-2">Habitat</label>
+        <select id="nama_habitat" name="nama_habitat"
           class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary-100 focus:border-primary-100">
-          <option value="Savana">Savana</option>
-          <option value="Hutan Tropis">Hutan Tropis</option>
-          <option value="Padang Rumput">Padang Rumput</option>
-          <option value="Lainnya">Lainnya</option>
+          {% for habitat in habitat_choices %}
+
+            <option value="{{ habitat }}" {% if satwa.nama_habitat == habitat %}selected{% endif %}>{{ habitat }}</option>
+          {% endfor %}
         </select>
       </div>
 
       <div>
         <label for="url_foto" class="block text-sm font-semibold text-primary-100 mb-2">URL Foto Satwa</label>
-        <input type="url" id="url_foto" name="url_foto" value="https://placekitten.com/200/200"
+        <input type="url" id="url_foto" name="url_foto" value="{{ satwa.url_foto }}"
           class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary-100 focus:border-primary-100">
       </div>
 
       <div class="flex justify-center space-x-4 pt-6">
         <button type="submit" class="btn-primary">Simpan Perubahan</button>
-        <button type="button" class="btn-secondary" onclick="handleCancel()">Batal</button>
+        <a href="{% url 'datasatwa:daftar_satwa' %}" class="btn-secondary inline-block">Batal</a>
       </div>
     </form>
   </div>
-
-  <script>
-    function handleSave() {
-      window.location.href = "{% url 'datasatwa:daftar_satwa' %}";
-    }
-    function handleCancel() {
-      window.location.href = "{% url 'datasatwa:daftar_satwa' %}";
-    }
-  </script>
-
-</body>
+</div>
 {% endblock %}
+
 
 </html>

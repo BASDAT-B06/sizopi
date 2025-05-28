@@ -116,10 +116,17 @@
   <div class="max-w-3xl mx-auto form-container">
     <h2 class="custom-title text-primary-100 text-center mb-8">Form Tambah Data Satwa</h2>
 
-    <form method="POST" onsubmit="event.preventDefault(); handleSave();">
+    {% if error %}
+    <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+        {{ error }}
+    </div>
+    {% endif %}
+    <form method="POST">
+      {% csrf_token %}
       <div class="mb-6">
-        <label for="nama_individu" class="form-label">Nama Individu</label>
+        <label for="nama_individu" class="form-label">Nama Individu (opsional)</label>
         <input type="text" name="nama_individu" id="nama_individu" class="form-input">
+
       </div>
 
       <div class="mb-6">
@@ -133,27 +140,25 @@
       </div>
 
       <div class="mb-6">
-        <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+        <label for="tanggal_lahir" class="form-label">Tanggal Lahir (opsional)</label>
         <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-input">
       </div>
 
       <div class="mb-6">
         <label for="status_kesehatan" class="form-label">Status Kesehatan</label>
-        <select name="status_kesehatan" id="status_kesehatan" class="form-input">
-          <option value="Sehat">Sehat</option>
-          <option value="Sakit">Sakit</option>
-          <option value="Dalam Pemantauan">Dalam Pemantauan</option>
-          <option value="Lainnya">Lainnya</option>
+        <select name="status_kesehatan" id="status_kesehatan" class="form-input" >
+          {% for status in status_choices %}
+            <option value="{{ status }}">{{ status }}</option>
+          {% endfor %}
         </select>
       </div>
 
       <div class="mb-6">
         <label for="habitat" class="form-label">Nama Habitat</label>
         <select name="habitat" id="habitat" class="form-input">
-          <option value="Savana">Savana</option>
-          <option value="Hutan Tropis">Hutan Tropis</option>
-          <option value="Padang Rumput">Padang Rumput</option>
-          <option value="Lainnya">Lainnya</option>
+          {% for h in habitat_choices %}
+            <option value="{{ h }}">{{ h }}</option>
+          {% endfor %}
         </select>
       </div>
 

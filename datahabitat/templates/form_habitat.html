@@ -119,8 +119,15 @@
   <div class="max-w-3xl mx-auto form-container mt-4">
     <h2 class="custom-title text-primary-100 text-center mb-8">Form Tambah Habitat</h2>
 
-    <form method="POST" onsubmit="event.preventDefault(); handleSave();">
+    <form method="POST">
+
       {% csrf_token %}
+      {% if error_message %}
+        <div class="mb-6 bg-red-100 text-red-700 p-3 rounded-md text-sm">
+          {{ error_message }}
+        </div>
+      {% endif %}
+
 
       <div class="mb-6">
         <label for="nama_habitat" class="form-label">Nama Habitat</label>

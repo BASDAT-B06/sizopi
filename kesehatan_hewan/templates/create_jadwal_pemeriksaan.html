@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+{% extends "base.html" %}
+
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="dokter_hewan" %}
+{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Jadwal Pemeriksaan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '100': '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '100': '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        }
+                    },
+                    fontFamily: {
+                        'header': ['Helvetica', 'Arial', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #121212;
+        }
+    </style>
+</head>
+
+<body class="bg-white min-h-screen">
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-100 mr-2" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <h1 class="text-primary-100 text-xl font-bold">TAMBAH JADWAL PEMERIKSAAN</h1>
+            <h3 class="text-primary-100 text-xl font-bold mb-6">Tambah Jadwal Pemeriksaan</h3>
+        </div>
+
+        <div class="max-w-2xl mx-auto">
+            <form class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-6">
+                <div class="border-b border-gray-200 pb-4 mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800">Detail Jadwal</h2>
+                </div>
+
+                <div>
+                    <label class="block text-primary-100 font-medium mb-2" for="tanggal">Tanggal Pemeriksaan</label>
+                    <div class="relative">
+                        <input type="date" id="tanggal" name="tanggal"
+                            class="w-full border border-gray-300 rounded-md p-2.5 pl-10 focus:border-primary-100 focus:ring-1 focus:ring-primary-100">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-4 items-center">
+                    <a href="#" class="text-gray-600 font-medium hover:text-gray-800 transition duration-150">Batal</a>
+                    <button type="submit"
+                        class="bg-accent-500 hover:bg-accent-600 focus:ring-2 focus:ring-accent-400 focus:ring-opacity-50 text-white px-5 py-2 rounded-full font-medium transition duration-150 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Simpan Jadwal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+{% endblock %}
+</html>

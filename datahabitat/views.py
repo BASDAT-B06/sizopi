@@ -1,59 +1,190 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.db import connection
 
-habitats = [
-    {'id': 1, 'nama': 'Hutan Tropis', 'luas_area': 1500, 'kapasitas_maksimal': 1000, 'suhu': 30, 'kelembapan': 40, 'vegetasi': 'Pepohonan lebat'},
-    {'id': 2, 'nama': 'Savana', 'luas_area': 2000, 'kapasitas_maksimal': 1200, 'suhu': 30, 'kelembapan': 40, 'vegetasi': 'Rumput luas'},
-    {'id': 3, 'nama': 'Padang Rumput', 'luas_area': 1800, 'kapasitas_maksimal': 900, 'suhu': 32, 'kelembapan': 50, 'vegetasi': 'Terbuka tanpa kanopi'},
-    {'id': 4, 'nama': 'Pantai', 'luas_area': 2500, 'kapasitas_maksimal': 1500, 'suhu': 28, 'kelembapan': 85, 'vegetasi': 'Pepohonan pantai'},
-    {'id': 5, 'nama': 'Hutan Mangrove', 'luas_area': 1200, 'kapasitas_maksimal': 600, 'suhu': 27, 'kelembapan': 95, 'vegetasi': 'Mangrove'},
-]
+
+def dictfetchall(cursor):
+    "Helper untuk ambil hasil cursor sebagai list of dict"
+    columns = [col[0] for col in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
 def daftar_habitat(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SET search_path TO SIZOPI")
+        cursor.execute("""
+            SELECT nama, luas_area, kapasitas, status
+            FROM HABITAT
+            ORDER BY nama
+        """)
+        habitats = dictfetchall(cursor)
+
     return render(request, 'daftar_habitat.html', {'habitats': habitats})
 
-species_in_habitat = {
-    1: [{'nama_individu': 'Simba', 'spesies': 'Singa', 'asal_hewan': 'Afrika', 'tanggal_lahir': '2018-05-12', 'status_kesehatan': 'Sehat'}],
-    2: [{'nama_individu': 'Nala', 'spesies': 'Zebra', 'asal_hewan': 'Afrika', 'tanggal_lahir': '2020-03-01', 'status_kesehatan': 'Sehat'}],
-    3: [{'nama_individu': 'Rio', 'spesies': 'Harimau', 'asal_hewan': 'Kalimantan', 'tanggal_lahir': '2020-03-03', 'status_kesehatan': 'Sakit'}],
-    4: [{'nama_individu': 'Luna', 'spesies': 'Orangutan', 'asal_hewan': 'Kalimantan', 'tanggal_lahir': '2019-01-10', 'status_kesehatan': 'Sehat'}],
-    5: [{'nama_individu': 'Kara', 'spesies': 'Kuda', 'asal_hewan': 'Amerika', 'tanggal_lahir': '2021-06-15', 'status_kesehatan': 'Sehat'}],
-}
 
+# def tambah_habitat(request):
+#     if request.method == 'POST':
+#         nama = request.POST.get('nama_habitat')
+#         luas_area = request.POST.get('luas_area')
+#         kapasitas = request.POST.get('kapasitas_maksimal')
+#         status = request.POST.get('status_lingkungan')
 
+#         with connection.cursor() as cursor:
+#             cursor.execute("SET search_path TO SIZOPI")  # kalau pakai schema
+#             cursor.execute("""
+#                 INSERT INTO HABITAT (nama, luas_area, kapasitas, status)
+#                 VALUES (%s, %s, %s, %s)
+#             """, [nama, luas_area, kapasitas, status])
+
+#         return redirect('datahabitat:daftar_habitat')
+
+#     return render(request, 'form_habitat.html')
 
 def tambah_habitat(request):
     if request.method == 'POST':
+        nama = request.POST.get('nama_habitat', '').strip()
+        luas_area = request.POST.get('luas_area', '').strip()
+        kapasitas = request.POST.get('kapasitas_maksimal', '').strip()
+        status = request.POST.get('status_lingkungan', '').strip()
+
+        error_message = None
+
+        # Validasi: semua field wajib diisi
+        if not nama or not luas_area or not kapasitas or not status:
+            error_message = "Semua field harus diisi."
+
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute("SET search_path TO SIZOPI")
+                cursor.execute("SELECT 1 FROM habitat WHERE nama = %s", [nama])
+                if cursor.fetchone():
+                    error_message = "Nama habitat sudah digunakan. Gunakan nama lain."
+
+        if error_message:
+            context = {
+                'habitat': {
+                    'nama': nama,
+                    'luas_area': luas_area,
+                    'kapasitas': kapasitas,
+                    'status': status,
+                },
+                'error_message': error_message,
+            }
+            return render(request, 'form_habitat.html', context)
+
+        with connection.cursor() as cursor:
+            cursor.execute("SET search_path TO SIZOPI")
+            cursor.execute("""
+                INSERT INTO HABITAT (nama, luas_area, kapasitas, status)
+                VALUES (%s, %s, %s, %s)
+            """, [nama, luas_area, kapasitas, status])
+
         return redirect('datahabitat:daftar_habitat')
+
     return render(request, 'form_habitat.html')
 
 
-def edit_habitat(request, pk):
-    habitat = next((hab for hab in habitats if hab['id'] == pk), None)
-    if habitat is None:
-        return HttpResponse("Habitat not found.", status=404)
-    
+
+def edit_habitat(request, nama):
+    with connection.cursor() as cursor:
+        cursor.execute("SET search_path TO SIZOPI")
+        cursor.execute("SELECT * FROM habitat WHERE nama = %s", [nama])
+        habitat = dictfetchall(cursor)
+
+    if not habitat:
+        return HttpResponse("Habitat tidak ditemukan", status=404)
+
+    habitat = habitat[0]
+
     if request.method == 'POST':
-    
+        nama_baru = request.POST.get('nama_baru', '').strip()
+        luas_area = request.POST.get('luas_area')
+        kapasitas = request.POST.get('kapasitas')
+        status = request.POST.get('status')
+        error_message = None
+
+        if not nama_baru:
+            error_message = "Nama habitat tidak boleh kosong."
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute("SET search_path TO SIZOPI")
+                cursor.execute("""
+                    SELECT 1 FROM habitat
+                    WHERE nama = %s AND nama != %s
+                """, [nama_baru, nama])
+                if cursor.fetchone():
+                    error_message = "Nama habitat sudah digunakan oleh habitat lain."
+
+        if error_message:
+            # Kirim kembali data + error ke template
+            habitat_data = {
+                'nama': nama_baru,
+                'luas_area': luas_area,
+                'kapasitas': kapasitas,
+                'status': status,
+            }
+            return render(request, 'edit_habitat.html', {
+                'habitat': habitat_data,
+                'error_message': error_message,
+            })
+
+        # Jika valid, baru update ke database
+        with connection.cursor() as cursor:
+            cursor.execute("SET search_path TO SIZOPI")
+            cursor.execute("""
+                UPDATE habitat
+                SET nama = %s,
+                    luas_area = %s,
+                    kapasitas = %s,
+                    status = %s
+                WHERE nama = %s
+            """, [nama_baru, luas_area, kapasitas, status, nama])
+
+            if nama_baru != nama:
+                cursor.execute("""
+                    UPDATE HEWAN
+                    SET nama_habitat = %s
+                    WHERE nama_habitat = %s
+                """, [nama_baru, nama])
+
         return redirect('datahabitat:daftar_habitat')
-    
+
     return render(request, 'edit_habitat.html', {'habitat': habitat})
 
-def hapus_habitat(request, pk):
 
-    habitat = next((hab for hab in habitats if hab['id'] == pk), None)
-    if habitat is None:
-        return HttpResponse("Habitat not found.", status=404)
+
+def hapus_habitat(request, nama):
+    with connection.cursor() as cursor:
+        cursor.execute("SET search_path TO SIZOPI")
+        cursor.execute("DELETE FROM HABITAT WHERE nama = %s", [nama])
 
     return redirect('datahabitat:daftar_habitat')
 
 
-def detail_habitat(request, pk):
-    habitat = next((hab for hab in habitats if hab['id'] == pk), None)
-    if habitat is None:
-        return HttpResponse("Habitat not found.", status=404)
+def detail_habitat(request, nama):
+    with connection.cursor() as cursor:
+        # Get habitat data
+        cursor.execute("SET search_path TO SIZOPI")
+        cursor.execute("""
+            SELECT nama, luas_area, kapasitas, status
+            FROM HABITAT
+            WHERE nama = %s
+        """, [nama])
+        habitat = dictfetchall(cursor)
+        if not habitat:
+            return HttpResponse("Habitat not found.", status=404)
+        habitat = habitat[0]
 
-    species = species_in_habitat.get(pk, [])
-    
-    return render(request, 'detail_habitat.html', {'habitat': habitat, 'species_in_habitat': species})
+        cursor.execute("""
+            SELECT nama AS nama_individu, spesies, asal_hewan,
+                   tanggal_lahir, status_kesehatan
+            FROM HEWAN
+            WHERE nama_habitat = %s
+            ORDER BY nama
+        """, [nama])
+        species = dictfetchall(cursor)
+
+    return render(request, 'detail_habitat.html', {
+        'habitat': habitat,
+        'species_in_habitat': species
+    })

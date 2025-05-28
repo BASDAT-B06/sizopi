@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Satwa</title>
+    <title>Daftar Hewan - Kesehatan Hewan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -42,18 +42,20 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #ffffff;
         }
+
         .btn-primary {
             background-color: #DB6900;
             color: white;
             border-radius: 28px;
             padding: 10px 20px;
         }
+
         .btn-secondary {
             background-color: #A7AD8B;
             color: #1C2628;
@@ -62,72 +64,42 @@
             padding: 8px 18px;
             font-size: 14px;
         }
-        .btn-edit, .btn-hapus {
-            color: #1C2628;
+
+        .btn-rekam-medis {
+            background-color: #E0F2FE;
+            border: 1.5px solid #0284C7;
+            color: #0284C7;
             border-radius: 12px;
-            padding: 3px 6px;
+            padding: 6px 12px;
             font-size: 12px;
             text-decoration: none;
             display: inline-block;
             text-align: center;
-        }
-        .btn-edit {
-            background-color: #D7DACB;
-            border: 1.5px solid #193e30;
-        }
-        .btn-hapus {
-            background-color: #FDECEC;
-            border: 1.5px solid #EE443F;
-        }
-        .btn-logout {
-            background-color: white;
-            color: #22c55e;
-            border: 2px solid #22c55e;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-weight: 500;
+            cursor: pointer;
             transition: all 0.2s;
         }
-        .btn-logout:hover {
-            background-color: #f0fdf4;
+
+        .btn-rekam-medis:hover {
+            background-color: #BAE6FD;
         }
+
         .custom-title {
-        font-family: 'Poppins', sans-serif !important;
-        font-size: 2rem !important; /* Custom size */
-        font-weight: 700 !important; /* Custom weight */
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 2rem !important;
+            font-weight: 700 !important;
         }
     </style>
 </head>
 
-{% extends "base.html" %}
-
-{% block navbar %}
-  {% include "components/navbar.html" with is_logged_in=True %}
-{% endblock %}
-
-{% block content %}
-
 <body class="min-h-screen bg-white">
-
     <div class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h2 class="custom-title text-primary-100 text-center mb-8">Data Satwa</h2>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="mb-6 px-4 py-3 rounded-lg border border-green-300 bg-green-50 text-green-800 text-sm">
-                {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <div class="flex justify-end mb-6">
-            <a href="{% url 'datasatwa:tambah_satwa' %}" class="btn-primary">+ Tambah Satwa</a>
-        </div>
+        <h2 class="custom-title text-primary-100 text-center mb-8">Daftar Hewan - Kesehatan Hewan</h2>
 
         <div class="overflow-x-auto">
             <table class="w-full table-auto rounded-lg overflow-hidden text-sm">
                 <thead class="bg-secondary-60 text-primary-100 uppercase text-xs tracking-wider">
                     <tr>
-                        <th class="p-4 text-left">Nama Individu</th>
+                        <th class="p-4 text-left">Nama Hewan</th>
                         <th class="p-4 text-left">Spesies</th>
                         <th class="p-4 text-left">Asal Hewan</th>
                         <th class="p-4 text-left">Tanggal Lahir</th>
@@ -138,31 +110,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for satwa in data %}
+                    {% for hewan in data %}
                     <tr class="bg-white border-b border-gray-200">
-                        <td class="p-4">{{ satwa.nama_individu }}</td>
-                        <td class="p-4">{{ satwa.spesies }}</td>
-                        <td class="p-4">{{ satwa.asal_hewan }}</td>
-                        <td class="p-4">{{ satwa.tanggal_lahir }}</td>
-                        <td class="p-4 font-semibold">{{ satwa.status_kesehatan }}</td>
-                        <td class="p-4">{{ satwa.habitat }}</td>
+                        <td class="p-4">{{ hewan.nama_individu }}</td>
+                        <td class="p-4">{{ hewan.spesies }}</td>
+                        <td class="p-4">{{ hewan.asal_hewan }}</td>
+                        <td class="p-4">{{ hewan.tanggal_lahir }}</td>
+                        <td class="p-4 font-semibold">{{ hewan.status_kesehatan }}</td>
+                        <td class="p-4">{{ hewan.habitat }}</td>
                         <td class="p-4">
-                            {% if satwa.url_foto %}
-                                <img src="{{ satwa.url_foto }}" alt="Foto" class="w-20 h-20 object-cover rounded-lg">
+                            {% if hewan.url_foto %}
+                            <img src="{{ hewan.url_foto }}" alt="Foto" class="w-20 h-20 object-cover rounded-lg">
                             {% else %}
-                                No Image
+                            No Image
                             {% endif %}
                         </td>
                         <td class="p-4">
-                        <div class="flex flex-col items-start gap-2">
-                            <a href="{% url 'datasatwa:edit_satwa' satwa.id %}" class="btn-edit">Edit</a>
-                            <a href="{% url 'datasatwa:hapus_satwa' satwa.id %}" class="btn-hapus">Hapus</a>
-                        </div>
+                            <a href="/kesehatan_hewan/rekam-medis/{{ hewan.id }}/" class="btn-rekam-medis">
+                                Lihat Rekam Medis
+                            </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" class="p-6 text-center text-gray-500">Tidak ada data satwa.</td>
+                        <td colspan="8" class="p-6 text-center text-gray-500">Tidak ada data hewan.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -170,20 +141,18 @@
         </div>
     </div>
 
-
-    <!-- Add JavaScript for mobile menu toggle -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const mobileMenuButton = document.querySelector('.mobile-menu-button');
             const mobileMenu = document.querySelector('.mobile-menu');
 
-            mobileMenuButton.addEventListener('click', function () {
-                mobileMenu.classList.toggle('hidden');
-            });
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function () {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
         });
     </script>
 </body>
-
-{% endblock %}
 
 </html>

@@ -1,14 +1,84 @@
 {% extends "base.html" %}
 {% load static %}
 
+<<<<<<< HEAD
 {% block meta %}
 <title>Jadwal Pemeriksaan Kesehatan Hewan</title>
 {% endblock meta %}
+=======
+{% extends "base.html" %}
+
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="dokter_hewan" %}
+{% endblock %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Rekam Medis Hewan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '100': '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '100': '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        },
+                        neutral: {
+                            'black': '#121212'
+                        }
+                    },
+                    fontFamily: {
+                        'header': ['Helvetica', 'Arial', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #121212;
+        }
+>>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085
 
 {% block navbar %}
 {% include "components/navbar.html" with is_logged_in=True user_role="dokter_hewan" %}
 {% endblock navbar %}
 
+<<<<<<< HEAD
 {% block content %}
 <div class="bg-secondary min-h-screen px-4 py-8">
     <div class="max-w-7xl mx-auto">
@@ -64,6 +134,33 @@
             <button id="openCreateModal"
                 class="bg-accent-500 hover:bg-accent-600 text-white font-medium px-5 py-2.5 rounded-full flex items-center shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+=======
+<body class="bg-accent-cream-50">
+
+    <div class="container mx-auto px-4 py-6">
+        <h3 class="text-primary-100 text-xl font-bold mb-12">Jadwal Pemeriksaan Hewan</h3>
+
+        <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-primary-100">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">Nama Hewan</div>
+                    <p class="text-gray-800">Molly</p>
+                </div>
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">Spesies</div>
+                    <p class="text-gray-800">Gajah</p>
+                </div>
+                <div>
+                    <div class="text-sm font-medium text-primary-100 mb-1">ID Hewan</div>
+                    <p class="text-gray-800">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end mb-4">
+            <button
+                class="bg-accent-500 hover:bg-accent-600 focus:bg-accent-600 active:bg-accent-700 text-white font-medium py-1.5 px-4 rounded-full text-sm transition duration-150 ease-in-out flex items-center space-x-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+>>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085
                     <path fill-rule="evenodd"
                         d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                         clip-rule="evenodd" />
@@ -99,6 +196,7 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 <!-- MODALS -->
 <!-- Tambah Jadwal Modal -->
 <div id="createModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
@@ -285,3 +383,8 @@
     });
 </script>
 {% endblock content %}
+=======
+</body>
+{% endblock %}
+</html>
+>>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085

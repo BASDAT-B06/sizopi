@@ -34,12 +34,14 @@ DB_POOL = psycopg2.pool.SimpleConnectionPool(
     options="-c search_path=sizopi"
 )
 
-# For development
+# # For development
 def get_db_connection():
     conn = DB_POOL.getconn()
     with conn.cursor() as cur:
         cur.execute("SET search_path TO sizopi")
     return conn
+
+
 
 # For development
 # def get_db_connection():
@@ -86,13 +88,19 @@ def login_view(request):
                     cur.execute("SELECT 1 FROM PENGUNJUNG WHERE username_P = %s", (username,))
                     if cur.fetchone():
                         user_dict['role'] = 'pengunjung'
+
                         cur.execute("SELECT alamat, tgl_lahir FROM PENGUNJUNG WHERE username_P = %s", (username,))
                         pengunjung_details = cur.fetchone()
                         if pengunjung_details:
                             user_dict.update({
                                 'alamat': pengunjung_details[0],
-                                'tgl_lahir': pengunjung_details[1].strftime('%Y-%m-%d')
+                                'tgl_lahir': pengunjung_details[1].strftime('%Y-%m-%d') if pengunjung_details[1] else None
                             })
+
+                        # Cek apakah dia adopter
+                        cur.execute("SELECT 1 FROM ADOPTER WHERE username_adopter = %s", (username,))
+                        user_dict['is_adopter'] = cur.fetchone() is not None
+
                     
                     cur.execute("SELECT 1 FROM DOKTER_HEWAN WHERE username_DH = %s", (username,))
                     if cur.fetchone():

@@ -1,14 +1,85 @@
+<<<<<<< HEAD
 {% extends "base.html" %}
 {% load static %}
 
 {% block meta %}
 <title>Riwayat Pemberian Pakan Hewan</title>
 {% endblock meta %}
+=======
+<!DOCTYPE html>
+<html lang="id">
+{% extends "base.html" %}
+
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
+{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pemberian Pakan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#91986E',
+                            '100': '#91986E',
+                            '80': '#91986ECC',
+                            '60': '#91986E99',
+                            '40': '#91986E66',
+                            '20': '#91986E33',
+                        },
+                        secondary: {
+                            DEFAULT: '#F5EFE0',
+                            '100': '#F5EFE0',
+                            '80': '#F5EEDBCC',
+                            '60': '#F5EEDB99',
+                            '40': '#F5EEDB66',
+                            '20': '#F5EEDB33',
+                        },
+                        accent: {
+                            '50': '#FBF0E6',
+                            '200': '#FAE9D9',
+                            '400': '#F2D4B9',
+                            '500': '#DB6900',
+                            '600': '#C55F00',
+                            '700': '#A44F00',
+                            '800': '#A44F00',
+                        },
+                        neutral: {
+                            'black': '#121212'
+                        }
+                    },
+                    fontFamily: {
+                        'header': ['Helvetica', 'Arial', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #121212;
+        }
+>>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085
 
 {% block navbar %}
 {% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
 {% endblock navbar %}
 
+<<<<<<< HEAD
 {% block content %}
 <div class="bg-secondary min-h-screen px-4 py-8">
     <div class="max-w-7xl mx-auto">
@@ -25,6 +96,16 @@
 
         <div class="overflow-x-auto bg-white rounded-lg shadow-md">
             <table class="min-w-full">
+=======
+<body class="bg-accent-cream-50">
+
+
+    <div class="container mx-auto px-4 py-6">
+        <h3 class="text-primary-100 text-xl font-bold mb-6">RIWAYAT PEMBERIAN PAKAN</h3>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-md shadow overflow-hidden">
+>>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085
                 <thead>
                     <tr class="bg-primary-20 text-primary border-b border-primary-40">
                         <th class="px-6 py-4 text-left text-sm font-medium">
@@ -141,5 +222,13 @@
             </table>
         </div>
     </div>
+<<<<<<< HEAD
 </div>
 {% endblock content %}
+=======
+</body>
+
+{% endblock %}
+
+</html>
+>>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085
