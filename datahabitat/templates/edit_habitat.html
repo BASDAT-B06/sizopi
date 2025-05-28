@@ -107,10 +107,17 @@
 
     <form method="POST">
       {% csrf_token %}
+      {% if error_message %}
+        <div class="mb-6 bg-red-100 text-red-700 p-3 rounded-md text-sm">
+          {{ error_message }}
+        </div>
+      {% endif %}
+
 
       <div class="mb-6">
         <label for="nama_habitat" class="form-label">Nama Habitat</label>
-        <input type="text" name="nama_habitat" id="nama_habitat" value="{{ habitat.nama }}" class="form-input" readonly>
+        <input type="text" name="nama_baru" id="nama_baru" value="{{ habitat.nama }}" class="form-input" required>
+
       </div>
 
       <div class="mb-6">

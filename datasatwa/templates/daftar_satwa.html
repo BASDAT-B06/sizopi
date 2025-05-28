@@ -102,7 +102,7 @@
 {% extends "base.html" %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
+  {% include "components/navbar.html" with is_logged_in=True %}
 {% endblock %}
 
 {% block content %}
