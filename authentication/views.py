@@ -1,56 +1,16 @@
-from django.shortcuts import render
-import psycopg2
-from psycopg2 import pool
-from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db import connection
+from django.urls import reverse
 from .form import LoginForm, BaseRegisterForm, RegisterDokterForm, RegisterPenggunjungForm, RegisterStaffForm
 import uuid
 from datetime import datetime, date
-import os
-from dotenv import load_dotenv
-
-load_dotenv(override=True) 
-
-# For deployment
-# DB_POOL = psycopg2.pool.SimpleConnectionPool(
-#     1, 20,
-#     dbname="railway",
-#     user="postgres",
-#     password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
-#     host="postgres.railway.internal",
-#     port="5432",
-#     database="-c search_path=sizopi"
-# )
-
-# For development
-DB_POOL = psycopg2.pool.SimpleConnectionPool(
-    1, 20,
-    dbname=os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
-    options="-c search_path=sizopi"
-)
-
-# # For development
-def get_db_connection():
-    conn = DB_POOL.getconn()
-    with conn.cursor() as cur:
-        cur.execute("SET search_path TO sizopi")
-    return conn
 
 
+def set_schema(cur, schema='sizopi'):
+    cur.execute(f"SET search_path TO {schema}")
 
-# For development
-# def get_db_connection():
-#     return DB_POOL.getconn()
 
-def release_db_connection(conn):
-    DB_POOL.putconn(conn)
-
-# Create your views here.
 def login_view(request):
     if request.session.get('is_authenticated', False):
         return redirect('main:main')
@@ -59,9 +19,10 @@ def login_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        conn = get_db_connection()
         try:
-            with conn.cursor() as cur:
+            with connection.cursor() as cur:
+                set_schema(cur)
+                
                 # Check if input is email or username
                 cur.execute("""
                     SELECT username, email, nama_depan, nama_tengah, nama_belakang, 
@@ -151,29 +112,25 @@ def login_view(request):
                     messages.error(request, 'Invalid username/email or password.')
         except Exception as e:
             messages.error(request, f'Login error: {str(e)}')
-        finally:
-            release_db_connection(conn)
+            
     return render(request, 'login.html')
+
 
 def register_dokter_view(request):
     if request.method == 'POST':
         form = RegisterDokterForm(request.POST)
         if form.is_valid():
-            conn = get_db_connection()
             try:
-                # Pastikan search_path sudah diatur sebelum transaksi dimulai
-                with conn.cursor() as cur:
+                with connection.cursor() as cur:
+                    set_schema(cur)
+                    
                     # Check if username already exists
                     cur.execute('SELECT 1 FROM PENGGUNA WHERE username = %s OR email = %s', 
                             (form.cleaned_data['username'], form.cleaned_data['email']))
                     if cur.fetchone():
                         messages.error(request, 'Username or email already registered.')
                         return render(request, 'register_dokter_hewan.html', {'form': form})
-                
-                # Mulai transaksi setelah pengecekan
-                conn.autocommit = False
-                
-                with conn.cursor() as cur:
+                    
                     # Insert into PENGGUNA table
                     cur.execute("""
                         INSERT INTO PENGGUNA (
@@ -189,7 +146,9 @@ def register_dokter_view(request):
                         form.cleaned_data['nama_belakang'],
                         form.cleaned_data['no_hp']
                     ))
+                    
                     no_str_formatted = f"STR-DOC-{form.cleaned_data['no_izin_praktek']}"
+                    
                     # Insert into DOKTER_HEWAN table
                     cur.execute("""
                         INSERT INTO DOKTER_HEWAN (username_DH, no_STR)
@@ -212,41 +171,32 @@ def register_dokter_view(request):
                         specialization
                     ))
                 
-                # Commit transaction
-                conn.commit()
                 messages.success(request, 'Registration successful. Please login.')
                 return redirect('authentication:login')
+                
             except Exception as e:
-                if not conn.autocommit:
-                    conn.rollback()
                 messages.error(request, f'Registration failed: {str(e)}')
-            finally:
-                conn.autocommit = True
-                release_db_connection(conn)
     else:
         form = RegisterDokterForm()
     
     return render(request, 'register_dokter_hewan.html', {'form': form})
 
+
 def register_pengunjung_view(request):
     if request.method == 'POST':
         form = RegisterPenggunjungForm(request.POST)
         if form.is_valid():
-            conn = get_db_connection()
             try:
-                # Pastikan search_path sudah diatur sebelum transaksi dimulai
-                with conn.cursor() as cur:
+                with connection.cursor() as cur:
+                    set_schema(cur)
+                    
                     # Check if username already exists
                     cur.execute('SELECT 1 FROM PENGGUNA WHERE username = %s OR email = %s', 
                              (form.cleaned_data['username'], form.cleaned_data['email']))
                     if cur.fetchone():
                         messages.error(request, 'Username or email already registered.')
                         return render(request, 'register_pengunjung.html', {'form': form})
-                
-                # Mulai transaksi setelah pengecekan
-                conn.autocommit = False
-                
-                with conn.cursor() as cur:
+                    
                     # Insert into PENGGUNA table
                     cur.execute("""
                         INSERT INTO PENGGUNA (
@@ -273,41 +223,32 @@ def register_pengunjung_view(request):
                         form.cleaned_data['tgl_lahir']
                     ))
                 
-                # Commit transaction
-                conn.commit()
                 messages.success(request, 'Registration successful. Please login.')
                 return redirect('authentication:login')
+                
             except Exception as e:
-                if not conn.autocommit:
-                    conn.rollback()
                 messages.error(request, f'Registration failed: {str(e)}')
-            finally:
-                conn.autocommit = True
-                release_db_connection(conn)
     else:
         form = RegisterPenggunjungForm()
     
     return render(request, 'register_pengunjung.html', {'form': form})
 
+
 def register_staf_view(request):
     if request.method == 'POST':
         form = RegisterStaffForm(request.POST)
         if form.is_valid():
-            conn = get_db_connection()
             try:
-                # Pastikan search_path sudah diatur sebelum transaksi dimulai
-                with conn.cursor() as cur:
+                with connection.cursor() as cur:
+                    set_schema(cur)
+                    
                     # Check if username already exists
                     cur.execute('SELECT 1 FROM PENGGUNA WHERE username = %s OR email = %s', 
                             (form.cleaned_data['username'], form.cleaned_data['email']))
                     if cur.fetchone():
                         messages.error(request, 'Username or email already registered.')
                         return render(request, 'register_staff.html', {'form': form})
-                
-                # Mulai transaksi setelah pengecekan
-                conn.autocommit = False
-                
-                with conn.cursor() as cur:
+                    
                     # Insert into PENGGUNA table
                     cur.execute("""
                         INSERT INTO PENGGUNA (
@@ -354,21 +295,16 @@ def register_staf_view(request):
                             id_staf
                         ))
                 
-                # Commit transaction
-                conn.commit()
                 messages.success(request, 'Registration successful. Please login.')
                 return redirect('authentication:login')
+                
             except Exception as e:
-                if not conn.autocommit:
-                    conn.rollback()
                 messages.error(request, f'Registration failed: {str(e)}')
-            finally:
-                conn.autocommit = True
-                release_db_connection(conn)
     else:
         form = RegisterStaffForm()
     
     return render(request, 'register_staff.html', {'form': form})
+
 
 def logout_view(request):
     request.session.flush()

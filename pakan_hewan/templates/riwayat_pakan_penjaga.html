@@ -1,234 +1,227 @@
-<<<<<<< HEAD
-{% extends "base.html" %}
-{% load static %}
+<<<<<<< HEAD {% extends "base.html" %} {% load static %} {% block meta %} <title>Riwayat Pemberian Pakan {{ nama_hewan
+    }}</title>
+    {% endblock meta %}
+    =======
+    <!DOCTYPE html>
+    <html lang="id">
+    {% extends "base.html" %}
 
-{% block meta %}
-<title>Riwayat Pemberian Pakan Hewan</title>
-{% endblock meta %}
-=======
-<!DOCTYPE html>
-<html lang="id">
-{% extends "base.html" %}
+    {% block navbar %}
+    {% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
+    {% endblock %}
 
-{% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
-{% endblock %}
+    {% block content %}
 
-{% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Pemberian Pakan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            DEFAULT: '#91986E',
-                            '100': '#91986E',
-                            '80': '#91986ECC',
-                            '60': '#91986E99',
-                            '40': '#91986E66',
-                            '20': '#91986E33',
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Riwayat Pemberian Pakan</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+            rel="stylesheet">
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                DEFAULT: '#91986E',
+                                '100': '#91986E',
+                                '80': '#91986ECC',
+                                '60': '#91986E99',
+                                '40': '#91986E66',
+                                '20': '#91986E33',
+                            },
+                            secondary: {
+                                DEFAULT: '#F5EFE0',
+                                '100': '#F5EFE0',
+                                '80': '#F5EEDBCC',
+                                '60': '#F5EEDB99',
+                                '40': '#F5EEDB66',
+                                '20': '#F5EEDB33',
+                            },
+                            accent: {
+                                '50': '#FBF0E6',
+                                '200': '#FAE9D9',
+                                '400': '#F2D4B9',
+                                '500': '#DB6900',
+                                '600': '#C55F00',
+                                '700': '#A44F00',
+                                '800': '#A44F00',
+                            },
+                            neutral: {
+                                'black': '#121212'
+                            }
                         },
-                        secondary: {
-                            DEFAULT: '#F5EFE0',
-                            '100': '#F5EFE0',
-                            '80': '#F5EEDBCC',
-                            '60': '#F5EEDB99',
-                            '40': '#F5EEDB66',
-                            '20': '#F5EEDB33',
-                        },
-                        accent: {
-                            '50': '#FBF0E6',
-                            '200': '#FAE9D9',
-                            '400': '#F2D4B9',
-                            '500': '#DB6900',
-                            '600': '#C55F00',
-                            '700': '#A44F00',
-                            '800': '#A44F00',
-                        },
-                        neutral: {
-                            'black': '#121212'
+                        fontFamily: {
+                            'header': ['Helvetica', 'Arial', 'sans-serif'],
+                            'body': ['Poppins', 'sans-serif']
                         }
-                    },
-                    fontFamily: {
-                        'header': ['Helvetica', 'Arial', 'sans-serif'],
-                        'body': ['Poppins', 'sans-serif']
                     }
                 }
+            };
+        </script>
+        <style>
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                font-family: Helvetica, Arial, sans-serif;
+                color: #121212;
             }
-        };
-    </script>
-    <style>
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-family: Helvetica, Arial, sans-serif;
-            color: #121212;
-        }
->>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085
 
-{% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
-{% endblock navbar %}
+            >>>>>>>7beccf3b89d68a2c2a67b86fd704fff40109e085 {
+                % block navbar %
+            }
 
-<<<<<<< HEAD
-{% block content %}
-<div class="bg-secondary min-h-screen px-4 py-8">
-    <div class="max-w-7xl mx-auto">
-        <h3 class="text-2xl font-bold text-primary mb-6 flex items-center">
-            <div class="bg-primary-20 p-2.5 rounded-full mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-            </div>
-            Riwayat Pemberian Pakan Hewan
-        </h3>
+                {
+                % include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %
+            }
 
-        <div class="overflow-x-auto bg-white rounded-lg shadow-md">
-            <table class="min-w-full">
-=======
-<body class="bg-accent-cream-50">
+                {
+                % endblock navbar %
+            }
 
+            <<<<<<< HEAD {
+                % block content %
+            }
 
-    <div class="container mx-auto px-4 py-6">
-        <h3 class="text-primary-100 text-xl font-bold mb-6">RIWAYAT PEMBERIAN PAKAN</h3>
+            <div class="bg-secondary min-h-screen px-4 py-8"><div class="max-w-7xl mx-auto"><h3 class="text-2xl font-bold text-primary mb-6 flex items-center"><div class="bg-primary-20 p-2.5 rounded-full mr-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded-md shadow overflow-hidden">
->>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085
-                <thead>
-                    <tr class="bg-primary-20 text-primary border-b border-primary-40">
-                        <th class="px-6 py-4 text-left text-sm font-medium">
-                            <div class="flex items-center">
-                                Nama Individu (Hewan)
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                                </svg>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-medium">
-                            <div class="flex items-center">
-                                Spesies
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-medium">Asal Hewan</th>
-                        <th class="px-6 py-4 text-left text-sm font-medium">
-                            <div class="flex items-center">
-                                Tanggal Lahir
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-medium">Habitat</th>
-                        <th class="px-6 py-4 text-left text-sm font-medium">
-                            <div class="flex items-center">
-                                Status Kesehatan
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-medium">
-                            <div class="flex items-center">
-                                Jenis Pakan
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-medium">
-                            <div class="flex items-center">
-                                Jumlah Pakan (gram)
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-medium">
-                            <div class="flex items-center">
-                                Jadwal
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-secondary">
-                    <tr class="hover:bg-secondary-20 transition-colors duration-200">
-                        <td class="px-6 py-4 text-sm text-neutral-black font-medium">Molly</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">Gajah</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">Sumatra</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">2022-11-07</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">Padang Rumput</td>
-                        <td class="px-6 py-4 text-sm">
-                            <span
-                                class="px-3 py-1.5 bg-primary-20 text-primary text-xs rounded-full font-medium">Sehat</span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">Rumput</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black font-mono">5200</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">2025-07-13 11:00:00</td>
-                    </tr>
-                    <tr class="bg-secondary-20 hover:bg-secondary-40 transition-colors duration-200">
-                        <td class="px-6 py-4 text-sm text-neutral-black font-medium">Benny</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">Singa</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">Afrika</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">2022-11-07</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">Savana</td>
-                        <td class="px-6 py-4 text-sm">
-                            <span
-                                class="px-3 py-1.5 bg-primary-20 text-primary text-xs rounded-full font-medium">Sehat</span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">Daging Mentah</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black font-mono">4500</td>
-                        <td class="px-6 py-4 text-sm text-neutral-black">2025-07-13 14:00:00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-<<<<<<< HEAD
-</div>
-{% endblock content %}
-=======
-</body>
+            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg></div>Riwayat Pemberian Pakan: {
+                    {
+                    nama_hewan
+                }
+            }
 
-{% endblock %}
+            ({
+                    {
+                    jenis_hewan
+                }
+            }) </h3>< !-- Button to add new feeding schedule --><div class="mb-4"><button type="button" onclick="openAddModal()"
+            class="bg-primary hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-lg flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>Tambah Jadwal Pakan </button></div><div class="overflow-x-auto bg-white rounded-lg shadow-md"><table class="min-w-full">=======<body class="bg-accent-cream-50"><div class="container mx-auto px-4 py-6"><h3 class="text-primary-100 text-xl font-bold mb-6">RIWAYAT PEMBERIAN PAKAN</h3><div class="overflow-x-auto"><table class="min-w-full bg-white rounded-md shadow overflow-hidden">>>>>>>>7beccf3b89d68a2c2a67b86fd704fff40109e085 <thead><tr class="bg-primary-20 text-primary border-b border-primary-40"><th class="px-6 py-4 text-left text-sm font-medium"><div class="flex items-center">Jenis Pakan <svg xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 9l-7 7-7-7" /></svg></div></th><th class="px-6 py-4 text-left text-sm font-medium"><div class="flex items-center">Jumlah Pakan (gram) <svg xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 9l-7 7-7-7" /></svg></div></th><th class="px-6 py-4 text-left text-sm font-medium"><div class="flex items-center">Jadwal <svg xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-1 cursor-pointer hover:text-accent-500" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 
-</html>
->>>>>>> 7beccf3b89d68a2c2a67b86fd704fff40109e085
+            d="M19 9l-7 7-7-7" /></svg></div></th><th class="px-6 py-4 text-left text-sm font-medium">Aksi</th></tr></thead><tbody class="divide-y divide-secondary"> {
+                % for pakan in pakan_list %
+            }
+
+            <tr class="{% cycle '' 'bg-secondary-20' %} hover:bg-secondary-40 transition-colors duration-200"><td class="px-6 py-4 text-sm text-neutral-black"> {
+                    {
+                    pakan.jenis
+                }
+            }
+
+            </td><td class="px-6 py-4 text-sm text-neutral-black font-mono"> {
+                    {
+                    pakan.jumlah
+                }
+            }
+
+            </td><td class="px-6 py-4 text-sm text-neutral-black"> {
+                    {
+                    pakan.jadwal
+                }
+            }
+
+            </td><td class="px-6 py-4 text-sm"><span class="px-3 py-1.5 {% if pakan.status == 'Selesai Diberikan' %}bg-green-100 text-green-800{% elif pakan.status == 'Menunggu Pemberian' %}bg-primary-20 text-primary{% else %}bg-yellow-100 text-yellow-800{% endif %} text-xs rounded-full font-medium"> {
+                    {
+                    pakan.status
+                }
+            }
+
+            </span></td><td class="px-6 py-4 text-sm space-x-2 flex"> {
+                % if pakan.status !='Selesai Diberikan' %
+            }
+
+            <button onclick="openEditModal('{{ pakan.jenis }}', '{{ pakan.jumlah }}', '{{ pakan.jadwal }}')"
+            class="bg-blue-500 hover:bg-blue-600 text-white p-1.5 rounded-md"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button><form method="post" action="{% url 'pakan_hewan:update_status_pakan' id_hewan=id_hewan %}"
+
+            style="display: inline;"> {
+                % csrf_token %
+            }
+
+            <input type="hidden" name="jadwal" value="{{ pakan.jadwal }}"><button type="submit"
+            class="bg-green-500 hover:bg-green-600 text-white p-1.5 rounded-md"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+
+            d="M5 13l4 4L19 7" /></svg></button></form> {
+                % endif %
+            }
+
+            <form method="post" action="{% url 'pakan_hewan:delete_pakan' id_hewan=id_hewan %}"
+            style="display: inline;"
+
+            onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal pakan ini?');"> {
+                % csrf_token %
+            }
+
+            <input type="hidden" name="jadwal" value="{{ pakan.jadwal }}"><button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-md"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button></form></td></tr> {
+                % empty %
+            }
+
+            <tr><td colspan="5" class="px-6 py-4 text-sm text-center text-gray-500">Belum ada jadwal pakan untuk hewan ini </td></tr> {
+                % endfor %
+            }
+
+            </tbody></table></div></div><<<<<<< HEAD </div>< !-- Add Modal --><div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center"><div class="bg-white rounded-lg p-6 w-full max-w-md"><h3 class="text-xl font-bold mb-4">Tambah Jadwal Pakan</h3><form method="post" action="{% url 'pakan_hewan:create_pakan' id_hewan=id_hewan %}"> {
+                % csrf_token %
+            }
+
+            <div class="mb-4"><label class="block text-sm font-medium mb-2">Jenis Pakan</label><input type="text" name="jenis" class="w-full px-3 py-2 border rounded-md" required></div><div class="mb-4"><label class="block text-sm font-medium mb-2">Jumlah Pakan (gram)</label><input type="number" name="jumlah" class="w-full px-3 py-2 border rounded-md" required></div><div class="mb-4"><label class="block text-sm font-medium mb-2">Jadwal</label><input type="datetime-local" name="jadwal" class="w-full px-3 py-2 border rounded-md" required></div><div class="flex justify-end gap-2"><button type="button" onclick="closeAddModal()" class="px-4 py-2 border rounded-md">Batal</button><button type="submit" class="px-4 py-2 bg-primary text-white rounded-md">Simpan</button></div></form></div></div>< !-- Edit Modal --><div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center"><div class="bg-white rounded-lg p-6 w-full max-w-md"><h3 class="text-xl font-bold mb-4">Edit Jadwal Pakan</h3><form method="post" action="{% url 'pakan_hewan:edit_pakan' id_hewan=id_hewan %}"> {
+                % csrf_token %
+            }
+
+            <input type="hidden" id="jadwal_lama" name="jadwal_lama"><div class="mb-4"><label class="block text-sm font-medium mb-2">Jenis Pakan</label><input type="text" id="edit_jenis" name="jenis" class="w-full px-3 py-2 border rounded-md" required></div><div class="mb-4"><label class="block text-sm font-medium mb-2">Jumlah Pakan (gram)</label><input type="number" id="edit_jumlah" name="jumlah" class="w-full px-3 py-2 border rounded-md" required></div><div class="mb-4"><label class="block text-sm font-medium mb-2">Jadwal</label><input type="datetime-local" id="edit_jadwal" name="jadwal" class="w-full px-3 py-2 border rounded-md"
+            required></div><div class="flex justify-end gap-2"><button type="button" onclick="closeEditModal()" class="px-4 py-2 border rounded-md">Batal</button><button type="submit" class="px-4 py-2 bg-primary text-white rounded-md">Simpan</button></div></form></div></div><script> // Add Modal Functions
+
+            function openAddModal() {
+                document.getElementById('addModal').classList.remove('hidden');
+            }
+
+            function closeAddModal() {
+                document.getElementById('addModal').classList.add('hidden');
+            }
+
+            // Edit Modal Functions
+            function openEditModal(jenis, jumlah, jadwal) {
+                document.getElementById('editModal').classList.remove('hidden');
+                document.getElementById('edit_jenis').value=jenis;
+                document.getElementById('edit_jumlah').value=jumlah;
+
+                // Format datetime for input
+                const jadwalDate=new Date(jadwal);
+                const formattedDate=jadwalDate.toISOString().slice(0, 16);
+                document.getElementById('edit_jadwal').value=formattedDate;
+                document.getElementById('jadwal_lama').value=jadwal;
+            }
+
+            function closeEditModal() {
+                document.getElementById('editModal').classList.add('hidden');
+            }
+
+            </script> {
+                % endblock content %
+            }
+
+            =======</body> {
+                % endblock %
+            }
+
+            </html>>>>>>>>7beccf3b89d68a2c2a67b86fd704fff40109e085

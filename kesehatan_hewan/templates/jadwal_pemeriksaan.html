@@ -98,16 +98,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <p class="text-sm font-medium text-primary mb-2">Nama Hewan</p>
-                    <p class="text-neutral-black font-semibold text-lg">Molly</p>
+                    <p class="text-neutral-black font-semibold text-lg">{{ nama_hewan }}</p>
                 </div>
                 <div>
                     <p class="text-sm font-medium text-primary mb-2">Spesies</p>
-                    <p class="text-neutral-black font-semibold text-lg">Gajah</p>
+                    <p class="text-neutral-black font-semibold text-lg">{{ jenis_hewan }}</p>
                 </div>
                 <div>
                     <p class="text-sm font-medium text-primary mb-2">ID Hewan</p>
-                    <p class="text-neutral-black text-sm font-mono tracking-tight">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c
-                    </p>
+                    <p class="text-neutral-black text-sm font-mono tracking-tight">{{ id_hewan }}</p>
                 </div>
             </div>
         </div>
@@ -125,7 +124,7 @@
                 <div>
                     <p class="text-neutral-black/60 text-sm">Frekuensi Pemeriksaan Rutin</p>
                     <div class="flex items-center">
-                        <span class="font-semibold text-neutral-black">3 bulan sekali</span>
+                        <span class="font-semibold text-neutral-black">{{ frekuensi }} bulan sekali</span>
                         <button id="editFrekuensiBtn"
                             class="ml-3 text-primary hover:text-accent-500 font-medium text-sm">[Edit]</button>
                     </div>
@@ -179,17 +178,25 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-secondary">
+                    {% for item in jadwal %}
                     <tr class="hover:bg-secondary-20 transition-colors duration-200">
-                        <td class="px-6 py-4 text-sm text-neutral-black font-medium">2025-03-20</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black font-medium">{{ item.tanggal_pemeriksaan }}</td>
                         <td class="px-6 py-4 text-sm">
                             <div class="flex justify-center space-x-3">
-                                <button
+                                <button data-tanggal="{{ item.tanggal_pemeriksaan }}"
                                     class="text-primary hover:text-accent-500 font-medium edit-jadwal-btn">Edit</button>
-                                <button
+                                <button data-tanggal="{{ item.tanggal_pemeriksaan }}"
                                     class="text-red-500 hover:text-red-700 font-medium delete-jadwal-btn">Hapus</button>
                             </div>
                         </td>
                     </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="px-6 py-4 text-sm text-center text-neutral-black/60">
+                            Belum ada jadwal pemeriksaan. Silakan tambahkan jadwal baru.
+                        </td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -216,12 +223,13 @@
             <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
         </div>
 
-        <form class="p-6">
+        <form class="p-6" method="post" action="{% url 'kesehatan_hewan:create-jadwal' id_hewan %}">
+            {% csrf_token %}
             <div class="mb-4">
                 <label class="block text-primary font-medium mb-1.5 text-sm" for="tanggal">Tanggal Pemeriksaan
                     Selanjutnya</label>
                 <div class="relative">
-                    <input type="date" id="tanggal" name="tanggal" value="2025-05-05"
+                    <input type="date" id="tanggal" name="tanggal" required
                         class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 text-sm">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
@@ -253,12 +261,13 @@
             <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
         </div>
 
-        <form class="p-6">
+        <form id="editJadwalForm" class="p-6" method="post" action="{% url 'kesehatan_hewan:edit-jadwal' id_hewan %}">
+            {% csrf_token %}
             <div class="mb-4">
-                <label class="block text-primary font-medium mb-1.5 text-sm" for="edit_tanggal">Tanggal Pemeriksaan
+                <label class="block text-primary font-medium mb-1.5 text-sm" for="tanggal_baru">Tanggal Pemeriksaan
                     Selanjutnya</label>
                 <div class="relative">
-                    <input type="date" id="edit_tanggal" name="edit_tanggal" value="2025-03-20"
+                    <input type="date" id="tanggal_baru" name="tanggal_baru" required
                         class="w-full border border-secondary rounded-md p-2.5 pl-9 focus:border-primary focus:ring-2 focus:ring-primary-20 text-sm">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary-60" fill="none"
@@ -269,6 +278,7 @@
                     </div>
                 </div>
             </div>
+            <input type="hidden" id="tanggal_lama" name="tanggal_lama">
 
             <div class="flex justify-end space-x-4 mt-6 pt-4 border-t border-gray-100">
                 <button type="button"
@@ -290,12 +300,13 @@
             <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
         </div>
 
-        <form class="p-6">
+        <form class="p-6" method="post" action="{% url 'kesehatan_hewan:edit-frekuensi' id_hewan %}">
+            {% csrf_token %}
             <div>
                 <label class="block text-primary font-medium mb-1.5 text-sm" for="frekuensi">Frekuensi
                     Pemeriksaan</label>
                 <div class="flex items-center">
-                    <input type="number" id="frekuensi" name="frekuensi" min="1" value="3"
+                    <input type="number" id="frekuensi" name="frekuensi" min="1" value="{{ frekuensi }}" required
                         class="w-20 border border-secondary rounded-md p-2.5 focus:border-primary focus:ring-2 focus:ring-primary-20 text-sm">
                     <span class="ml-3 text-neutral-black">bulan sekali</span>
                 </div>
@@ -322,18 +333,26 @@
 
         <div class="p-6 text-center">
             <p class="text-sm text-neutral-black mb-6">Apakah Anda yakin ingin menghapus jadwal pemeriksaan ini?</p>
-            <div class="flex justify-center space-x-4">
-                <button id="confirmDeleteBtn"
-                    class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-full font-medium text-sm">Ya,
-                    Hapus</button>
-                <button class="text-neutral-black font-medium hover:text-accent-700 text-sm close-modal">Batal</button>
-            </div>
+            <form id="deleteForm" method="post" action="{% url 'kesehatan_hewan:delete-jadwal' id_hewan %}"
+                class="inline">
+                {% csrf_token %}
+                <input type="hidden" id="delete_tanggal" name="tanggal">
+                <div class="flex justify-center space-x-4">
+                    <button type="submit" id="confirmDeleteBtn"
+                        class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-full font-medium text-sm">Ya,
+                        Hapus</button>
+                    <button type="button"
+                        class="text-neutral-black font-medium hover:text-accent-700 text-sm close-modal">Batal</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const id_hewan = "{{ id_hewan }}";
+
         const modals = {
             create: { modal: document.getElementById('createModal'), content: document.getElementById('createModalContent') },
             editJadwal: { modal: document.getElementById('editJadwalModal'), content: document.getElementById('editJadwalModalContent') },
@@ -341,12 +360,49 @@
             delete: { modal: document.getElementById('deleteModal'), content: document.getElementById('deleteModalContent') }
         };
 
+        // Set current date as default for new appointments
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); // Set to tomorrow as default
+        const formattedDate = tomorrow.toISOString().split('T')[0];
+        document.getElementById('tanggal').value = formattedDate;
+
         // Button listeners
-        document.getElementById('openCreateModal').addEventListener('click', () => openModal('create'));
+        document.getElementById('openCreateModal').addEventListener('click', () => {
+            // Reset form when opening
+            document.getElementById('tanggal').value = formattedDate;
+            openModal('create');
+        });
+
         document.getElementById('editFrekuensiBtn').addEventListener('click', () => openModal('editFrekuensi'));
-        document.querySelectorAll('.edit-jadwal-btn').forEach(btn => btn.addEventListener('click', () => openModal('editJadwal')));
-        document.querySelectorAll('.delete-jadwal-btn').forEach(btn => btn.addEventListener('click', () => openModal('delete')));
-        document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', closeActiveModal));
+
+        // Edit jadwal buttons
+        document.querySelectorAll('.edit-jadwal-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const tanggal = this.getAttribute('data-tanggal');
+                console.log('Edit jadwal for tanggal:', tanggal);
+
+                document.getElementById('tanggal_lama').value = tanggal;
+                document.getElementById('tanggal_baru').value = tanggal;
+                openModal('editJadwal');
+            });
+        });
+
+        // Delete jadwal buttons
+        document.querySelectorAll('.delete-jadwal-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const tanggal = this.getAttribute('data-tanggal');
+                console.log('Delete jadwal for tanggal:', tanggal);
+
+                document.getElementById('delete_tanggal').value = tanggal;
+                openModal('delete');
+            });
+        });
+
+        // Close modal buttons
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', closeActiveModal);
+        });
 
         // Close on background click
         window.addEventListener('click', function (event) {
@@ -357,8 +413,33 @@
             }
         });
 
+        // Form validation
+        document.getElementById('tanggal').addEventListener('change', function () {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                alert('Tanggal pemeriksaan tidak boleh di masa lalu');
+                this.value = formattedDate;
+            }
+        });
+
+        document.getElementById('tanggal_baru').addEventListener('change', function () {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                alert('Tanggal pemeriksaan tidak boleh di masa lalu');
+                // Reset to original value
+                this.value = document.getElementById('tanggal_lama').value;
+            }
+        });
+
         // Helper functions
         function openModal(modalKey) {
+            console.log('Opening modal:', modalKey);
             modals[modalKey].modal.classList.remove('hidden');
             setTimeout(() => {
                 modals[modalKey].content.classList.remove('scale-95', 'opacity-0');
@@ -367,6 +448,7 @@
         }
 
         function closeModal(modalKey) {
+            console.log('Closing modal:', modalKey);
             modals[modalKey].content.classList.remove('scale-100', 'opacity-100');
             modals[modalKey].content.classList.add('scale-95', 'opacity-0');
             setTimeout(() => modals[modalKey].modal.classList.add('hidden'), 300);

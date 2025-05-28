@@ -96,11 +96,6 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'), 
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
-        'OPTIONS': {
-            'options': '-c search_path=sizopi',
-            'sslmode': 'require',
-            
-        }
     }
 }
 
@@ -157,6 +152,6 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-CSRF_TRUSTED_ORIGINS = ['https://sizopi-production-4822.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://sizopi-production-4822.up.railway.app', 'http://127.0.0.1:8000']
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
