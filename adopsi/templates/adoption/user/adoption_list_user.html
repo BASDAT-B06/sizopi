@@ -9,9 +9,9 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {% for animal in animals %}
         <div class="bg-white border border-secondary-40 rounded-xl shadow-md overflow-hidden flex flex-col">
-            <img src="{{ animal.image }}" alt="{{ animal.name }}" class="w-full h-52 object-cover rounded-t-xl border-b border-secondary-40">
+            <img src="{{ animal.image }}" alt="{{ animal.nama }}" class="w-full h-52 object-cover rounded-t-xl border-b border-secondary-40">
             <div class="p-7 flex flex-col flex-1">
-                <h4 class="text-h6 text-primary font-header font-bold mb-2">{{ animal.name }}</h4>
+                <h4 class="text-h6 text-primary font-header font-bold mb-2">{{ animal.nama }}</h4>
                 <p class="text-base text-neutral-black mb-1">{{ animal.type }}</p>
                 <p class="text-sm text-neutral-black/70 mb-5">Kondisi: {{ animal.condition }}</p>
                 <div class="flex justify-end mt-auto">
@@ -36,10 +36,10 @@
                 <div class="px-8 py-6">
                     <div class="flex flex-col md:flex-row gap-8 mb-8">
                         <div class="md:w-1/2 flex justify-center items-center">
-                            <img src="{{ animal.image }}" alt="{{ animal.name }}" class="w-full max-w-xs h-auto rounded-xl border border-secondary-40 shadow">
+                            <img src="{{ animal.image }}" alt="{{ animal.nama }}" class="w-full max-w-xs h-auto rounded-xl border border-secondary-40 shadow">
                         </div>
                         <div class="md:w-1/2 flex flex-col justify-center">
-                            <p class="mb-4 text-lg"><span class="font-semibold text-primary">Nama:</span> {{ animal.name }}</p>
+                            <p class="mb-4 text-lg"><span class="font-semibold text-primary">Nama:</span> {{ animal.nama }}</p>
                             <p class="mb-4 text-lg"><span class="font-semibold text-primary">Jenis:</span> {{ animal.type }}</p>
                             <p class="mb-4 text-lg"><span class="font-semibold text-primary">Habitat:</span> {{ animal.habitat }}</p>
                             <p class="mb-4 text-lg"><span class="font-semibold text-primary">Tanggal mulai adopsi:</span> {{ animal.start_date }}</p>
@@ -120,7 +120,7 @@
                     <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk mengadopsi secara simbolis satwa</p>
                     <div class="mb-4">
                         <label class="block text-primary font-semibold mb-2">Nama Satwa:</label>
-                        <input type="text" value="{{ animal.name }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                        <input type="text" value="{{ animal.nama }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
                     </div>
                     <div class="mb-4">
                         <label class="block text-primary font-semibold mb-2">Jenis Satwa:</label>

@@ -8,20 +8,23 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for animal in animals %}
         <div class="bg-white border border-secondary-40 rounded-xl shadow p-6 flex flex-col justify-between">
-            <img src="{{ animal.image }}" alt="{{ animal.name }}" class="w-full h-40 object-cover rounded-lg mb-4 border border-secondary-40">
+            <img src="{{ animal.image }}" alt="{{ animal.nama }}"
+                class="w-full h-40 object-cover rounded-lg mb-4 border border-secondary-40">
             <div>
-                <h3 class="text-h6 text-primary font-header font-bold mb-1">{{ animal.name }}</h3>
+                <h3 class="text-h6 text-primary font-header font-bold mb-1">{{ animal.nama }}</h3>
                 <p class="text-base text-neutral-black mb-1">{{ animal.type }}</p>
                 <p class="text-sm text-neutral-black/70 mb-3">Kondisi: {{ animal.condition }}</p>
                 <div class="flex items-center gap-2 mb-2">
                     {% if animal.is_adopted %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-accent-50 text-accent-500">
-                            <i class="fas fa-heart mr-1"></i> Diadopsi
-                        </span>
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-accent-50 text-accent-500">
+                        <i class="fas fa-heart mr-1"></i> Diadopsi
+                    </span>
                     {% else %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-500">
-                            <i class="fas fa-paw mr-1"></i> Belum Diadopsi
-                        </span>
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-500">
+                        <i class="fas fa-paw mr-1"></i> Belum Diadopsi
+                    </span>
                     {% endif %}
                 </div>
             </div>
@@ -43,32 +46,42 @@
         </div>
 
         <!-- Modal Detail Adopsi -->
-        <div id="detailModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
-            <div class="relative top-20 mx-auto p-8 border border-secondary-40 w-11/12 md:w-2/3 lg:w-1/2 shadow-xl rounded-xl bg-white">
+        <div id="detailModal{{ animal.id }}"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+            <div
+                class="relative top-20 mx-auto p-8 border border-secondary-40 w-11/12 md:w-2/3 lg:w-1/2 shadow-xl rounded-xl bg-white">
                 <div class="flex justify-between items-center border-b border-secondary-40 pb-4">
                     <h3 class="text-h5 text-primary font-header font-bold">Detail Adopsi Hewan</h3>
-                    <button onclick="closeModal('detailModal{{ animal.id }}')" class="text-gray-700 hover:text-accent-500">
+                    <button onclick="closeModal('detailModal{{ animal.id }}')"
+                        class="text-gray-700 hover:text-accent-500">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="mt-6 space-y-3 text-base text-neutral-black">
-                    <div><span class="font-semibold">Nama hewan:</span> {{ animal.name }}</div>
+                    <div><span class="font-semibold">Nama hewan:</span> {{ animal.nama }}</div>
                     <div><span class="font-semibold">Jenis hewan:</span> {{ animal.type }}</div>
                     <div><span class="font-semibold">Adopter saat ini:</span> {{ animal.adopter }}</div>
                     <div><span class="font-semibold">Tanggal mulai adopsi:</span> {{ animal.start_date }}</div>
                     <div><span class="font-semibold">Tanggal akhir adopsi:</span> {{ animal.end_date }}</div>
-                    <div><span class="font-semibold">Nominal kontribusi:</span> <span class="text-accent-500 font-bold">Rp{{ animal.contribution|floatformat:0 }}</span></div>
+                    <div><span class="font-semibold">Nominal kontribusi:</span> <span
+                            class="text-accent-500 font-bold">Rp{{ animal.contribution|floatformat:0 }}</span></div>
                     <div class="flex items-center gap-2 mt-3">
                         <span class="font-semibold">Status Pembayaran:</span>
-                        <select class="border rounded px-2 py-1">
-                            <option value="tertunda" {% if animal.payment_status == 'tertunda' %}selected{% endif %}>Tertunda</option>
-                            <option value="lunas" {% if animal.payment_status == 'lunas' %}selected{% endif %}>Lunas</option>
+                        <select class="border rounded px-2 py-1" id="paymentStatus{{ animal.id }}">
+                            <option value="Tertunda" {% if animal.payment_status == 'Tertunda' %}selected{% endif %}>
+                                Tertunda</option>
+                            <option value="Lunas" {% if animal.payment_status == 'Lunas' %}selected{% endif %}>Lunas
+                            </option>
                         </select>
-                        <button class="ml-2 px-3 py-1 bg-primary text-white rounded-full text-sm">Simpan Status</button>
+                        <button class="ml-2 px-3 py-1 bg-primary text-white rounded-full text-sm"
+                            onclick="updatePaymentStatus('{{ animal.id }}')">
+                            Simpan Status
+                        </button>
                     </div>
                 </div>
                 <div class="mt-8 flex">
-                    <button class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+                    <button
+                        class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-red-500 text-white hover:bg-red-600 transition"
                         onclick="showModal('stopModal{{ animal.id }}')">
                         <i class="fas fa-times mr-2"></i>Hentikan Adopsi
                     </button>
@@ -77,42 +90,51 @@
         </div>
 
         <!-- Modal Register Adopter -->
-        <div id="registerModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
-            <div class="relative top-20 mx-auto p-8 border border-secondary-40 w-11/12 md:w-2/3 lg:w-1/2 shadow-xl rounded-xl bg-white">
+        <div id="registerModal{{ animal.id }}"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+            <div
+                class="relative top-20 mx-auto p-8 border border-secondary-40 w-11/12 md:w-2/3 lg:w-1/2 shadow-xl rounded-xl bg-white">
                 <div class="flex justify-between items-center border-b border-secondary-40 pb-4">
                     <h3 class="text-h5 text-primary font-header font-bold">Pendataan Adopter</h3>
-                    <button onclick="closeModal('registerModal{{ animal.id }}')" class="text-gray-700 hover:text-accent-500">
+                    <button onclick="closeModal('registerModal{{ animal.id }}')"
+                        class="text-gray-700 hover:text-accent-500">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="mt-6">
                     <div class="mb-4">
-                        <label class="block text-primary text-base font-semibold mb-2" for="username">
+                        <label class="block text-primary text-base font-semibold mb-2" for="username{{ animal.id }}">
                             Username calon adopter:
                         </label>
-                        <input class="shadow border border-secondary-40 rounded w-full py-2 px-3 text-neutral-black focus:outline-none focus:ring-2 focus:ring-primary-80" 
+                        <input
+                            class="shadow border border-secondary-40 rounded w-full py-2 px-3 text-neutral-black focus:outline-none focus:ring-2 focus:ring-primary-80"
                             id="username{{ animal.id }}" type="text" placeholder="Username">
                     </div>
                     <div class="mb-4">
-                        <p class="block text-primary text-base font-semibold mb-2">Calon Adopter akan mengadopsi satwa sebagai</p>
+                        <p class="block text-primary text-base font-semibold mb-2">Calon Adopter akan mengadopsi satwa
+                            sebagai</p>
                         <div class="flex items-center gap-6">
                             <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio accent-primary" name="adopter_type_{{ animal.id }}" value="individu">
+                                <input type="radio" class="form-radio accent-primary" name="adopterType{{ animal.id }}"
+                                    value="individu">
                                 <span class="ml-2">Individu</span>
                             </label>
                             <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio accent-primary" name="adopter_type_{{ animal.id }}" value="organisasi">
+                                <input type="radio" class="form-radio accent-primary" name="adopterType{{ animal.id }}"
+                                    value="organisasi">
                                 <span class="ml-2">Organisasi</span>
                             </label>
                         </div>
                     </div>
                 </div>
                 <div class="mt-8 flex justify-between">
-                    <button class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition"
+                    <button
+                        class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition"
                         onclick="closeModal('registerModal{{ animal.id }}')">
                         Batal
                     </button>
-                    <button class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition"
+                    <button
+                        class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition"
                         onclick="verifyAccount('{{ animal.id }}')">
                         <i class="fas fa-check mr-2"></i>Verifikasi Akun
                     </button>
@@ -121,144 +143,174 @@
         </div>
 
         <!-- Modal Form Adopsi Satwa INDIVIDU -->
-        <div id="formAdopsiIndividu{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
-          <div class="relative top-24 mx-auto p-8 border border-secondary-40 w-full max-w-2xl shadow-xl rounded-2xl bg-white">
-            <div class="flex justify-between items-center border-b border-secondary-40 pb-4 mb-6">
-              <h5 class="text-h5 text-primary font-header font-bold">Form Adopsi Satwa (Individu)</h5>
-              <button onclick="closeModal('formAdopsiIndividu{{ animal.id }}')" class="text-gray-700 hover:text-accent-500 transition">
-                <i class="fas fa-times text-xl"></i>
-              </button>
+        <div id="formAdopsiIndividu{{ animal.id }}"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+            <div
+                class="relative top-24 mx-auto p-8 border border-secondary-40 w-full max-w-2xl shadow-xl rounded-2xl bg-white">
+                <div class="flex justify-between items-center border-b border-secondary-40 pb-4 mb-6">
+                    <h5 class="text-h5 text-primary font-header font-bold">Form Adopsi Satwa (Individu)</h5>
+                    <button onclick="closeModal('formAdopsiIndividu{{ animal.id }}')"
+                        class="text-gray-700 hover:text-accent-500 transition">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form>
+                    <p class="mb-4 text-base text-neutral-black/90">Pihak di bawah ini,</p>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Nama</label>
+                        <input type="text" name="nama" value=""
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">NIK</label>
+                        <input type="text" name="nik" placeholder="NIK"
+                            class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Alamat</label>
+                        <input type="text" name="alamat" value=""
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Nomor Telepon</label>
+                        <input type="text" name="no_telepon" value=""
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+                    </div>
+                    <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
+                    <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk
+                        mengadopsi secara simbolis satwa</p>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Nama Satwa</label>
+                        <input type="text" value="{{ animal.nama }}" disabled
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Jenis Satwa</label>
+                        <input type="text" value="{{ animal.type }}" disabled
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                    </div>
+                    <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi
+                        finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Nominal Kontribusi</label>
+                        <input type="number" name="nominal" placeholder="Masukkan nominal kontribusi"
+                            class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                    </div>
+                    <div class="mb-8">
+                        <label class="block text-primary font-semibold mb-2">Periode Adopsi</label>
+                        <select name="periode" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                            <option value="3">3 bulan</option>
+                            <option value="6">6 bulan</option>
+                            <option value="12">12 bulan</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between gap-4">
+                        <button type="button"
+                            class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow"
+                            onclick="closeModal('formAdopsiIndividu{{ animal.id }}')">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
+                            Submit Form
+                        </button>
+                    </div>
+                </form>
             </div>
-            <form>
-              <p class="mb-4 text-base text-neutral-black/90">Pihak di bawah ini,</p>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Nama</label>
-                <input type="text" name="nama" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
-              </div>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">NIK</label>
-                <input type="text" name="nik" placeholder="NIK" class="w-full border border-secondary-40 rounded px-3 py-2" required>
-              </div>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Alamat</label>
-                <input type="text" name="alamat" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
-              </div>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Nomor Telepon</label>
-                <input type="text" name="no_telepon" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
-              </div>
-              <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
-              <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk mengadopsi secara simbolis satwa</p>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Nama Satwa</label>
-                <input type="text" value="{{ animal.name }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-              </div>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Jenis Satwa</label>
-                <input type="text" value="{{ animal.type }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-              </div>
-              <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Nominal Kontribusi</label>
-                <input type="number" name="nominal" placeholder="Masukkan nominal kontribusi" class="w-full border border-secondary-40 rounded px-3 py-2" required>
-              </div>
-              <div class="mb-8">
-                <label class="block text-primary font-semibold mb-2">Periode Adopsi</label>
-                <select name="periode" class="w-full border border-secondary-40 rounded px-3 py-2" required>
-                  <option value="3">3 bulan</option>
-                  <option value="6">6 bulan</option>
-                  <option value="12">12 bulan</option>
-                </select>
-              </div>
-              <div class="flex justify-between gap-4">
-                <button type="button"
-                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow"
-                        onclick="closeModal('formAdopsiIndividu{{ animal.id }}')">
-                  Batal
-                </button>
-                <button type="submit"
-                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
-                  Submit Form
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
 
         <!-- Modal Form Adopsi Satwa ORGANISASI -->
-        <div id="formAdopsiOrganisasi{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
-          <div class="relative top-24 mx-auto p-8 border border-secondary-40 w-full max-w-2xl shadow-xl rounded-2xl bg-white">
-            <div class="flex justify-between items-center border-b border-secondary-40 pb-4 mb-6">
-              <h5 class="text-h5 text-primary font-header font-bold">Form Adopsi Satwa (Organisasi)</h5>
-              <button onclick="closeModal('formAdopsiOrganisasi{{ animal.id }}')" class="text-gray-700 hover:text-accent-500 transition">
-                <i class="fas fa-times text-xl"></i>
-              </button>
+        <div id="formAdopsiOrganisasi{{ animal.id }}"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+            <div
+                class="relative top-24 mx-auto p-8 border border-secondary-40 w-full max-w-2xl shadow-xl rounded-2xl bg-white">
+                <div class="flex justify-between items-center border-b border-secondary-40 pb-4 mb-6">
+                    <h5 class="text-h5 text-primary font-header font-bold">Form Adopsi Satwa (Organisasi)</h5>
+                    <button onclick="closeModal('formAdopsiOrganisasi{{ animal.id }}')"
+                        class="text-gray-700 hover:text-accent-500 transition">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form>
+                    <p class="mb-4 text-base text-neutral-black/90">Pihak di bawah ini, selaku organisasi/perusahaan</p>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Nama Organisasi</label>
+                        <input type="text" name="nama_organisasi" placeholder="Nama Organisasi"
+                            class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">NPP</label>
+                        <input type="text" name="npp" placeholder="NPP"
+                            class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Alamat</label>
+                        <input type="text" name="alamat" value=""
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Kontak</label>
+                        <input type="text" name="kontak" value=""
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
+                    </div>
+                    <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
+                    <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk
+                        mengadopsi secara simbolis satwa</p>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Nama Satwa</label>
+                        <input type="text" value="{{ animal.nama }}" disabled
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Jenis Satwa</label>
+                        <input type="text" value="{{ animal.type }}" disabled
+                            class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
+                    </div>
+                    <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi
+                        finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
+                    <div class="mb-4">
+                        <label class="block text-primary font-semibold mb-2">Nominal Kontribusi</label>
+                        <input type="number" name="nominal" placeholder="Masukkan nominal kontribusi"
+                            class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                    </div>
+                    <div class="mb-8">
+                        <label class="block text-primary font-semibold mb-2">Periode Adopsi</label>
+                        <select name="periode" class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                            <option value="3">3 bulan</option>
+                            <option value="6">6 bulan</option>
+                            <option value="12">12 bulan</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between gap-4">
+                        <button type="button"
+                            class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow"
+                            onclick="closeModal('formAdopsiOrganisasi{{ animal.id }}')">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
+                            Submit Form
+                        </button>
+                    </div>
+                </form>
             </div>
-            <form>
-              <p class="mb-4 text-base text-neutral-black/90">Pihak di bawah ini, selaku organisasi/perusahaan</p>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Nama Organisasi</label>
-                <input type="text" name="nama_organisasi" placeholder="Nama Organisasi" class="w-full border border-secondary-40 rounded px-3 py-2" required>
-              </div>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">NPP</label>
-                <input type="text" name="npp" placeholder="NPP" class="w-full border border-secondary-40 rounded px-3 py-2" required>
-              </div>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Alamat</label>
-                <input type="text" name="alamat" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
-              </div>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Kontak</label>
-                <input type="text" name="kontak" value="" class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100" required>
-              </div>
-              <p class="my-4 text-base text-neutral-black/90">(selanjutnya disebut sebagai Adopter)</p>
-              <p class="mb-4 text-base text-neutral-black/90">dengan ini menyatakan kepedulian dan minat untuk mengadopsi secara simbolis satwa</p>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Nama Satwa</label>
-                <input type="text" value="{{ animal.name }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-              </div>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Jenis Satwa</label>
-                <input type="text" value="{{ animal.type }}" disabled class="w-full border border-secondary-40 rounded px-3 py-2 bg-gray-100">
-              </div>
-              <p class="mb-4 text-base text-neutral-black/90">Adopter juga bersedia memberikan kontribusi finansial kepada pihak taman safari sebagai dukungan untuk pemeliharaan satwa:</p>
-              <div class="mb-4">
-                <label class="block text-primary font-semibold mb-2">Nominal Kontribusi</label>
-                <input type="number" name="nominal" placeholder="Masukkan nominal kontribusi" class="w-full border border-secondary-40 rounded px-3 py-2" required>
-              </div>
-              <div class="mb-8">
-                <label class="block text-primary font-semibold mb-2">Periode Adopsi</label>
-                <select name="periode" class="w-full border border-secondary-40 rounded px-3 py-2" required>
-                  <option value="3">3 bulan</option>
-                  <option value="6">6 bulan</option>
-                  <option value="12">12 bulan</option>
-                </select>
-              </div>
-              <div class="flex justify-between gap-4">
-                <button type="button"
-                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition font-medium shadow"
-                        onclick="closeModal('formAdopsiOrganisasi{{ animal.id }}')">
-                  Batal
-                </button>
-                <button type="submit"
-                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition font-medium shadow">
-                  Submit Form
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
 
         <!-- Modal Stop Adoption -->
-        <div id="stopModal{{ animal.id }}" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
-            <div class="relative top-20 mx-auto p-8 border border-secondary-40 w-11/12 md:w-96 shadow-xl rounded-xl bg-white">
-                <p class="text-center text-xl font-semibold mb-8 text-primary">Apakah Anda yakin ingin menghentikan adopsi ini?</p>
+        <div id="stopModal{{ animal.id }}"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+            <div
+                class="relative top-20 mx-auto p-8 border border-secondary-40 w-11/12 md:w-96 shadow-xl rounded-xl bg-white">
+                <p class="text-center text-xl font-semibold mb-8 text-primary">Apakah Anda yakin ingin menghentikan
+                    adopsi ini?</p>
                 <div class="flex justify-center gap-4">
-                    <button class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-red-500 text-white hover:bg-red-600 transition">
+                    <button
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+                        onclick="confirmStopAdoption('{{ animal.id }}')">
                         Iya
                     </button>
-                    <button class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition"
+                    <button
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition"
                         onclick="closeModal('stopModal{{ animal.id }}')">
                         Batal
                     </button>
@@ -270,31 +322,227 @@
 </div>
 
 <script>
-function showModal(id) {
-    document.getElementById(id).classList.remove('hidden');
-}
-function closeModal(id) {
-    document.getElementById(id).classList.add('hidden');
-}
-function getAdopterType(animalId) {
-    let radios = document.getElementsByName('adopter_type_' + animalId);
-    for (let i = 0; i < radios.length; i++) {
-        if (radios[i].checked) return radios[i].value;
+    function showModal(id) {
+        document.getElementById(id).classList.remove('hidden');
     }
-    return null;
-}
-function verifyAccount(animalId) {
-    const adopterType = getAdopterType(animalId);
-    if (!adopterType) {
-        alert('Pilih tipe adopter terlebih dahulu.');
-        return;
+
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
     }
-    closeModal('registerModal' + animalId);
-    if (adopterType === 'individu') {
-        showModal('formAdopsiIndividu' + animalId);
-    } else if (adopterType === 'organisasi') {
-        showModal('formAdopsiOrganisasi' + animalId);
+
+    function getAdopterType(animalId) {
+        const radios = document.querySelectorAll(`input[name="adopterType${animalId}"]`);
+        for (const radio of radios) {
+            if (radio.checked) {
+                return radio.value;
+            }
+        }
+        return null;
     }
-}
+
+    function verifyAccount(animalId) {
+        const username = document.getElementById('username' + animalId).value;
+        const adopterType = getAdopterType(animalId);
+
+        if (!username) {
+            alert('Masukkan username terlebih dahulu.');
+            return;
+        }
+
+        if (!adopterType) {
+            alert('Pilih tipe adopter terlebih dahulu.');
+            return;
+        }
+
+        fetch('{% url "adoption:verify_adopter" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ 'username': username })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('registerModal' + animalId);
+
+                    if (adopterType === 'individu') {
+                        // Pre-fill form individu
+                        document.querySelector('#formAdopsiIndividu' + animalId + ' input[name="nama"]').value =
+                            data.user_data.nama_depan + ' ' + data.user_data.nama_belakang;
+                        document.querySelector('#formAdopsiIndividu' + animalId + ' input[name="alamat"]').value =
+                            data.user_data.alamat;
+                        document.querySelector('#formAdopsiIndividu' + animalId + ' input[name="no_telepon"]').value =
+                            data.user_data.no_telepon;
+                        showModal('formAdopsiIndividu' + animalId);
+                    } else {
+                        // Pre-fill form organisasi
+                        document.querySelector('#formAdopsiOrganisasi' + animalId + ' input[name="alamat"]').value =
+                            data.user_data.alamat;
+                        document.querySelector('#formAdopsiOrganisasi' + animalId + ' input[name="kontak"]').value =
+                            data.user_data.no_telepon;
+                        showModal('formAdopsiOrganisasi' + animalId);
+                    }
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat verifikasi akun.');
+            });
+    }
+
+    function submitAdopsiIndividu(animalId) {
+        const form = document.querySelector('#formAdopsiIndividu' + animalId + ' form');
+        const formData = new FormData(form);
+        formData.append('animal_id', animalId);
+        formData.append('username', document.getElementById('username' + animalId).value);
+
+        fetch('{% url "adoption:create_adoption_individu" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Adopsi berhasil didaftarkan!');
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mendaftarkan adopsi.');
+            });
+    }
+
+    function submitAdopsiOrganisasi(animalId) {
+        const form = document.querySelector('#formAdopsiOrganisasi' + animalId + ' form');
+        const formData = new FormData(form);
+        formData.append('animal_id', animalId);
+        formData.append('username', document.getElementById('username' + animalId).value);
+
+        fetch('{% url "adoption:create_adoption_organisasi" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Adopsi berhasil didaftarkan!');
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mendaftarkan adopsi.');
+            });
+    }
+
+    function updatePaymentStatus(animalId) {
+        const statusElement = document.querySelector('#paymentStatus' + animalId);
+        if (!statusElement) {
+            alert('Element status pembayaran tidak ditemukan');
+            return;
+        }
+
+        const status = statusElement.value;
+
+        fetch('{% url "adoption:update_payment_status" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                'animal_id': animalId,
+                'status': status
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Status pembayaran berhasil diupdate!');
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengupdate status.');
+            });
+    }
+
+    function confirmStopAdoption(animalId) {
+        if (confirm('Apakah Anda yakin ingin menghentikan adopsi ini?')) {
+            fetch('{% url "adoption:stop_adoption" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ 'animal_id': animalId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Adopsi berhasil dihentikan!');
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menghentikan adopsi.');
+                });
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Event listeners untuk form submission
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('form').forEach(form => {
+            if (form.closest('[id^="formAdopsiIndividu"]')) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const animalId = this.closest('[id^="formAdopsiIndividu"]').id.replace('formAdopsiIndividu', '');
+                    submitAdopsiIndividu(animalId);
+                });
+            } else if (form.closest('[id^="formAdopsiOrganisasi"]')) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const animalId = this.closest('[id^="formAdopsiOrganisasi"]').id.replace('formAdopsiOrganisasi', '');
+                    submitAdopsiOrganisasi(animalId);
+                });
+            }
+        });
+    });
 </script>
 {% endblock %}
