@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+<title>Daftar Hewan - Kesehatan Hewan</title>
+{% endblock meta %}
+
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="dokter_hewan" user_penjaga_id=user_id %}
+{% endblock navbar %}
+
+{% block content %}
+<div class="bg-secondary min-h-screen px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+        <h3 class="text-2xl font-bold text-primary mb-6 flex items-center">
+            <div class="bg-primary-20 p-2.5 rounded-full mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </div>
+            Daftar Hewan - Kesehatan Hewan
+        </h3>
+
+        <!-- Search Bar -->
+        <div class="mb-6">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <div class="flex-1 max-w-md">
+                    <input type="text" id="searchInput" placeholder="Cari nama hewan, spesies, atau habitat..."
+                        class="w-full px-4 py-2 border border-secondary rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        onkeyup="searchAnimals()">
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="showAllAnimals()"
+                        class="bg-primary hover:bg-primary-80 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                        Semua (<span id="totalCount">{{ data|length }}</span>)
+                    </button>
+                    <button onclick="showHealthyAnimals()"
+                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                        Sehat (<span id="healthyCount">0</span>)
+                    </button>
+                    <button onclick="showSickAnimals()"
+                        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                        Sakit (<span id="sickCount">0</span>)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+            <table class="min-w-full">
+                <thead>
+                    <tr class="bg-primary-20 text-primary border-b border-primary-40">
+                        <th class="px-6 py-4 text-left text-sm font-medium">Foto</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Nama Hewan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Spesies</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Asal Hewan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Tanggal Lahir</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Status Kesehatan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Habitat</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-secondary">
+                    {% for hewan in data %}
+                    <tr class="hover:bg-secondary-20 transition-colors duration-200" data-animal-row>
+                        <td class="px-6 py-4">
+                            {% if hewan.url_foto %}
+                            <img src="{{ hewan.url_foto }}" alt="Foto {{ hewan.nama_individu }}"
+                                class="w-16 h-16 object-cover rounded-lg">
+                            {% else %}
+                            <div
+                                class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-xs">
+                                No Image
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-neutral-black font-semibold">{{ hewan.nama_individu }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ hewan.spesies }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ hewan.asal_hewan }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ hewan.tanggal_lahir|date:"d/m/Y" }}</td>
+                        <td class="px-6 py-4 text-sm font-semibold">
+                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs">
+                                {{ hewan.status_kesehatan }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ hewan.habitat }}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <div class="flex gap-2">
+                                <a href="/kesehatan_hewan/rekam-medis/{{ hewan.id }}/"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-full text-xs font-medium transition-all duration-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Rekam Medis
+                                </a>
+                                <a href="/kesehatan_hewan/jadwal/{{ hewan.id }}/"
+                                    class="bg-accent-500 hover:bg-accent-600 text-white px-3 py-2 rounded-full text-xs font-medium transition-all duration-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    Jadwal Pemeriksaan
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                            <div class="flex flex-col items-center justify-center py-8">
+                                <div class="text-6xl mb-4">🏥</div>
+                                <p class="text-lg">Tidak ada data hewan.</p>
+                                <p class="text-sm text-gray-400 mt-2">Silakan tambahkan data hewan terlebih dahulu.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update status counts
+    document.addEventListener('DOMContentLoaded', function () {
+        updateStatusCounts();
+    });
+
+    function updateStatusCounts() {
+        const rows = document.querySelectorAll('[data-animal-row]');
+        let healthyCount = 0;
+        let sickCount = 0;
+        let totalCount = rows.length;
+
+        rows.forEach(row => {
+            const statusSpan = row.querySelector('td:nth-child(6) span');
+            if (statusSpan) {
+                const statusText = statusSpan.textContent.trim();
+                if (statusText === 'Sehat') {
+                    healthyCount++;
+                } else if (statusText === 'Sakit' || statusText === 'Dalam Perawatan' || statusText === 'Kritis') {
+                    sickCount++;
+                }
+            }
+        });
+
+        document.getElementById('healthyCount').textContent = healthyCount;
+        document.getElementById('sickCount').textContent = sickCount;
+        document.getElementById('totalCount').textContent = totalCount;
+    }
+
+    function filterByStatus(status) {
+        const rows = document.querySelectorAll('[data-animal-row]');
+        rows.forEach(row => {
+            const statusSpan = row.querySelector('td:nth-child(6) span');
+            if (statusSpan) {
+                const statusText = statusSpan.textContent.trim();
+                if (statusText === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    function showAllAnimals() {
+        const rows = document.querySelectorAll('[data-animal-row]');
+        rows.forEach(row => {
+            row.style.display = '';
+        });
+        document.getElementById('searchInput').value = '';
+    }
+
+    function showHealthyAnimals() {
+        filterByStatus('Sehat');
+    }
+
+    function showSickAnimals() {
+        const rows = document.querySelectorAll('[data-animal-row]');
+        rows.forEach(row => {
+            const statusSpan = row.querySelector('td:nth-child(6) span');
+            if (statusSpan) {
+                const statusText = statusSpan.textContent.trim();
+                if (statusText === 'Sakit' || statusText === 'Dalam Perawatan' || statusText === 'Kritis') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    function searchAnimals() {
+        const searchInput = document.getElementById('searchInput');
+        const filter = searchInput.value.toLowerCase();
+        const rows = document.querySelectorAll('[data-animal-row]');
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            let found = false;
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(filter)) {
+                    found = true;
+                }
+            });
+            row.style.display = found ? '' : 'none';
+        });
+    }
+</script>
+
+<style>
+    .bg-secondary {
+        background-color: #F5EFE0;
+    }
+
+    .text-primary {
+        color: #91986E;
+    }
+
+    .bg-primary {
+        background-color: #91986E;
+    }
+
+    .bg-primary-80 {
+        background-color: #91986ECC;
+    }
+
+    .bg-primary-20 {
+        background-color: #91986E33;
+    }
+
+    .border-primary-40 {
+        border-color: #91986E66;
+    }
+
+    .bg-secondary-20 {
+        background-color: #F5EFE033;
+    }
+
+    .text-neutral-black {
+        color: #1C2628;
+    }
+
+    .bg-accent-500 {
+        background-color: #DB6900;
+    }
+
+    .bg-accent-600 {
+        background-color: #C55F00;
+    }
+
+    .border-secondary {
+        border-color: #F5EEDB;
+    }
+
+    .focus\:ring-primary:focus {
+        --tw-ring-color: #91986E;
+    }
+
+    .divide-secondary> :not([hidden])~ :not([hidden]) {
+        border-color: #F5EEDB;
+    }
+</style>
+{% endblock content %}

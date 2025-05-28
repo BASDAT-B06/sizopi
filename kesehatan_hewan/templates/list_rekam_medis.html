@@ -1,189 +1,513 @@
-<!DOCTYPE html>
-<html lang="en">
 {% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+<title>Rekam Medis Hewan</title>
+{% endblock meta %}
 
 {% block navbar %}
 {% include "components/navbar.html" with is_logged_in=True user_role="dokter_hewan" %}
-{% endblock %}
+{% endblock navbar %}
 
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Rekam Medis Hewan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            DEFAULT: '#91986E',
-                            '100': '#91986E',
-                            '80': '#91986ECC',
-                            '60': '#91986E99',
-                            '40': '#91986E66',
-                            '20': '#91986E33',
-                        },
-                        secondary: {
-                            DEFAULT: '#F5EFE0',
-                            '100': '#F5EFE0',
-                            '80': '#F5EEDBCC',
-                            '60': '#F5EEDB99',
-                            '40': '#F5EEDB66',
-                            '20': '#F5EEDB33',
-                        },
-                        accent: {
-                            '50': '#FBF0E6',
-                            '200': '#FAE9D9',
-                            '400': '#F2D4B9',
-                            '500': '#DB6900',
-                            '600': '#C55F00',
-                            '700': '#A44F00',
-                            '800': '#A44F00',
-                        },
-                        neutral: {
-                            'black': '#121212'
-                        }
-                    },
-                    fontFamily: {
-                        'header': ['Helvetica', 'Arial', 'sans-serif'],
-                        'body': ['Poppins', 'sans-serif']
-                    }
-                }
-            }
-        };
-    </script>
-    <style>
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-family: Helvetica, Arial, sans-serif;
-            color: #121212;
-        }
+<div class="bg-secondary min-h-screen px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+        <h3 class="text-2xl font-bold text-primary mb-6 flex items-center">
+            <div class="bg-primary-20 p-2.5 rounded-full mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+            Rekam Medis Hewan
+        </h3>
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: #121212;
-        }
-    </style>
-</head>
-
-<body class="bg-accent-cream-50">
-
-    <div class="container mx-auto px-4 py-6">
-        <h3 class="text-primary-100 text-sm font-bold mb-12">Rekam Medis Hewan</h3>
-
-        <div class="bg-white p-4 rounded-md shadow mb-6 border-l-4 border-primary-100">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary mb-8 hover:shadow-lg transition-shadow duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">Nama Hewan</div>
-                    <p class="text-gray-800">Molly</p>
+                    <p class="text-sm font-medium text-primary mb-2">Nama Hewan</p>
+                    <p class="text-neutral-black font-semibold text-lg">{{ nama_hewan }}</p>
                 </div>
                 <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">Spesies</div>
-                    <p class="text-gray-800">Gajah</p>
+                    <p class="text-sm font-medium text-primary mb-2">Spesies</p>
+                    <p class="text-neutral-black font-semibold text-lg">{{ jenis_hewan }}</p>
                 </div>
                 <div>
-                    <div class="text-sm font-medium text-primary-100 mb-1">ID Hewan</div>
-                    <p class="text-gray-800">6f8f52c4-90cc-4cf2-aa82-15b673efbc9c</p>
+                    <p class="text-sm font-medium text-primary mb-2">ID Hewan</p>
+                    <p class="text-neutral-black text-sm font-mono tracking-tight">{{ id_hewan }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex justify-end mb-4">
-            <button
-                class="bg-accent-500 hover:bg-accent-600 focus:bg-accent-600 active:bg-accent-700 text-white font-medium py-1.5 px-4 rounded-full text-sm transition duration-150 ease-in-out flex items-center space-x-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+        <div class="flex justify-end mb-6">
+            <button id="openCreateModal"
+                class="bg-accent-500 hover:bg-accent-600 text-white font-medium px-5 py-2.5 rounded-full flex items-center space-x-2 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                         d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                         clip-rule="evenodd" />
                 </svg>
-                <span>CREATE REKAM MEDIS</span>
+                <span>Create Rekam Medis</span>
             </button>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded-md shadow overflow-hidden">
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+            <table class="min-w-full">
                 <thead>
-                    <tr>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Tanggal Pemeriksaan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Nama Dokter
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Status Kesehatan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Diagnosa
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Pengobatan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Catatan Tindak Lanjut
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Aksi
-                        </th>
+                    <tr class="bg-primary-20 text-primary border-b border-primary-40">
+                        <th class="px-6 py-4 text-left text-sm font-medium">Tanggal Pemeriksaan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Nama Dokter</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Status Kesehatan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Diagnosa</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Pengobatan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Catatan Tindak Lanjut</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-accent-50">
-                    <tr class="hover:bg-accent-50">
-                        <td class="px-4 py-3 text-sm text-gray-800">24/04/2025</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">drh. Siti Diana</td>
-                        <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-1 text-xs rounded-full font-medium">
-                                Sakit
+                <tbody class="divide-y divide-secondary">
+                    {% for record in records %}
+                    <tr class="hover:bg-secondary-20 transition-colors duration-200">
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ record.tanggal_pemeriksaan }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">
+                            {{ record.nama_depan }} {% if record.nama_tengah %}{{ record.nama_tengah }}{% endif %}
+                            {{ record.nama_belakang }}
+                        </td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="px-3 py-1.5 bg-accent-200 text-accent-700 text-xs rounded-full font-medium">
+                                {{ record.status_kesehatan }}
                             </span>
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Luka di kaki kiri depan</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Antibiotik topikal, Balutan ganti setiap hari</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Kontrol dalam 1 minggu</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">
-                            <div class="flex space-x-2">
-                                <button class="text-primary-100 hover:text-primary-80">Edit</button>
-                                <button class="text-red-500 hover:text-red-400">Hapus</button>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ record.diagnosis }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ record.pengobatan }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ record.catatan_tindak_lanjut }}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <div class="flex space-x-3">
+                                {% if record.status_kesehatan|lower == "sakit" %}
+                                <button data-record-id="{{ record.id_hewan }}"
+                                    data-tanggal="{{ record.tanggal_pemeriksaan }}"
+                                    data-status="{{ record.status_kesehatan }}" data-diagnosa="{{ record.diagnosis }}"
+                                    data-pengobatan="{{ record.pengobatan }}"
+                                    data-tindaklanjut="{{ record.catatan_tindak_lanjut }}"
+                                    class="text-primary edit-record-btn">
+                                    Edit
+                                </button>
+                                {% endif %}
+                                <button data-record-id="{{ record.id_hewan }}"
+                                    data-tanggal="{{ record.tanggal_pemeriksaan|date:'Y-m-d' }}"
+                                    class="text-red-500 delete-record-btn hover:text-red-700 font-medium transition-colors duration-200 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Hapus
+                                </button>
                             </div>
                         </td>
                     </tr>
-                    <tr class="bg-secondary-20 hover:bg-secondary-40">
-                        <td class="px-4 py-3 text-sm text-gray-800">15/04/2025</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">drh. Ari Santoso</td>
-                        <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-1 text-xs rounded-full font-medium">
-                                Sehat
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-800"></td>
-                        <td class="px-4 py-3 text-sm text-gray-800"></td>
-                        <td class="px-4 py-3 text-sm text-gray-800"></td>
-                        <td class="px-4 py-3 text-sm text-gray-800">
-                            <div class="flex space-x-2">
-                                <button class="text-primary-100 hover:text-primary-80">Edit</button>
-                                <button class="text-red-500 hover:text-red-400">Hapus</button>
-                            </div>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            Belum ada rekam medis untuk hewan ini.
                         </td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-</body>
-{% endblock %}
-</html>
+</div>
+
+<!-- Create Modal -->
+<div id="createModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="createModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <div class="flex items-center">
+                <div class="bg-primary-20 p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </div>
+                <h6 class="text-lg font-bold text-primary">Form Pencatatan Rekam Medis</h6>
+            </div>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form class="p-6 space-y-6" method="post" action="/kesehatan_hewan/rekam-medis/{{ id_hewan }}/create/">
+            {% csrf_token %}
+
+            <div>
+                <label class="block text-primary font-medium mb-2 text-sm" for="create_tanggal">Tanggal
+                    Pemeriksaan</label>
+                <div class="relative">
+                    <input type="date" id="create_tanggal" name="tanggal" required
+                        class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-primary font-medium mb-2 text-sm" for="create_status">Status Kesehatan</label>
+                <div class="relative">
+                    <select id="create_status" name="status" required
+                        class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 appearance-none bg-white">
+                        <option value="">Pilih status kesehatan</option>
+                        <option value="Sehat">Sehat</option>
+                        <option value="Sakit">Sakit</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div id="createDiagnosaPengobatanFields" class="hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-primary font-medium mb-2 text-sm" for="create_diagnosa">Diagnosa <span
+                                class="text-sm text-gray-500">(Opsional)</span></label>
+                        <div class="relative">
+                            <input type="text" id="create_diagnosa" name="diagnosa"
+                                class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300"
+                                placeholder="Masukkan diagnosa">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-primary font-medium mb-2 text-sm" for="create_pengobatan">Pengobatan
+                            <span class="text-sm text-gray-500">(Opsional)</span></label>
+                        <div class="relative">
+                            <input type="text" id="create_pengobatan" name="pengobatan"
+                                class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300"
+                                placeholder="Masukkan pengobatan">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 flex justify-end space-x-4 items-center border-t border-gray-100 mt-6">
+                <button type="button"
+                    class="text-gray-600 font-medium hover:text-gray-800 transition duration-150 close-modal">Batal</button>
+                <button type="submit"
+                    class="bg-accent-500 hover:bg-accent-600 focus:ring-2 focus:ring-accent-400 focus:ring-opacity-50 text-white px-5 py-2 rounded-full font-medium transition duration-150 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Simpan Rekam Medis
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="editModalContent">
+        <div class="flex justify-between items-center p-6 border-b border-secondary sticky top-0 bg-white z-10">
+            <div class="flex items-center">
+                <div class="bg-primary-20 p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </div>
+                <h5 class="text-lg font-bold text-primary">Edit Rekam Medis</h5>
+            </div>
+            <button class="text-gray-500 hover:text-gray-700 close-modal">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form id="editForm" class="p-6 space-y-6" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="edit_record_id" name="record_id">
+
+            <div>
+                <label class="block text-primary font-medium mb-2 text-sm" for="edit_tanggal">Tanggal
+                    Pemeriksaan</label>
+                <div class="relative">
+                    <input type="date" id="edit_tanggal" name="tanggal" required
+                        class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-primary font-medium mb-2 text-sm" for="edit_status">Status Kesehatan</label>
+                <div class="relative">
+                    <select id="edit_status" name="status" required
+                        class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 appearance-none bg-white">
+                        <option value="">Pilih status kesehatan</option>
+                        <option value="Sehat">Sehat</option>
+                        <option value="Sakit">Sakit</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-primary font-medium mb-2 text-sm" for="edit_diagnosa">Diagnosa <span
+                            class="text-sm text-gray-500">(Opsional)</span></label>
+                    <div class="relative">
+                        <input type="text" id="edit_diagnosa" name="diagnosa"
+                            class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300"
+                            placeholder="Masukkan diagnosa">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-primary font-medium mb-2 text-sm" for="edit_pengobatan">Pengobatan <span
+                            class="text-sm text-gray-500">(Opsional)</span></label>
+                    <div class="relative">
+                        <input type="text" id="edit_pengobatan" name="pengobatan"
+                            class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300"
+                            placeholder="Masukkan pengobatan">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-primary font-medium mb-2 text-sm" for="edit_catatan">Catatan Tindak Lanjut
+                    <span class="text-sm text-gray-500">(Opsional)</span></label>
+                <textarea id="edit_catatan" name="catatan" rows="3"
+                    class="w-full border border-gray-300 rounded-md p-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300"
+                    placeholder="Masukkan catatan tindak lanjut"></textarea>
+            </div>
+
+            <div class="pt-4 flex justify-end space-x-4 items-center border-t border-gray-100 mt-6">
+                <button type="button"
+                    class="text-gray-600 font-medium hover:text-gray-800 transition duration-150 close-modal">Batal</button>
+                <button type="submit"
+                    class="bg-accent-500 hover:bg-accent-600 focus:ring-2 focus:ring-accent-400 focus:ring-opacity-50 text-white px-5 py-2 rounded-full font-medium transition duration-150 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Update Rekam Medis
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
+        id="deleteModalContent">
+        <div class="mt-3 text-center p-6">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Konfirmasi Hapus</h3>
+            <p class="text-sm text-gray-500 mb-6">Apakah Anda yakin ingin menghapus rekam medis ini? Tindakan ini tidak
+                dapat dibatalkan.</p>
+
+            <div class="flex justify-center space-x-4">
+                <button type="button"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition duration-150 close-modal">Batal</button>
+                <button type="button" id="confirmDeleteBtn"
+                    class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-150">Hapus</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSRF Form for JS -->
+<form id="csrf-form" style="display: none;">
+    {% csrf_token %}
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const id_hewan = "{{ id_hewan }}";
+
+        // Modal variables
+        const createModal = document.getElementById('createModal');
+        const createModalContent = document.getElementById('createModalContent');
+        const editModal = document.getElementById('editModal');
+        const editModalContent = document.getElementById('editModalContent');
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteModalContent = document.getElementById('deleteModalContent');
+
+        const createButton = document.getElementById('openCreateModal');
+        const editButtons = document.querySelectorAll('.edit-record-btn');
+        const deleteButtons = document.querySelectorAll('.delete-record-btn');
+        const closeButtons = document.querySelectorAll('.close-modal');
+
+        // Current record ID for deletion
+        let currentRecordId = null;
+        let currentTanggal = null;
+
+        // Open Create Modal
+        createButton.addEventListener('click', function () {
+            createModal.classList.remove('hidden');
+            setTimeout(() => {
+                createModalContent.classList.remove('scale-95', 'opacity-0');
+                createModalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        });
+
+        // Open Edit Modal
+        editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const recordId = this.getAttribute('data-record-id');
+                const tanggal = this.getAttribute('data-tanggal');
+                const status = this.getAttribute('data-status');
+                const diagnosa = this.getAttribute('data-diagnosa');
+                const pengobatan = this.getAttribute('data-pengobatan');
+                const tindakLanjut = this.getAttribute('data-tindaklanjut');
+
+                // Set form action and populate fields
+                const editForm = document.getElementById('editForm');
+                editForm.action = `/kesehatan_hewan/rekam-medis/${id_hewan}/edit/${recordId}/`;
+
+                document.getElementById('edit_record_id').value = recordId;
+                document.getElementById('edit_tanggal').value = tanggal;
+                document.getElementById('edit_status').value = status;
+                document.getElementById('edit_diagnosa').value = diagnosa || '';
+                document.getElementById('edit_pengobatan').value = pengobatan || '';
+                document.getElementById('edit_catatan').value = tindakLanjut || '';
+
+                // Show modal
+                editModal.classList.remove('hidden');
+                setTimeout(() => {
+                    editModalContent.classList.remove('scale-95', 'opacity-0');
+                    editModalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            });
+        });
+
+        // Handle Delete button click
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                currentTanggal = this.getAttribute('data-tanggal');
+                console.log("Tanggal yang dipilih untuk delete:", currentTanggal); // debug
+                deleteModal.classList.remove('hidden');
+            });
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            if (!currentTanggal) {
+                alert('Error: No record selected for deletion');
+                return;
+            }
+
+            const url = `/kesehatan_hewan/rekam-medis/${id_hewan}/delete/${currentTanggal}/`;
+            console.log("Submit delete ke:", url); // debug
+
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = url;
+
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        });
 
 
+        // Close Modals
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                closeAllModals();
+            });
+        });
+
+        // Close on background click
+        window.addEventListener('click', function (event) {
+            if (event.target === createModal || event.target === editModal || event.target === deleteModal) {
+                closeAllModals();
+            }
+        });
+
+        // Function to close all modals
+        function closeAllModals() {
+            // Create Modal
+            if (!createModal.classList.contains('hidden')) {
+                createModalContent.classList.remove('scale-100', 'opacity-100');
+                createModalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    createModal.classList.add('hidden');
+                }, 300);
+            }
+
+            // Edit Modal
+            if (!editModal.classList.contains('hidden')) {
+                editModalContent.classList.remove('scale-100', 'opacity-100');
+                editModalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    editModal.classList.add('hidden');
+                }, 300);
+            }
+
+            // Delete Modal
+            if (!deleteModal.classList.contains('hidden')) {
+                deleteModalContent.classList.remove('scale-100', 'opacity-100');
+                deleteModalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    deleteModal.classList.add('hidden');
+                }, 300);
+            }
+
+            // Reset current record ID
+            currentRecordId = null;
+            currentTanggal = null;
+        }
+
+        // Handle status change for create modal - show/hide diagnosis and treatment fields
+        const createStatusSelect = document.getElementById('create_status');
+        const createDiagnosaPengobatanFields = document.getElementById('createDiagnosaPengobatanFields');
+
+        function toggleCreateFields() {
+            const selectedValue = createStatusSelect.value.toLowerCase();
+
+            if (selectedValue === 'sakit') {
+                createDiagnosaPengobatanFields.classList.remove('hidden');
+            } else {
+                createDiagnosaPengobatanFields.classList.add('hidden');
+                document.getElementById('create_diagnosa').value = '';
+                document.getElementById('create_pengobatan').value = '';
+            }
+        }
+
+        createStatusSelect.addEventListener('change', toggleCreateFields);
+
+        // Set today's date as default for create form
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('create_tanggal').value = today;
+    });
+</script>
+
+{% endblock content %}

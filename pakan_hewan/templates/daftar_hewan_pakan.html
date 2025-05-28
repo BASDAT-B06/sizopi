@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+<title>Daftar Hewan - Pakan Hewan</title>
+{% endblock meta %}
+
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" user_penjaga_id=user_id %}
+{% endblock navbar %}
+
+{% block content %}
+<div class="bg-secondary min-h-screen px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+        <h3 class="text-2xl font-bold text-primary mb-6 flex items-center">
+            <div class="bg-primary-20 p-2.5 rounded-full mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                </svg>
+            </div>
+            Daftar Hewan - Manajemen Pakan
+        </h3>
+
+        <!-- Search Bar -->
+        <div class="mb-6">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <div class="flex-1 max-w-md">
+                    <input type="text" id="searchInput" placeholder="Cari nama hewan, spesies, atau habitat..."
+                        class="w-full px-4 py-2 border border-secondary rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        onkeyup="searchAnimals()">
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+            <table class="min-w-full">
+                <thead>
+                    <tr class="bg-primary-20 text-primary border-b border-primary-40">
+                        <th class="px-6 py-4 text-left text-sm font-medium">Foto</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Nama Hewan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Spesies</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Asal Hewan</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Tanggal Lahir</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Habitat</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-secondary">
+                    {% for hewan in data %}
+                    <tr class="hover:bg-secondary-20 transition-colors duration-200" data-animal-row>
+                        <td class="px-6 py-4">
+                            {% if hewan.url_foto %}
+                            <img src="{{ hewan.url_foto }}" alt="Foto {{ hewan.nama_individu }}"
+                                class="w-16 h-16 object-cover rounded-lg">
+                            {% else %}
+                            <div
+                                class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-xs">
+                                No Image
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-neutral-black font-semibold">{{ hewan.nama_individu }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ hewan.spesies }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ hewan.asal_hewan }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ hewan.tanggal_lahir|date:"d/m/Y" }}</td>
+                        <td class="px-6 py-4 text-sm text-neutral-black">{{ hewan.habitat }}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <a href="/pakan_hewan/list/{{ hewan.id }}/"
+                                class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                                </svg>
+                                Kelola Pakan
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                            <div class="flex flex-col items-center justify-center py-8">
+                                <div class="text-6xl mb-4">🐾</div>
+                                <p class="text-lg">Tidak ada data hewan.</p>
+                                <p class="text-sm text-gray-400 mt-2">Silakan tambahkan data hewan terlebih dahulu.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update status counts
+    document.addEventListener('DOMContentLoaded', function () {
+        updateStatusCounts();
+    });
+
+    function updateStatusCounts() {
+        const rows = document.querySelectorAll('[data-animal-row]');
+        let healthyCount = 0;
+        let sickCount = 0;
+
+        rows.forEach(row => {
+            const statusCell = row.querySelector('td:nth-child(6)');
+            if (statusCell) {
+                const statusText = statusCell.textContent.trim();
+                if (statusText.includes('Sehat')) {
+                    healthyCount++;
+                } else {
+                    sickCount++;
+                }
+            }
+        });
+
+        document.getElementById('healthyCount').textContent = healthyCount;
+        document.getElementById('sickCount').textContent = sickCount;
+    }
+
+    function filterByStatus(status) {
+        const rows = document.querySelectorAll('[data-animal-row]');
+        rows.forEach(row => {
+            const statusCell = row.querySelector('td:nth-child(6)');
+            if (statusCell) {
+                const statusText = statusCell.textContent.trim();
+                if (statusText.includes(status)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    function showAllAnimals() {
+        const rows = document.querySelectorAll('[data-animal-row]');
+        rows.forEach(row => {
+            row.style.display = '';
+        });
+        document.getElementById('searchInput').value = '';
+    }
+
+    function showHealthyAnimals() {
+        filterByStatus('Sehat');
+    }
+
+    function showSickAnimals() {
+        const rows = document.querySelectorAll('[data-animal-row]');
+        rows.forEach(row => {
+            const statusCell = row.querySelector('td:nth-child(6)');
+            if (statusCell) {
+                const statusText = statusCell.textContent.trim();
+                if (statusText.includes('Sakit') || statusText.includes('Perawatan')) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    function searchAnimals() {
+        const searchInput = document.getElementById('searchInput');
+        const filter = searchInput.value.toLowerCase();
+        const rows = document.querySelectorAll('[data-animal-row]');
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            let found = false;
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(filter)) {
+                    found = true;
+                }
+            });
+            row.style.display = found ? '' : 'none';
+        });
+    }
+</script>
+{% endblock content %}

@@ -1,163 +1,88 @@
-<!DOCTYPE html>
-<html lang="id">
 {% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+<title>Riwayat Pemberian Pakan</title>
+{% endblock meta %}
 
 {% block navbar %}
 {% include "components/navbar.html" with is_logged_in=True user_role="penjaga_hewan" %}
 {% endblock %}
 
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Pemberian Pakan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            DEFAULT: '#91986E',
-                            '100': '#91986E',
-                            '80': '#91986ECC',
-                            '60': '#91986E99',
-                            '40': '#91986E66',
-                            '20': '#91986E33',
-                        },
-                        secondary: {
-                            DEFAULT: '#F5EFE0',
-                            '100': '#F5EFE0',
-                            '80': '#F5EEDBCC',
-                            '60': '#F5EEDB99',
-                            '40': '#F5EEDB66',
-                            '20': '#F5EEDB33',
-                        },
-                        accent: {
-                            '50': '#FBF0E6',
-                            '200': '#FAE9D9',
-                            '400': '#F2D4B9',
-                            '500': '#DB6900',
-                            '600': '#C55F00',
-                            '700': '#A44F00',
-                            '800': '#A44F00',
-                        },
-                        neutral: {
-                            'black': '#121212'
-                        }
-                    },
-                    fontFamily: {
-                        'header': ['Helvetica', 'Arial', 'sans-serif'],
-                        'body': ['Poppins', 'sans-serif']
-                    }
-                }
-            }
-        };
-    </script>
-    <style>
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-family: Helvetica, Arial, sans-serif;
-            color: #121212;
-        }
+<div class="container mx-auto px-4 py-6">
+    <h1 class="text-primary-100 text-xl font-bold mb-6">RIWAYAT PEMBERIAN PAKAN</h1>
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: #121212;
-        }
-    </style>
-</head>
+    <p class="text-sm text-gray-600 mb-4">Penjaga Hewan: <span class="font-medium">{{ nama_penjaga }}</span></p>
 
-<body class="bg-accent-cream-50">
-
-
-    <div class="container mx-auto px-4 py-6">
-        <h3 class="text-primary-100 text-xl font-bold mb-6">RIWAYAT PEMBERIAN PAKAN</h3>
-
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded-md shadow overflow-hidden">
-                <thead>
-                    <tr>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Nama Individu (Hewan)
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Spesies
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Asal Hewan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Tanggal Lahir
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Habitat
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Status Kesehatan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Jenis Pakan
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Jumlah Pakan (gram)
-                        </th>
-                        <th
-                            class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
-                            Jadwal
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-accent-50">
-                    <tr class="hover:bg-accent-50">
-                        <td class="px-4 py-3 text-sm text-gray-800">Molly</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Gajah</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Sumatra</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">2022-11-07</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Padang Rumput</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">
-                            <span class="px-2 py-1 text-xs rounded-full font-medium">
-                                Sehat
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Rumput</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">5200</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">2025-07-13 11:00:00</td>
-                    </tr>
-                    <tr class="bg-secondary-20 hover:bg-secondary-40">
-                        <td class="px-4 py-3 text-sm text-gray-800">Benny</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Singa</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Afrika</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">2022-11-07</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Savana</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">
-                            <span class="px-2 py-1 text-xs rounded-full font-medium">
-                                Sehat
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-800">Daging Mentah</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">4500</td>
-                        <td class="px-4 py-3 text-sm text-gray-800">2025-07-13 14:00:00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-md shadow overflow-hidden">
+            <thead>
+                <tr>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Nama Individu (Hewan)
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Spesies
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Asal Hewan
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Tanggal Lahir
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Habitat
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Status Kesehatan
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Jenis Pakan
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Jumlah Pakan (gram)
+                    </th>
+                    <th
+                        class="px-4 py-3 bg-primary-20 text-primary-100 text-xs font-medium uppercase tracking-wider text-left">
+                        Jadwal
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-accent-50">
+                {% for record in feeding_history %}
+                <tr class="{% cycle 'hover:bg-accent-50' 'bg-secondary-20 hover:bg-secondary-40' %}">
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ record.nama_hewan }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ record.spesies }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ record.asal_hewan }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ record.tanggal_lahir|date:'Y-m-d' }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ record.habitat }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">
+                        <span class="px-2 py-1 text-xs rounded-full font-medium">
+                            {{ record.status_kesehatan }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ record.jenis_pakan }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ record.jumlah }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ record.jadwal|date:'Y-m-d H:i:s' }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="px-4 py-8 text-center text-gray-500">
+                        Belum ada riwayat pemberian pakan.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</body>
-
-{% endblock %}
-
-</html>
+</div>
+{% endblock content %}

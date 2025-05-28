@@ -19,8 +19,9 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{% if logged_in %}/{% else %}/{% endif %}" class="font-bold text-2xl flex items-center">
                         <svg class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L5 6V18L12 22L19 18V6L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,0.2)"/>
-                            <path d="M12 6L8 8.5V15.5L12 18L16 15.5V8.5L12 6Z" fill="currentColor"/>
+                            <path d="M12 2L5 6V18L12 22L19 18V6L12 2Z" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,0.2)" />
+                            <path d="M12 6L8 8.5V15.5L12 18L16 15.5V8.5L12 6Z" fill="currentColor" />
                         </svg>
                         Sizopi
                     </a>
@@ -30,22 +31,53 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
             <!-- Navigation Links - Centered when logged in -->
             <div class="hidden sm:flex sm:items-center {% if logged_in %}justify-center flex-grow{% endif %}">
                 {% if logged_in %}
-                <!-- Common links for all logged-in users -->
-                <a href="{% url 'dashboard:dash_dokter_hewan' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <!-- Dashboard link - role specific -->
+                {% if role == "dokter_hewan" %}
+                <a href="{% url 'dashboard:dash_dokter_hewan' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-home mr-2"></i>Dashboard
                 </a>
+                {% elif role == "penjaga_hewan" %}
+                <a href="{% url 'dashboard:dash_penjaga_hewan' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                {% elif role == "staf_admin" %}
+                <a href="{% url 'dashboard:dash_staf_admin' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                {% elif role == "pelatih_pertunjukan" %}
+                <a href="{% url 'dashboard:dash_pelatih_hewan' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                {% elif role == "pengunjung" %}
+                <a href="{% url 'dashboard:dash_pengunjung' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                {% else %}
+                <!-- Fallback dashboard -->
+                <a href="/"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </a>
+                {% endif %}
 
                 <!-- Role-specific links -->
                 {% if role == "dokter_hewan" %}
-                <a href="{% url 'kesehatan_hewan:list_rekam_medis' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="/kesehatan_hewan/"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-notes-medical mr-2"></i>Rekam Medis Hewan
                 </a>
                 <a href="{% url 'datasatwa:daftar_satwa' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Satwa
                 </a>
                 {% elif role == "penjaga_hewan" %}
-                <a href="{% url 'pakan_hewan:pakan_per_hewan' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
-                    <i class="fas fa-paw mr-2"></i>Catatan Perawatan Hewan
+                <a href="{% url 'pakan_hewan:riwayat_pakan_penjaga' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-history mr-2"></i>Catatan Perawatan Hewan
                 </a>
                 <a href="{% url 'datasatwa:daftar_satwa' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Satwa
@@ -53,14 +85,21 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <a href="{% url 'datahabitat:daftar_habitat' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Habitat
                 </a>
+                <a href="{% url 'pakan_hewan:daftar_hewan_pakan' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-paw mr-2"></i>Daftar Hewan & Pakan
+                </a>
                 {% elif role == "staf_admin" %}
-                <a href="" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href=""
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-users mr-2"></i>Kelola Pengunjung
                 </a>
-                <a href="{% url 'adoption:admin_list' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'adoption:admin_list' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-heart mr-2"></i>Kelola Adopsi
                 </a>
-                <a href="{% url 'adoption:adopter_list' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'adoption:adopter_list' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-user-friends mr-2"></i>Kelola Adopter
                 </a>
                 <a href="{% url 'datasatwa:daftar_satwa' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
@@ -69,21 +108,19 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <a href="{% url 'datahabitat:daftar_habitat' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Habitat
                 </a>
-                {% elif role == "pelatih_hewan" %}
-                <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                {% elif role == "pelatih_pertunjukan" %}
+                <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-calendar-alt mr-2"></i>Jadwal Pertunjukan
                 </a>
                 {% elif role == "pengunjung" %}
-                <a href="" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href=""
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-info-circle mr-2"></i>Informasi Kebun Binatang
-                    
-                </a>
-                <a href="" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
-                    <i class="fas fa-info-circle mr-2"></i>Reservasi Tiket
-                    
                 </a>
                 {% if adopter %}
-                <a href="{% url 'adoption:user_list' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <a href="{% url 'adoption:user_list' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-hand-holding-heart mr-2"></i>Hewan Adopsi
                 </a>
                 {% endif %}
@@ -94,30 +131,43 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
             <!-- Right side menu -->
             <div class="hidden sm:flex sm:items-center space-x-3">
                 {% if logged_in %}
+                <div class="relative group">
+                    <button
+                        class="flex items-center justify-center w-10 h-10 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
+                        <i class="fas fa-bell text-white"></i>
+                    </button>
+                    <div
+                        class="absolute right-0 w-3 h-3 bg-accent-500 rounded-full top-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
 
-                
                 <!-- Profile button  -->
                 <div class="relative group">
-                    <a href="{% url 'profil:pengaturan_profil' %}" class="flex items-center justify-center w-10 h-10 rounded-full bg-accent-500 hover:bg-accent-600 transition-all duration-200">
+                    <a href="{% url 'profil:pengaturan_profil' %}"
+                        class="flex items-center justify-center w-10 h-10 rounded-full bg-accent-500 hover:bg-accent-600 transition-all duration-200">
                         <i class="fas fa-user text-white"></i>
                     </a>
-                    <div class="absolute -bottom-10 right-0 bg-white text-primary rounded-md py-1 px-2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
+                    <div
+                        class="absolute -bottom-10 right-0 bg-white text-primary rounded-md py-1 px-2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
                         Profil
                     </div>
                 </div>
 
                 <!-- Logout button  -->
                 <div class="relative group">
-                    <a href="/auth/logout/" class="flex items-center justify-center w-10 h-10 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
+                    <a href="{% url 'authentication:logout' %}"
+                        class="flex items-center justify-center w-10 h-10 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-200">
                         <i class="fas fa-sign-out-alt text-white"></i>
                     </a>
-                    <div class="absolute -bottom-10 right-0 bg-white text-primary rounded-md py-1 px-2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
+                    <div
+                        class="absolute -bottom-10 right-0 bg-white text-primary rounded-md py-1 px-2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
                         Logout
                     </div>
                 </div>
                 {% else %}
                 <!-- Login button -->
-                <a href="/auth/login/" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors shadow-md">
+                <a href="{% url 'authentication:login' %}"
+                    class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 transition-colors shadow-md">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </a>
 
@@ -149,22 +199,52 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
     <div class="mobile-menu hidden sm:hidden">
         <div class="px-2 pt-2 pb-3 space-y-1 bg-primary-80 rounded-b-lg shadow-lg">
             {% if logged_in %}
-            <!-- Common links for all logged-in users -->
-            <a href="{% url 'dashboard:dash_dokter_hewan' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <!-- Dashboard link - role specific -->
+            {% if role == "dokter_hewan" %}
+            <a href="{% url 'dashboard:dash_dokter_hewan' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-home w-6 mr-2"></i>Dashboard
             </a>
+            {% elif role == "penjaga_hewan" %}
+            <a href="{% url 'dashboard:dash_penjaga_hewan' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+                <i class="fas fa-home w-6 mr-2"></i>Dashboard
+            </a>
+            {% elif role == "staf_admin" %}
+            <a href="{% url 'dashboard:dash_staf_admin' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+                <i class="fas fa-home w-6 mr-2"></i>Dashboard
+            </a>
+            {% elif role == "pelatih_pertunjukan" %}
+            <a href="{% url 'dashboard:dash_pelatih_hewan' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+                <i class="fas fa-home w-6 mr-2"></i>Dashboard
+            </a>
+            {% elif role == "pengunjung" %}
+            <a href="{% url 'dashboard:dash_pengunjung' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+                <i class="fas fa-home w-6 mr-2"></i>Dashboard
+            </a>
+            {% else %}
+            <a href="/"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+                <i class="fas fa-home w-6 mr-2"></i>Dashboard
+            </a>
+            {% endif %}
 
             <!-- Role-specific links -->
             {% if role == "dokter_hewan" %}
-            <a href="{% url 'kesehatan_hewan:list_rekam_medis' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="/kesehatan_hewan/"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-notes-medical w-6 mr-2"></i>Rekam Medis Hewan
             </a>
             <a href="{% url 'datasatwa:daftar_satwa' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                 <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Satwa
             </a>
             {% elif role == "penjaga_hewan" %}
-            <a href="{% url 'pakan_hewan:pakan_per_hewan' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
-                <i class="fas fa-paw w-6 mr-2"></i>Catatan Perawatan Hewan
+            <a href="{% url 'pakan_hewan:riwayat_pakan_penjaga' %}"
+                class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <i class="fas fa-history mr-2"></i>Catatan Perawatan Hewan
             </a>
             <a href="{% url 'datasatwa:daftar_satwa' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                 <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Satwa
@@ -172,15 +252,21 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
             <a href="{% url 'datahabitat:daftar_habitat' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                 <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Habitat
             </a>
+            <a href="{% url 'pakan_hewan:daftar_hewan_pakan' %}"
+                class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <i class="fas fa-paw mr-2"></i>Daftar Hewan & Pakan
+            </a>
             {% elif role == "staf_admin" %}
-            <a href="" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href=""
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-users w-6 mr-2"></i>Kelola Pengunjung
             </a>
-
-            <a href="{% url 'adoption:admin_list' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'adoption:admin_list' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-heart w-6 mr-2"></i>Kelola Adopsi
             </a>
-            <a href="/adopsi/kelola-adopter/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'adoption:adopter_list' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-user-friends w-6 mr-2"></i>Kelola Adopter
             </a>
             <a href="{% url 'datasatwa:daftar_satwa' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
@@ -189,16 +275,19 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
             <a href="{% url 'datahabitat:daftar_habitat' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                 <i class="fas fa-notes-medical mr-2"></i>Data Habitat
             </a>
-            {% elif role == "pelatih_hewan" %}
-            <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            {% elif role == "pelatih_pertunjukan" %}
+            <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-calendar-alt w-6 mr-2"></i>Jadwal Pertunjukan
             </a>
             {% elif role == "pengunjung" %}
-            <a href="" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href=""
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-info-circle w-6 mr-2"></i>Informasi Kebun Binatang
             </a>
             {% if adopter %}
-            <a href="{% url 'adoption:user_list' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'adoption:user_list' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-hand-holding-heart w-6 mr-2"></i>Hewan Adopsi
             </a>
             {% endif %}
@@ -206,15 +295,18 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
 
             <!-- User options -->
             <div class="border-t border-white border-opacity-20 my-2"></div>
-            <a href="{% url 'profil:pengaturan_profil' %}" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'profil:pengaturan_profil' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-user-cog w-6 mr-2"></i>Pengaturan Profil
             </a>
-            <a href="/auth/logout/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'authentication:logout' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-sign-out-alt w-6 mr-2"></i>Logout
             </a>
             {% else %}
             <!-- Guest links -->
-            <a href="/login/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+            <a href="{% url 'authentication:login' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-sign-in-alt w-6 mr-2"></i>Login
             </a>
             <a href="/auth/register/" class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
@@ -248,19 +340,33 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
 
 <style>
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-    
+
     @keyframes fadeOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(-10px); }
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
     }
-    
+
     .animate-fadeIn {
         animation: fadeIn 0.3s ease-out forwards;
     }
-    
+
     .animate-fadeOut {
         animation: fadeOut 0.3s ease-in forwards;
     }
