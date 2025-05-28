@@ -36,166 +36,49 @@ DB_POOL = psycopg2.pool.SimpleConnectionPool(
     options="-c search_path=sizopi"
 )
 
-# # For development
-# def get_db_connection():
-#     conn = DB_POOL.getconn()
-#     with conn.cursor() as cur:
-#         cur.execute("SET search_path TO sizopi")
-#     return conn
-
 def get_db_connection():
     conn = DB_POOL.getconn()
-    conn.autocommit = True  # Biarkan default autocommit = True
+    conn.autocommit = True  
     with conn.cursor() as cur:
-        cur.execute("SET search_path TO sizopi")  # Ini oke selama belum masuk transaksi
+        cur.execute("SET search_path TO sizopi")  
     return conn
 
 
 
-
-# For development
-# def get_db_connection():
-#     return DB_POOL.getconn()
-
 def release_db_connection(conn):
     DB_POOL.putconn(conn)
 
-# Create your views here.
-# def login_view(request):
-#     if request.session.get('is_authenticated', False):
-#         return redirect('main:main')
 
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         password = request.POST.get('password')
-
-#         conn = get_db_connection()
-#         try:
-#             with conn.cursor() as cur:
-#                 # Check if input is email or username
-#                 cur.execute("""
-#                     SELECT username, email, nama_depan, nama_tengah, nama_belakang, 
-#                            no_telepon, password
-#                     FROM PENGGUNA
-#                     WHERE (username = %s OR email = %s) AND password = %s
-#                 """, (email, email, password))
-                
-#                 user = cur.fetchone()
-                
-#                 if user:
-#                     username = user[0]
-#                     user_dict = {
-#                         'username': username,
-#                         'email': user[1],
-#                         'nama_depan': user[2],
-#                         'nama_tengah': user[3] if user[3] else '',
-#                         'nama_belakang': user[4],
-#                         'no_telepon': user[5],
-#                         'role': None  # Will be determined below
-#                     }
-                    
-#                     # Check user role by checking the extension tables
-#                     cur.execute("SELECT 1 FROM PENGUNJUNG WHERE username_P = %s", (username,))
-#                     if cur.fetchone():
-#                         user_dict['role'] = 'pengunjung'
-
-#                         cur.execute("SELECT alamat, tgl_lahir FROM PENGUNJUNG WHERE username_P = %s", (username,))
-#                         pengunjung_details = cur.fetchone()
-#                         if pengunjung_details:
-#                             user_dict.update({
-#                                 'alamat': pengunjung_details[0],
-#                                 'tgl_lahir': pengunjung_details[1].strftime('%Y-%m-%d') if pengunjung_details[1] else None
-#                             })
-
-#                         # Cek apakah dia adopter
-#                         cur.execute("SELECT 1 FROM ADOPTER WHERE username_adopter = %s", (username,))
-#                         user_dict['is_adopter'] = cur.fetchone() is not None
-
-                    
-#                     cur.execute("SELECT 1 FROM DOKTER_HEWAN WHERE username_DH = %s", (username,))
-#                     if cur.fetchone():
-#                         user_dict['role'] = 'dokter_hewan'
-#                         cur.execute("SELECT no_STR FROM DOKTER_HEWAN WHERE username_DH = %s", (username,))
-#                         dokter_details = cur.fetchone()
-#                         if dokter_details:
-#                             user_dict['no_str'] = dokter_details[0]
-                            
-#                         # Get dokter specializations
-#                         cur.execute("""
-#                             SELECT nama_spesialisasi 
-#                             FROM SPESIALISASI
-#                             WHERE username_SH = %s
-#                         """, (username,))
-#                         spesialisasi_results = cur.fetchall()
-#                         user_dict['spesialisasi'] = [row[0] for row in spesialisasi_results] if spesialisasi_results else []
-                    
-#                     cur.execute("SELECT 1 FROM PENJAGA_HEWAN WHERE username_jh = %s", (username,))
-#                     if cur.fetchone():
-#                         user_dict['role'] = 'penjaga_hewan'
-#                         cur.execute("SELECT id_staf FROM PENJAGA_HEWAN WHERE username_jh = %s", (username,))
-#                         penjaga_details = cur.fetchone()
-#                         if penjaga_details:
-#                             user_dict['id_staf'] = str(penjaga_details[0])
-                    
-#                     cur.execute("SELECT 1 FROM PELATIH_HEWAN WHERE username_lh = %s", (username,))
-#                     if cur.fetchone():
-#                         user_dict['role'] = 'pelatih_hewan'
-#                         cur.execute("SELECT id_staf FROM PELATIH_HEWAN WHERE username_lh = %s", (username,))
-#                         pelatih_details = cur.fetchone()
-#                         if pelatih_details:
-#                             user_dict['id_staf'] = str(pelatih_details[0])
-                    
-#                     cur.execute("SELECT 1 FROM STAF_ADMIN WHERE username_sa = %s", (username,))
-#                     if cur.fetchone():
-#                         user_dict['role'] = 'staf_admin'
-#                         cur.execute("SELECT id_staf FROM STAF_ADMIN WHERE username_sa = %s", (username,))
-#                         admin_details = cur.fetchone()
-#                         if admin_details:
-#                             user_dict['id_staf'] = str(admin_details[0])
-                    
-#                     request.session['user'] = user_dict
-#                     request.session['is_authenticated'] = True
-#                     request.session['role'] = user_dict['role']
-#                     return redirect('main:main')
-#                 else:
-#                     messages.error(request, 'Invalid username/email or password.')
-#         except Exception as e:
-#             messages.error(request, f'Login error: {str(e)}')
-#         finally:
-#             release_db_connection(conn)
-#     return render(request, 'login.html')
 
 def login_view(request):
     if request.session.get('is_authenticated', False):
         return redirect('main:main')
 
     if request.method == 'POST':
-        email_or_username = request.POST.get('email')
+        email = request.POST.get('email')  
         password = request.POST.get('password')
 
         conn = get_db_connection()
         try:
             with conn.cursor() as cur:
-                # Call stored function yang ngecek kredensial dan raise error kalau gagal
-                cur.execute("SELECT cek_login_pengguna(%s, %s)", (email_or_username, password))
-                conn.commit()  # penting biar trigger/exception tereksekusi bener
 
-                # Kalau nggak raise error, berarti login valid → ambil user info
+                cur.execute("SELECT cek_login_pengguna(%s, %s)", (email, password))
+                username = cur.fetchone()[0]  
+
+                # Ambil info pengguna
                 cur.execute("""
                     SELECT username, email, nama_depan, nama_tengah, nama_belakang, no_telepon
                     FROM pengguna
-                    WHERE username = %s OR email = %s
-                """, (email_or_username, email_or_username))
+                    WHERE username = %s
+                """, (username,))
                 user = cur.fetchone()
 
                 if not user:
                     messages.error(request, "User tidak ditemukan.")
                     return render(request, 'login.html')
 
-                # lanjut seperti sebelumnya
-                username = user[0]
                 user_dict = {
-                    'username': username,
+                    'username': user[0],
                     'email': user[1],
                     'nama_depan': user[2],
                     'nama_tengah': user[3] or '',
@@ -204,57 +87,73 @@ def login_view(request):
                     'role': None
                 }
 
-                # role checking seperti sebelumnya
+                # Cek role pengguna
+                # Pengunjung
                 cur.execute("SELECT 1 FROM pengunjung WHERE username_P = %s", (username,))
                 if cur.fetchone():
                     user_dict['role'] = 'pengunjung'
-                    cur.execute("SELECT alamat, tgl_lahir FROM PENGUNJUNG WHERE username_P = %s", (username,))
-                    details = cur.fetchone()
-                    if details:
+                    cur.execute("SELECT alamat, tgl_lahir FROM pengunjung WHERE username_P = %s", (username,))
+                    detail = cur.fetchone()
+                    if detail:
                         user_dict.update({
-                            'alamat': details[0],
-                            'tgl_lahir': details[1].strftime('%Y-%m-%d') if details[1] else None
+                            'alamat': detail[0],
+                            'tgl_lahir': detail[1].strftime('%Y-%m-%d') if detail[1] else None
                         })
-                    cur.execute("SELECT 1 FROM ADOPTER WHERE username_adopter = %s", (username,))
+                    cur.execute("SELECT 1 FROM adopter WHERE username_adopter = %s", (username,))
                     user_dict['is_adopter'] = cur.fetchone() is not None
 
-                cur.execute("SELECT 1 FROM PENJAGA_HEWAN WHERE username_jh = %s", (username,))
+                # Dokter
+                cur.execute("SELECT 1 FROM dokter_hewan WHERE username_DH = %s", (username,))
+                if cur.fetchone():
+                    user_dict['role'] = 'dokter_hewan'
+                    cur.execute("SELECT no_STR FROM dokter_hewan WHERE username_DH = %s", (username,))
+                    detail = cur.fetchone()
+                    if detail:
+                        user_dict['no_str'] = detail[0]
+                    cur.execute("SELECT nama_spesialisasi FROM spesialisasi WHERE username_SH = %s", (username,))
+                    spesialis = cur.fetchall()
+                    user_dict['spesialisasi'] = [row[0] for row in spesialis] if spesialis else []
+
+                # Penjaga Hewan
+                cur.execute("SELECT 1 FROM penjaga_hewan WHERE username_jh = %s", (username,))
                 if cur.fetchone():
                     user_dict['role'] = 'penjaga_hewan'
-                    cur.execute("SELECT id_staf FROM PENJAGA_HEWAN WHERE username_jh = %s", (username,))
-                    penjaga_details = cur.fetchone()
-                    if penjaga_details:
-                        user_dict['id_staf'] = str(penjaga_details[0])
-                
-                cur.execute("SELECT 1 FROM PELATIH_HEWAN WHERE username_lh = %s", (username,))
+                    cur.execute("SELECT id_staf FROM penjaga_hewan WHERE username_jh = %s", (username,))
+                    detail = cur.fetchone()
+                    if detail:
+                        user_dict['id_staf'] = str(detail[0])
+
+                # Pelatih
+                cur.execute("SELECT 1 FROM pelatih_hewan WHERE username_lh = %s", (username,))
                 if cur.fetchone():
                     user_dict['role'] = 'pelatih_hewan'
-                    cur.execute("SELECT id_staf FROM PELATIH_HEWAN WHERE username_lh = %s", (username,))
-                    pelatih_details = cur.fetchone()
-                    if pelatih_details:
-                        user_dict['id_staf'] = str(pelatih_details[0])
-                
-                cur.execute("SELECT 1 FROM STAF_ADMIN WHERE username_sa = %s", (username,))
+                    cur.execute("SELECT id_staf FROM pelatih_hewan WHERE username_lh = %s", (username,))
+                    detail = cur.fetchone()
+                    if detail:
+                        user_dict['id_staf'] = str(detail[0])
+
+                # Admin
+                cur.execute("SELECT 1 FROM staf_admin WHERE username_sa = %s", (username,))
                 if cur.fetchone():
                     user_dict['role'] = 'staf_admin'
-                    cur.execute("SELECT id_staf FROM STAF_ADMIN WHERE username_sa = %s", (username,))
-                    admin_details = cur.fetchone()
-                    if admin_details:
-                        user_dict['id_staf'] = str(admin_details[0])
-       
+                    cur.execute("SELECT id_staf FROM staf_admin WHERE username_sa = %s", (username,))
+                    detail = cur.fetchone()
+                    if detail:
+                        user_dict['id_staf'] = str(detail[0])
 
+                # Set session
                 request.session['user'] = user_dict
                 request.session['is_authenticated'] = True
                 request.session['role'] = user_dict['role']
                 return redirect('main:main')
 
         except Exception as e:
-            messages.error(request, str(e).split('\n')[0])  # ambil pesan dari RAISE
-
+            messages.error(request, str(e).split('\n')[0])
         finally:
             release_db_connection(conn)
 
     return render(request, 'login.html')
+
 
 
 
