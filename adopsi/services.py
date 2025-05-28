@@ -268,7 +268,7 @@ class AdopsiService:
     @staticmethod
     def create_individual_adoption(username, animal_id, nik, nama, alamat, 
                                 no_telepon, nominal, periode):
-        """Membuat adopsi baru untuk individu - DIPERBAIKI untuk multiple adoption"""
+        """Membuat adopsi baru untuk individu"""
         try:
             # Validasi nominal dan periode
             if nominal <= 0:
@@ -282,13 +282,11 @@ class AdopsiService:
             with connection.cursor() as cursor:
                 cursor.execute("SET search_path TO SIZOPI")
                 
-                # Cek apakah user sudah pernah jadi adopter individu dengan NIK yang sama
+                # Cek apakah user sudah pernah jadi adopter
                 cursor.execute("""
-                    SELECT ad.id_adopter 
-                    FROM ADOPTER ad
-                    JOIN INDIVIDU ind ON ad.id_adopter = ind.id_adopter
-                    WHERE ad.username_adopter = %s AND ind.nik = %s
-                """, [username, nik])
+                    SELECT id_adopter FROM ADOPTER 
+                    WHERE username_adopter = %s
+                """, [username])
                 existing_adopter = cursor.fetchone()
                 
                 if existing_adopter:
@@ -296,12 +294,19 @@ class AdopsiService:
                     adopter_id = existing_adopter[0]
                     print(f"Using existing adopter: {adopter_id}")
                     
-                    # Update total kontribusi
+                    # Cek apakah sudah ada record individu dengan NIK yang sama untuk adopter ini
                     cursor.execute("""
-                        UPDATE ADOPTER 
-                        SET total_kontribusi = total_kontribusi + %s
-                        WHERE id_adopter = %s
-                    """, [nominal, adopter_id])
+                        SELECT COUNT(*) FROM INDIVIDU 
+                        WHERE id_adopter = %s AND nik = %s
+                    """, [adopter_id, nik])
+                    individu_exists = cursor.fetchone()[0]
+                    
+                    if individu_exists == 0:
+                        # Insert record individu baru jika NIK berbeda
+                        cursor.execute("""
+                            INSERT INTO INDIVIDU (nik, nama, id_adopter)
+                            VALUES (%s, %s, %s)
+                        """, [nik, nama, adopter_id])
                     
                 else:
                     # Buat adopter baru
@@ -330,7 +335,7 @@ class AdopsiService:
                 if active_adoption[0] > 0:
                     raise ValueError("Hewan ini sedang diadopsi oleh adopter lain")
                 
-                # Insert ke tabel ADOPSI (selalu buat record adopsi baru)
+                # Insert ke tabel ADOPSI 
                 cursor.execute("""
                     INSERT INTO ADOPSI (id_adopter, id_hewan, status_pembayaran, 
                                     tgl_mulai_adopsi, tgl_berhenti_adopsi, kontribusi_finansial)
@@ -348,7 +353,7 @@ class AdopsiService:
     @staticmethod
     def create_organization_adoption(username, animal_id, npp, nama_organisasi, 
                                 alamat, kontak, nominal, periode):
-        """Membuat adopsi baru untuk organisasi - DIPERBAIKI untuk multiple adoption"""
+        """Membuat adopsi baru untuk organisasi"""
         try:
             # Validasi nominal dan periode
             if nominal <= 0:
@@ -362,13 +367,11 @@ class AdopsiService:
             with connection.cursor() as cursor:
                 cursor.execute("SET search_path TO SIZOPI")
                 
-                # Cek apakah user sudah pernah jadi adopter organisasi dengan NPP yang sama
+                # Cek apakah user sudah pernah jadi adopter
                 cursor.execute("""
-                    SELECT ad.id_adopter 
-                    FROM ADOPTER ad
-                    JOIN ORGANISASI org ON ad.id_adopter = org.id_adopter
-                    WHERE ad.username_adopter = %s AND org.npp = %s
-                """, [username, npp])
+                    SELECT id_adopter FROM ADOPTER 
+                    WHERE username_adopter = %s
+                """, [username])
                 existing_adopter = cursor.fetchone()
                 
                 if existing_adopter:
@@ -376,12 +379,19 @@ class AdopsiService:
                     adopter_id = existing_adopter[0]
                     print(f"Using existing adopter: {adopter_id}")
                     
-                    # Update total kontribusi
+                    # Cek apakah sudah ada record organisasi dengan NPP yang sama untuk adopter ini
                     cursor.execute("""
-                        UPDATE ADOPTER 
-                        SET total_kontribusi = total_kontribusi + %s
-                        WHERE id_adopter = %s
-                    """, [nominal, adopter_id])
+                        SELECT COUNT(*) FROM ORGANISASI 
+                        WHERE id_adopter = %s AND npp = %s
+                    """, [adopter_id, npp])
+                    organisasi_exists = cursor.fetchone()[0]
+                    
+                    if organisasi_exists == 0:
+                        # Insert record organisasi baru jika NPP berbeda
+                        cursor.execute("""
+                            INSERT INTO ORGANISASI (npp, nama_organisasi, id_adopter)
+                            VALUES (%s, %s, %s)
+                        """, [npp, nama_organisasi, adopter_id])
                     
                 else:
                     # Buat adopter baru
@@ -410,7 +420,7 @@ class AdopsiService:
                 if active_adoption[0] > 0:
                     raise ValueError("Hewan ini sedang diadopsi oleh adopter lain")
                 
-                # Insert ke tabel ADOPSI (selalu buat record adopsi baru)
+                # Insert ke tabel ADOPSI
                 cursor.execute("""
                     INSERT INTO ADOPSI (id_adopter, id_hewan, status_pembayaran, 
                                     tgl_mulai_adopsi, tgl_berhenti_adopsi, kontribusi_finansial)
