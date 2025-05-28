@@ -542,6 +542,29 @@ class AdopsiService:
             """, [username, animal_id])
             result = dictfetchall(cursor)
             return result[0] if result else None
+    
+    @staticmethod
+    def get_adopter_name_for_certificate(username, animal_id):
+        """Mengambil nama adopter yang tepat untuk sertifikat"""
+        with connection.cursor() as cursor:
+            cursor.execute("SET search_path TO SIZOPI")
+            cursor.execute("""
+                SELECT 
+                    CASE 
+                        WHEN ind.nama IS NOT NULL THEN ind.nama
+                        WHEN org.nama_organisasi IS NOT NULL THEN org.nama_organisasi
+                        ELSE CONCAT(p.nama_depan, ' ', p.nama_belakang)
+                    END as adopter_name
+                FROM ADOPSI a
+                JOIN ADOPTER ad ON a.id_adopter = ad.id_adopter
+                LEFT JOIN INDIVIDU ind ON ad.id_adopter = ind.id_adopter
+                LEFT JOIN ORGANISASI org ON ad.id_adopter = org.id_adopter
+                LEFT JOIN PENGGUNA p ON ad.username_adopter = p.username
+                WHERE ad.username_adopter = %s AND a.id_hewan = %s
+                    AND a.tgl_berhenti_adopsi > CURRENT_DATE
+            """, [username, animal_id])
+            result = dictfetchall(cursor)
+            return result[0]['adopter_name'] if result else None
 
     @staticmethod
     def extend_adoption(username, animal_id, nominal, periode):

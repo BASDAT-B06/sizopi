@@ -80,7 +80,7 @@ def adoption_list_user(request):
     return render(request, 'adoption/user/adoption_list_user.html', context)
 
 def adoption_certificate(request, animal_id):
-    """Halaman sertifikat adopsi"""
+    """Halaman sertifikat adopsi - DIPERBAIKI"""
     user_context = get_user_context(request)
     if not user_context["is_logged_in"]:
         return redirect('/auth/login/')
@@ -89,9 +89,12 @@ def adoption_certificate(request, animal_id):
     if not animal:
         return HttpResponse("Data adopsi tidak ditemukan", status=404)
     
-    user_info = AdopsiService.get_user_info(user_context["username"])
+    adopter_name = AdopsiService.get_adopter_name_for_certificate(
+        user_context["username"], animal_id
+    )
+    
     adopter = {
-        'name': f"{user_info['nama_depan']} {user_info['nama_belakang']}" if user_info else user_context["username"]
+        'name': adopter_name if adopter_name else user_context["username"]
     }
     
     context = {
