@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import os
 import psycopg2
-from psycopg2 import pool
+from psycopg2 import pool, IntegrityError, errors
 from dotenv import load_dotenv
 from django.contrib import messages
-
+import re
 
 load_dotenv(override=True)
 
@@ -30,7 +30,6 @@ def release_db_connection(conn):
 
 
 def pengaturan_profil(request):
-
     if not request.session.get("is_authenticated"):
         return redirect("authentication:login")
 
@@ -39,18 +38,23 @@ def pengaturan_profil(request):
     role = user.get("role")
     is_adopter = user.get("is_adopter", False)
 
-
     conn = get_db_connection()
     try:
         if request.method == "POST":
-            email = request.POST.get("email")
-            nama_depan = request.POST.get("nama_depan")
-            nama_tengah = request.POST.get("nama_tengah") or None
-            nama_belakang = request.POST.get("nama_belakang")
-            nomor_telepon = request.POST.get("nomor_telepon")
+            # Ambil input
+            email = request.POST.get("email", "").strip()
+            nama_depan = request.POST.get("nama_depan", "").strip()
+            nama_tengah = request.POST.get("nama_tengah", "").strip() or None
+            nama_belakang = request.POST.get("nama_belakang", "").strip()
+            nomor_telepon = request.POST.get("nomor_telepon", "").strip()
 
+            # Validasi input manual
+            if not email or not nama_depan or not nama_belakang or not nomor_telepon:
+                messages.error(request, "Field wajib tidak boleh kosong.")
+                return redirect("profil:pengaturan_profil")
 
             with conn.cursor() as cursor:
+                # Update data pengguna
                 cursor.execute("""
                     UPDATE PENGGUNA SET
                         email = %s,
@@ -65,6 +69,10 @@ def pengaturan_profil(request):
                     alamat_lengkap = request.POST.get("alamat_lengkap")
                     tanggal_lahir = request.POST.get("tanggal_lahir")
 
+                    if not alamat_lengkap or not tanggal_lahir:
+                        messages.error(request, "Alamat dan tanggal lahir wajib diisi.")
+                        return redirect("profil:pengaturan_profil")
+
                     cursor.execute("""
                         UPDATE PENGUNJUNG SET
                             alamat = %s,
@@ -77,32 +85,28 @@ def pengaturan_profil(request):
                     request.session['user'] = user
 
                 elif role == "dokter_hewan":
-                    spesialisasi_baru = []
-                    for item in ["Mamalia Besar", "Reptil", "Burung Eksotis", "Primata"]:
-                        if request.POST.get(item.lower().replace(" ", "_")):
-                            spesialisasi_baru.append(item)
+                    spesialisasi_terpilih = request.POST.get("spesialisasi_pilihan")
                     spesialisasi_lain = request.POST.get("spesialisasi_lain")
-                    if spesialisasi_lain:
-                        spesialisasi_baru.append(spesialisasi_lain)
 
-                    cursor.execute("DELETE FROM SPESIALISASI WHERE username_SH = %s", (username,))
-                    for spesialisasi in spesialisasi_baru:
+                    spesialisasi_final = spesialisasi_lain if spesialisasi_terpilih == "lainnya" else spesialisasi_terpilih
+
+                    if spesialisasi_final:
+                        cursor.execute("DELETE FROM SPESIALISASI WHERE username_SH = %s", (username,))
                         cursor.execute("""
                             INSERT INTO SPESIALISASI (username_SH, nama_spesialisasi)
                             VALUES (%s, %s)
-                        """, (username, spesialisasi))
+                        """, (username, spesialisasi_final))
+
 
                 conn.commit()
-                
                 messages.success(request, "Profil berhasil diperbarui.")
-
                 return redirect("profil:pengaturan_profil")
 
         context = {
             "username": username,
             "user_role": role,
             "is_logged_in": request.session.get("is_authenticated", False),
-            "is_adopter": is_adopter,  
+            "is_adopter": is_adopter,
         }
 
         with conn.cursor() as cursor:
@@ -119,20 +123,10 @@ def pengaturan_profil(request):
             if role == "pengunjung":
                 cursor.execute("SELECT alamat, tgl_lahir FROM PENGUNJUNG WHERE username_P = %s", (username,))
                 pengunjung = cursor.fetchone()
-                if pengunjung:
-                    context["pengunjung_data"] = {
-                        "alamat": pengunjung[0],
-                        "tgl_lahir": pengunjung[1].strftime("%Y-%m-%d") if pengunjung[1] else ""
-                    }
-                else:
-                    context["pengunjung_data"] = {
-                        "alamat": "",
-                        "tgl_lahir": ""
-                    }
-                # context["pengunjung_data"] = {
-                #     "alamat": pengunjung[0],
-                #     "tgl_lahir": pengunjung[1].strftime("%Y-%m-%d") if pengunjung[1] else ""
-                # }
+                context["pengunjung_data"] = {
+                    "alamat": pengunjung[0] if pengunjung else "",
+                    "tgl_lahir": pengunjung[1].strftime("%Y-%m-%d") if pengunjung and pengunjung[1] else ""
+                }
 
             elif role == "dokter_hewan":
                 cursor.execute("SELECT no_STR FROM DOKTER_HEWAN WHERE username_DH = %s", (username,))
@@ -159,19 +153,30 @@ def pengaturan_profil(request):
 
         return render(request, "pengaturan_profil.html", context)
 
-    except Exception as e:
-        messages.error(request, f"Terjadi kesalahan: {str(e)}")
-        return redirect("profil:pengaturan_profil")  
+    except IntegrityError as e:
+        conn.rollback()
+        if isinstance(e.__cause__, errors.UniqueViolation):
+            messages.error(request, "Email sudah digunakan oleh pengguna lain.")
+        else:
+            messages.error(request, "Terjadi kesalahan pada data yang dimasukkan.")
+        return redirect("profil:pengaturan_profil")
 
+    except Exception as e:
+        conn.rollback()
+        messages.error(request, f"Terjadi kesalahan: {str(e)}")
+        return redirect("profil:pengaturan_profil")
 
     finally:
         release_db_connection(conn)
+
 
 def ubah_password(request):
     if not request.session.get("is_authenticated"):
         return redirect("authentication:login")
 
     username = request.session.get("user", {}).get("username")
+
+
     conn = get_db_connection()
 
     try:
@@ -179,6 +184,10 @@ def ubah_password(request):
             old_password = request.POST.get("old_password")
             new_password = request.POST.get("new_password")
             confirm_password = request.POST.get("confirm_password")
+
+            if not old_password or not new_password or not confirm_password:
+                messages.error(request, "Semua field wajib diisi.")
+                return redirect("profil:ubah_password")
 
             if new_password != confirm_password:
                 messages.error(request, "Konfirmasi password tidak cocok.")
@@ -204,9 +213,17 @@ def ubah_password(request):
                 messages.success(request, "Password berhasil diperbarui.")
                 return redirect("profil:pengaturan_profil")
 
-        return render(request, "ubah_password.html")
+        context = {
+            "username": username,
+            "user_role": request.session.get("user", {}).get("role"),
+            "is_logged_in": True,
+            "is_adopter": request.session.get("user", {}).get("is_adopter", False),
+        }
+        return render(request, "ubah_password.html", context)
+
 
     except Exception as e:
+        conn.rollback()
         messages.error(request, f"Terjadi kesalahan: {str(e)}")
         return redirect("profil:ubah_password")
 

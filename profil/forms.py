@@ -10,12 +10,12 @@ class PengunjungProfileForm(forms.Form):
     tgl_lahir = forms.DateField(label='Tanggal Lahir', widget=forms.DateInput(attrs={'type': 'date'}))
 
 class DokterHewanProfileForm(forms.Form):
-    email = forms.EmailField(label='Email', disabled=True)
+    email = forms.EmailField(label='Email')
     nama_depan = forms.CharField(label='Nama Depan')
     nama_tengah = forms.CharField(label='Nama Tengah', required=False)
     nama_belakang = forms.CharField(label='Nama Belakang')
     no_telepon = forms.CharField(label='Nomor Telepon')
-    no_str = forms.CharField(label='No STR', disabled=True)  # biasanya readonly
+    no_str = forms.CharField(label='No STR', disabled=True) 
 
     SPESIALISASI_CHOICES = [
         ('Mamalia Besar', 'Mamalia Besar'),

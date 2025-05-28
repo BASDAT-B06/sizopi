@@ -8,8 +8,20 @@ def dictfetchall(cursor):
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
+ALLOWED_ROLES = ['penjaga_hewan', 'staf_admin']
+
+def check_role(request):
+    user = request.session.get("user", {})
+    return user.get("role") in ALLOWED_ROLES
 
 def daftar_habitat(request):
+    if not request.session.get("is_authenticated") or not check_role(request):
+        return redirect("authentication:login")
+    user = request.session.get("user", {})
+    is_authenticated = request.session.get("is_authenticated", False)
+    user_role = user.get("user_role")
+
+    
     with connection.cursor() as cursor:
         cursor.execute("SET search_path TO SIZOPI")
         cursor.execute("""
@@ -19,28 +31,20 @@ def daftar_habitat(request):
         """)
         habitats = dictfetchall(cursor)
 
-    return render(request, 'daftar_habitat.html', {'habitats': habitats})
-
-
-# def tambah_habitat(request):
-#     if request.method == 'POST':
-#         nama = request.POST.get('nama_habitat')
-#         luas_area = request.POST.get('luas_area')
-#         kapasitas = request.POST.get('kapasitas_maksimal')
-#         status = request.POST.get('status_lingkungan')
-
-#         with connection.cursor() as cursor:
-#             cursor.execute("SET search_path TO SIZOPI")  # kalau pakai schema
-#             cursor.execute("""
-#                 INSERT INTO HABITAT (nama, luas_area, kapasitas, status)
-#                 VALUES (%s, %s, %s, %s)
-#             """, [nama, luas_area, kapasitas, status])
-
-#         return redirect('datahabitat:daftar_habitat')
-
-#     return render(request, 'form_habitat.html')
+    return render(request, 'daftar_habitat.html', {
+        'habitats': habitats,
+        "user": request.session.get("user"),
+        "user_role": request.session.get("user", {}).get("role"),
+        "is_logged_in": request.session.get("is_authenticated", False),
+        })
 
 def tambah_habitat(request):
+    if not request.session.get("is_authenticated"):
+        return redirect("authentication:login")
+    user = request.session.get("user", {})
+    is_authenticated = request.session.get("is_authenticated", False)
+    user_role = user.get("user_role")
+
     if request.method == 'POST':
         nama = request.POST.get('nama_habitat', '').strip()
         luas_area = request.POST.get('luas_area', '').strip()
@@ -48,7 +52,6 @@ def tambah_habitat(request):
         status = request.POST.get('status_lingkungan', '').strip()
 
         error_message = None
-
         # Validasi: semua field wajib diisi
         if not nama or not luas_area or not kapasitas or not status:
             error_message = "Semua field harus diisi."
@@ -69,6 +72,9 @@ def tambah_habitat(request):
                     'status': status,
                 },
                 'error_message': error_message,
+                "user": request.session.get("user"),
+                "user_role": request.session.get("user", {}).get("role"),
+                "is_logged_in": request.session.get("is_authenticated", False),
             }
             return render(request, 'form_habitat.html', context)
 
@@ -81,11 +87,23 @@ def tambah_habitat(request):
 
         return redirect('datahabitat:daftar_habitat')
 
-    return render(request, 'form_habitat.html')
+    return render(request, 'form_habitat.html', {
+        "user": request.session.get("user"),
+        "user_role": request.session.get("user", {}).get("role"),
+        "is_logged_in": request.session.get("is_authenticated", False),
+
+
+    })
 
 
 
 def edit_habitat(request, nama):
+    if not request.session.get("is_authenticated"):
+        return redirect("authentication:login")
+    user = request.session.get("user", {})
+    is_authenticated = request.session.get("is_authenticated", False)
+    user_role = user.get("user_role")
+        
     with connection.cursor() as cursor:
         cursor.execute("SET search_path TO SIZOPI")
         cursor.execute("SELECT * FROM habitat WHERE nama = %s", [nama])
@@ -126,6 +144,9 @@ def edit_habitat(request, nama):
             return render(request, 'edit_habitat.html', {
                 'habitat': habitat_data,
                 'error_message': error_message,
+                "user": request.session.get("user"),
+                "user_role": request.session.get("user", {}).get("role"),
+                "is_logged_in": request.session.get("is_authenticated", False),
             })
 
         # Jika valid, baru update ke database
@@ -149,7 +170,12 @@ def edit_habitat(request, nama):
 
         return redirect('datahabitat:daftar_habitat')
 
-    return render(request, 'edit_habitat.html', {'habitat': habitat})
+    return render(request, 'edit_habitat.html', {
+        'habitat': habitat,
+        
+        "user": request.session.get("user"),
+        "user_role": request.session.get("user", {}).get("role"),
+        "is_logged_in": request.session.get("is_authenticated", False),})
 
 
 
@@ -162,6 +188,11 @@ def hapus_habitat(request, nama):
 
 
 def detail_habitat(request, nama):
+    if not request.session.get("is_authenticated"):
+        return redirect("authentication:login")
+    user = request.session.get("user", {})
+    is_authenticated = request.session.get("is_authenticated", False)
+    user_role = user.get("user_role")
     with connection.cursor() as cursor:
         # Get habitat data
         cursor.execute("SET search_path TO SIZOPI")
@@ -186,5 +217,8 @@ def detail_habitat(request, nama):
 
     return render(request, 'detail_habitat.html', {
         'habitat': habitat,
-        'species_in_habitat': species
+        'species_in_habitat': species,
+        "user": request.session.get("user"),
+        "user_role": request.session.get("user", {}).get("role"),
+        "is_logged_in": request.session.get("is_authenticated", False),
     })

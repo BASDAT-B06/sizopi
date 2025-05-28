@@ -4,19 +4,25 @@ from uuid import uuid4
 from django.contrib import messages
 from django.http import HttpResponse
 
+
+
 def dictfetchall(cursor):
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-def daftar_satwa(request):
-    if not request.session.get("is_authenticated"):
-        return redirect("authentication:login")
+ALLOWED_ROLES = ["dokter_hewan", "penjaga_hewan", "staf_admin"]
 
-    user = request.session.get("user")
-    username = user.get("username")
-    role = user.get("role")
-    is_adopter = user.get("is_adopter", False)
-    
+def check_role(request):
+    user = request.session.get("user", {})
+    return user.get("role") in ALLOWED_ROLES
+
+def daftar_satwa(request):
+    if not request.session.get("is_authenticated") or not check_role(request):
+        return redirect("authentication:login")
+    user = request.session.get("user", {})
+    is_authenticated = request.session.get("is_authenticated", False)
+    user_role = user.get("user_role")
+
     with connection.cursor() as cursor:
         cursor.execute("SET search_path TO SIZOPI")  
         cursor.execute("""
@@ -27,10 +33,22 @@ def daftar_satwa(request):
         """)
         data = dictfetchall(cursor)
 
-    return render(request, 'daftar_satwa.html', {'data': data})
+    return render(request, "daftar_satwa.html", {
+        "data": data,
+        "user": request.session.get("user"),
+        "user_role": request.session.get("user", {}).get("role"),
+        "is_logged_in": request.session.get("is_authenticated", False),
 
+
+    })
 
 def tambah_satwa(request):
+    if not request.session.get("is_authenticated") or not check_role(request):
+        return redirect("authentication:login")
+    user = request.session.get("user", {})
+    is_authenticated = request.session.get("is_authenticated", False)
+    user_role = user.get("user_role")
+
     with connection.cursor() as cursor:
         cursor.execute("SET search_path TO SIZOPI")
         cursor.execute("SELECT nama FROM HABITAT ORDER BY nama")
@@ -45,15 +63,31 @@ def tambah_satwa(request):
         tgl_lahir = request.POST.get('tanggal_lahir') or None
         status = request.POST.get('status_kesehatan')
         habitat = request.POST.get('habitat')
-        url_foto = request.POST.get('url_foto') or ""
+        url_foto = request.POST.get('url_foto', '').strip()
 
-        if not spesies or not asal or not status or not habitat:
-            error_msg = "Semua kolom wajib diisi, kecuali 'Nama Individu' dan 'Tanggal Lahir'."
+
+        required_fields = {
+            'Spesies': spesies,
+            'Asal Hewan': asal,
+            'Status Kesehatan': status,
+            'Habitat': habitat,
+            'URL Foto': url_foto,
+        }
+
+        missing = [field for field, value in required_fields.items() if not value]
+
+        if missing:
+            error_msg = f"{', '.join(missing)} wajib diisi."
             return render(request, 'form_satwa.html', {
                 'error': error_msg,
                 'habitat_choices': habitat_choices,
-                'status_choices': status_choices
+                'status_choices': status_choices,
+                "user": request.session.get("user"),
+                "user_role": request.session.get("user", {}).get("role"),
+                "is_logged_in": request.session.get("is_authenticated", False),
             })
+
+
 
         try:
             with connection.cursor() as cursor:
@@ -70,15 +104,26 @@ def tambah_satwa(request):
             return render(request, 'form_satwa.html', {
                 'error': error_msg,
                 'habitat_choices': habitat_choices,
-                'status_choices': status_choices
+                'status_choices': status_choices,
+                "user": request.session.get("user"),
+                "user_role": request.session.get("user", {}).get("role"),
+                "is_logged_in": request.session.get("is_authenticated", False),
             })
 
     return render(request, 'form_satwa.html', {
         'habitat_choices': habitat_choices,
-        'status_choices': status_choices
+        'status_choices': status_choices,
+        "user": request.session.get("user"),
+        "user_role": request.session.get("user", {}).get("role"),
+        "is_logged_in": request.session.get("is_authenticated", False),
     })
 
 def edit_satwa(request, id):
+    if not request.session.get("is_authenticated") or not check_role(request):
+        return redirect("authentication:login")
+    user = request.session.get("user", {})
+    is_authenticated = request.session.get("is_authenticated", False)
+    user_role = user.get("user_role")
     with connection.cursor() as cursor:
         cursor.execute("SET search_path TO SIZOPI")
         cursor.execute("SELECT * FROM HEWAN WHERE id = %s", [str(id)])
@@ -103,14 +148,28 @@ def edit_satwa(request, id):
         after_habitat = request.POST.get("nama_habitat")
         foto = request.POST.get("url_foto") or ""
 
-        if not spesies or not asal or not status or not after_habitat:
-            error_msg = "Semua kolom wajib diisi, kecuali 'Nama Individu' dan 'Tanggal Lahir'."
+        required_fields = {
+            'Spesies': spesies,
+            'Asal Hewan': asal,
+            'Status Kesehatan': status,
+            'Habitat': after_habitat,
+            'URL Foto': foto,
+        }
+
+        missing = [field for field, value in required_fields.items() if not value]
+
+        if missing:
+            error_msg = f"{', '.join(missing)} wajib diisi."
             return render(request, 'edit_satwa.html', {
                 'satwa': satwa,
                 'error': error_msg,
                 'status_choices': status_choices,
-                'habitat_choices': habitat_choices
+                'habitat_choices': habitat_choices,
+                "user": request.session.get("user"),
+                "user_role": request.session.get("user", {}).get("role"),
+                "is_logged_in": request.session.get("is_authenticated", False),
             })
+
 
         with connection.cursor() as cursor:
             cursor.execute("SET search_path TO SIZOPI")
@@ -129,10 +188,16 @@ def edit_satwa(request, id):
     return render(request, 'edit_satwa.html', {
         'satwa': satwa,
         'status_choices': status_choices,
-        'habitat_choices': habitat_choices
+        'habitat_choices': habitat_choices,
+        "user": request.session.get("user"),
+        "user_role": request.session.get("user", {}).get("role"),
+        "is_logged_in": request.session.get("is_authenticated", False),
     })
 
 def hapus_satwa(request, id):
+    if not request.session.get("is_authenticated") or not check_role(request):
+        return redirect("authentication:login")
+        
     with connection.cursor() as cursor:
         cursor.execute("SET search_path TO SIZOPI")
         cursor.execute("DELETE FROM HEWAN WHERE id = %s", [str(id)])
