@@ -192,18 +192,18 @@ def register_dokter_view(request):
                         no_str
                     ))
 
-                    # Spesialisasi
-                    spesialis = form.cleaned_data['spesialis']
-                    if spesialis == 'Lainnya':
-                        spesialis = form.cleaned_data['spesialis_lainnya']
+                    # Tangani spesialisasi
+                    spesialis_list = form.cleaned_data['spesialis']
+                    if 'Lainnya' in spesialis_list and form.cleaned_data.get('spesialis_lainnya'):
+                        spesialis_list.remove('Lainnya')
+                        spesialis_list.append(form.cleaned_data['spesialis_lainnya'])
 
-                    cur.execute("""
-                        INSERT INTO SPESIALISASI (username_SH, nama_spesialisasi)
-                        VALUES (%s, %s)
-                    """, (
-                        form.cleaned_data['username'],
-                        spesialis
-                    ))
+                    # Simpan ke SPESIALISASI
+                    for spesialis in spesialis_list:
+                        cur.execute("""
+                            INSERT INTO SPESIALISASI (username_SH, nama_spesialisasi)
+                            VALUES (%s, %s)
+                        """, (form.cleaned_data['username'], spesialis))
 
                 conn.commit()
                 messages.success(request, 'Registrasi berhasil. Silakan login.')

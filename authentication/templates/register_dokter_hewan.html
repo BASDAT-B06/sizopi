@@ -124,23 +124,30 @@
     </div>
 
     <div>
-        <label for="spesialis" class="block mb-1 text-sm font-medium text-gray-700">Spesialis</label>
-        <select id="spesialis" name="spesialis" onchange="toggleOtherSpecialization()"
-        class="w-full px-3 py-2 border border-black rounded-md" required>
-        <option value="" disabled selected>Pilih Spesialisasi</option>
-        <option value="Mamalia Besar">Mamalia Besar</option>
-        <option value="Reptil">Reptil</option>
-        <option value="Burung Eksotis">Burung Eksotis</option>
-        <option value="Primata">Primata</option>
-        <option value="Lainnya">Lainnya</option>
-        </select>
+    <label class="block mb-1 text-sm font-medium text-gray-700">Spesialis</label>
+    {% for value, label in form.spesialis.field.choices %}
+        <div class="flex items-center mb-1">
+        <input 
+            type="checkbox" 
+            name="spesialis" 
+            value="{{ value }}" 
+            id="spesialis_{{ forloop.counter }}"
+            class="mr-2"
+            {% if value in form.spesialis.value %}checked{% endif %}
+            onchange="toggleOtherSpecializationCheckbox()"
+        >
+        <label for="spesialis_{{ forloop.counter }}" class="text-sm text-gray-800">{{ label }}</label>
+        </div>
+    {% endfor %}
     </div>
 
     <div id="other_specialization_div" class="hidden">
-        <label for="spesialis_lainnya" class="block mb-1 text-sm font-medium text-gray-700">Spesialisasi Lainnya</label>
-        <input type="text" id="spesialis_lainnya" name="spesialis_lainnya" placeholder="Spesialisasi Lainnya"
-        class="w-full px-3 py-2 border border-black rounded-md" />
+    <label for="spesialis_lainnya" class="block mb-1 text-sm font-medium text-gray-700">Spesialisasi Lainnya</label>
+    <input type="text" id="spesialis_lainnya" name="spesialis_lainnya" placeholder="Spesialisasi Lainnya"
+            class="w-full px-3 py-2 border border-black rounded-md" />
     </div>
+
+
 
     <button type="submit"
         class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-80 transition duration-300">
@@ -148,26 +155,32 @@
     </button>
     </form>
 
-
-
     <p class="mt-6 text-center text-sm">
       Sudah punya akun? <a href="/auth/login" class="text-accent-500 hover:text-accent-700">Login di sini</a>
     </p>
   </div>
 
     <script>
-    function toggleOtherSpecialization() {
-        const otherDiv = document.getElementById('other_specialization_div');
-        const otherCheckbox = document.getElementById('spesialisasiLainnyaCheckbox');
+    function toggleOtherSpecializationCheckbox() {
+    const checkboxes = document.querySelectorAll('input[name="spesialis"]:checked');
+    const otherDiv = document.getElementById('other_specialization_div');
+    const selected = Array.from(checkboxes).map(cb => cb.value);
 
-        if (otherCheckbox.checked) {
-        otherDiv.classList.remove('hidden');
-        } else {
-        otherDiv.classList.add('hidden');
-        document.getElementById('spesialis_lainnya').value = '';
-        }
+    if (selected.includes("Lainnya")) {
+        otherDiv.classList.remove("hidden");
+    } else {
+        otherDiv.classList.add("hidden");
+        document.getElementById("spesialis_lainnya").value = "";
     }
+    }
+
+
+    window.onload = function () {
+    toggleOtherSpecializationCheckbox();
+    };
     </script>
+
+
 
 </body>
 </html>
