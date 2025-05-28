@@ -163,8 +163,15 @@
                     </div>
                     <div class="mb-4">
                         <label class="block text-primary font-semibold mb-2">NIK</label>
-                        <input type="text" name="nik" placeholder="NIK"
-                            class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                        <input type="text" 
+                            name="nik" 
+                            placeholder="Masukkan 16 digit NIK"
+                            class="w-full border border-secondary-40 rounded px-3 py-2" 
+                            pattern="[0-9]{16}"
+                            maxlength="16"
+                            minlength="16"
+                            title="NIK harus terdiri dari 16 digit angka"
+                            required>
                     </div>
                     <div class="mb-4">
                         <label class="block text-primary font-semibold mb-2">Alamat</label>
@@ -240,8 +247,15 @@
                     </div>
                     <div class="mb-4">
                         <label class="block text-primary font-semibold mb-2">NPP</label>
-                        <input type="text" name="npp" placeholder="NPP"
-                            class="w-full border border-secondary-40 rounded px-3 py-2" required>
+                        <input type="text" 
+                            name="npp" 
+                            placeholder="Masukkan NPP (maksimal 8 karakter)"
+                            class="w-full border border-secondary-40 rounded px-3 py-2" 
+                            pattern="[A-Za-z0-9]{1,8}"
+                            maxlength="8"
+                            title="NPP maksimal 8 karakter (huruf dan angka)"
+                            required>
+                        <small class="text-gray-600">NPP maksimal 8 karakter (huruf dan angka)</small>
                     </div>
                     <div class="mb-4">
                         <label class="block text-primary font-semibold mb-2">Alamat</label>
