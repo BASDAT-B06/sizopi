@@ -72,9 +72,13 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                     <i class="fas fa-notes-medical mr-2"></i>Rekam Medis Hewan
                 </a>
                 {% elif role == "penjaga_hewan" %}
-                <a href="{% url 'pakan_hewan:riwayat_pakan_penjaga' user_penjaga_id %}"
+                <a href="{% url 'pakan_hewan:riwayat_pakan_penjaga' %}"
                     class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
-                    <i class="fas fa-paw mr-2"></i>Catatan Perawatan Hewan
+                    <i class="fas fa-history mr-2"></i>Catatan Perawatan Hewan
+                </a>
+                <a href="{% url 'pakan_hewan:daftar_hewan_pakan' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-paw mr-2"></i>Daftar Hewan & Pakan
                 </a>
                 {% elif role == "staf_administrasi" %}
                 <a href=""
@@ -221,13 +225,13 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <i class="fas fa-notes-medical w-6 mr-2"></i>Rekam Medis Hewan
             </a>
             {% elif role == "penjaga_hewan" %}
-            <a href="{% url 'pakan_hewan:riwayat_pakan_penjaga' user_penjaga_id %}"
-                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
-                <i class="fas fa-paw w-6 mr-2"></i>Catatan Perawatan Hewan
+            <a href="{% url 'pakan_hewan:riwayat_pakan_penjaga' %}"
+                class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <i class="fas fa-history mr-2"></i>Catatan Perawatan Hewan
             </a>
-            <a href="{'/pakan_hewan/" }
-                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
-                <i class="fas fa-paw w-6 mr-2"></i>List Pakan Semua Hewan
+            <a href="{% url 'pakan_hewan:daftar_hewan_pakan' %}"
+                class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                <i class="fas fa-paw mr-2"></i>Daftar Hewan & Pakan
             </a>
             {% elif role == "staf_administrasi" %}
             <a href=""

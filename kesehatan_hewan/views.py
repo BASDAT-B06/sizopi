@@ -17,8 +17,6 @@ def dictfetchall(cursor):
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-
-# View untuk daftar semua hewan
 class DaftarHewanView(View):
     template_name = 'daftar_hewan.html'
     
@@ -220,43 +218,41 @@ class EditRekamMedisView(View):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
 
-
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteRekamMedisView(View):
     def post(self, request, id_hewan, tanggal):
         user_data = request.session.get('user', {})
         username_dh = user_data.get('username')
         user_role = request.session.get('role')
-                
+
         if not username_dh or user_role != 'dokter_hewan':
-            return JsonResponse({'success': False, 'error': 'Unauthorized access'})
-        
+            return JsonResponse({'success': False, 'error': 'Unauthorized access'}, status=403)
+
         try:
             cur = connection.cursor()
             set_schema(cur)
-            
+
             cur.execute("""
                 SELECT COUNT(*) FROM catatan_medis
                 WHERE id_hewan = %s AND tanggal_pemeriksaan = %s
             """, (str(id_hewan), tanggal))
-            
+
             if cur.fetchone()[0] == 0:
                 cur.close()
-                return JsonResponse({'success': False, 'error': 'Record not found'})
-            
+                return JsonResponse({'success': False, 'error': 'Record not found'}, status=404)
+
             cur.execute("""
                 DELETE FROM catatan_medis
                 WHERE id_hewan = %s AND tanggal_pemeriksaan = %s
             """, (str(id_hewan), tanggal))
-            
-            rows_affected = cur.rowcount
+
             connection.commit()
             cur.close()
-            
+
             return redirect('kesehatan_hewan:list_rekam_medis', id_hewan=id_hewan)
-            
+
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class JadwalPemeriksaanView(View):

@@ -13,5 +13,5 @@ urlpatterns = [
     path('edit/<uuid:id_hewan>/', EditPakanView.as_view(), name='edit_pakan'),
     path('delete/<uuid:id_hewan>/', DeletePakanView.as_view(), name='delete_pakan'),
     path('update-status/<uuid:id_hewan>/', UpdateStatusPakanView.as_view(), name='update_status_pakan'),
-    path('riwayat-penjaga/<str:username_penjaga>/', RiwayatPakanPenjagaView.as_view(), name='riwayat_pakan_penjaga'),
+    path('riwayat/', RiwayatPakanPenjagaView.as_view(), name='riwayat_pakan_penjaga'),
 ]

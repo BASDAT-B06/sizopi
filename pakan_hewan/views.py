@@ -10,7 +10,6 @@ from django.utils.decorators import method_decorator
 def set_schema(cur, schema='sizopi'):
     cur.execute(f"SET search_path TO {schema}")
 
-
 def dictfetchall(cursor):
     "Helper: ambil hasil cursor sebagai list of dict"
     columns = [col[0] for col in cursor.description]
@@ -267,14 +266,13 @@ class UpdateStatusPakanView(View):
                 return JsonResponse({'success': False, 'error': 'Unauthorized access'})
             
             jadwal = data.get('jadwal')
-            status = "Selesai Diberikan"
             
             cur = connection.cursor()
             set_schema(cur)
             
             cur.execute("""
                 UPDATE pakan
-                SET status = "Selesai Diberikan"
+                SET status = 'Selesai Diberikan'
                 WHERE id_hewan = %s AND jadwal = %s
             """, (str(id_hewan), jadwal))
             
@@ -294,23 +292,23 @@ class UpdateStatusPakanView(View):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
 
-
 @method_decorator(csrf_exempt, name='dispatch')
 class RiwayatPakanPenjagaView(View):
     template_name = 'riwayat_pakan_penjaga.html'
     
-    def get(self, request, username_penjaga=None):
+    def get(self, request):
         try:
-            if not username_penjaga or username_penjaga == 'None':
-                user_data = request.session.get('user', {})
-                username_penjaga = user_data.get('username')
-                
+            # Always get username from session (logged in user only)
+            user_data = request.session.get('user', {})
+            username_penjaga = user_data.get('username')
+            
             if not username_penjaga:
-                return JsonResponse({'error': 'Username penjaga tidak ditemukan'})
-                
+                return redirect('authentication:login')  # Redirect to login if not logged in
+
             cur = connection.cursor()
             set_schema(cur)
-            
+
+            # Get penjaga hewan details
             cur.execute("""
                 SELECT 
                     ph.username_jh,
@@ -322,42 +320,60 @@ class RiwayatPakanPenjagaView(View):
             
             penjaga_data = cur.fetchone()
             if not penjaga_data:
-                return JsonResponse({'error': 'Penjaga hewan tidak ditemukan'})
+                return JsonResponse({'error': 'Anda bukan penjaga hewan atau data tidak ditemukan'})
                 
             nama_penjaga = penjaga_data[1] if penjaga_data else "Unknown"
-            
+
+            # Query feeding history ONLY for this logged-in penjaga
             cur.execute("""
                 SELECT 
-                    p.jadwal,
+                    h.id,
                     h.nama AS nama_hewan,
-                    p.jenis,
+                    h.spesies,
+                    h.asal_hewan,
+                    h.tanggal_lahir,
+                    h.nama_habitat AS habitat,
+                    h.status_kesehatan,
+                    p.jenis AS jenis_pakan,
                     p.jumlah,
-                    p.status
+                    p.jadwal,
+                    p.status AS status_pemberian
                 FROM memberi m
                 JOIN pakan p ON m.id_hewan = p.id_hewan AND m.jadwal = p.jadwal
                 JOIN hewan h ON m.id_hewan = h.id
-                WHERE m.username_jh = %s
+                WHERE m.username_jh = %s AND p.status = 'Selesai Diberikan'
                 ORDER BY p.jadwal DESC
             """, (username_penjaga,))
             
-            raw_records = cur.fetchall()
+            raw_data = cur.fetchall()
             
-            records = []
-            for record in raw_records:
-                records.append({
-                    'jadwal': record[0],
-                    'nama_hewan': record[1],
-                    'jenis_pakan': record[2],
-                    'jumlah_pakan': record[3],
-                    'status_pemberian': record[4]
+            # Format the data
+            feeding_history = []
+            for row in raw_data:
+                feeding_history.append({
+                    'id_hewan': row[0],
+                    'nama_hewan': row[1],
+                    'spesies': row[2],
+                    'asal_hewan': row[3],
+                    'tanggal_lahir': row[4],
+                    'habitat': row[5],
+                    'status_kesehatan': row[6],
+                    'jenis_pakan': row[7],
+                    'jumlah': row[8],
+                    'jadwal': row[9],
+                    'status_pemberian': row[10]
                 })
-            
+
             cur.close()
-            
-            return render(request, self.template_name, {
-                'records': records,
+
+            context = {
+                'feeding_history': feeding_history,
                 'username_penjaga': username_penjaga,
-                'nama_penjaga': nama_penjaga
-            })
+                'nama_penjaga': nama_penjaga,
+            }
+            
+            return render(request, self.template_name, context)
+            
         except Exception as e:
+            print(f"ERROR in RiwayatPakanPenjagaView: {str(e)}")
             return JsonResponse({'error': str(e)})
