@@ -30,11 +30,18 @@ load_dotenv(override=True)
 #     database="-c search_path=sizopi"
 # )
 
+DB_POOL = psycopg2.pool.SimpleConnectionPool(
+    1, 20,
+    dbname="railway",
+    user="postgres",
+    password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
+    host="postgres.railway.internal",
+    port="5432",
+    options="-c search_path=sizopi"
+)
+
 def get_db_connection():
-    conn = DB_POOL.getconn()
-    with conn.cursor() as cur:
-        cur.execute("SET search_path TO sizopi")
-    return conn
+    return DB_POOL.getconn()
 
 def release_db_connection(conn):
     DB_POOL.putconn(conn)

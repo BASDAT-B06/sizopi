@@ -27,15 +27,13 @@ DB_POOL = psycopg2.pool.SimpleConnectionPool(
 #     port="5432",
 #     database="-c search_path=sizopi"
 # )
+
 def get_db_connection():
-    conn = DB_POOL.getconn()
-    with conn.cursor() as cur:
-        cur.execute("SET search_path TO sizopi")
-    return conn
+    return DB_POOL.getconn()
 
 def release_db_connection(conn):
     DB_POOL.putconn(conn)
-
+    
 def check_role(request, allowed_roles):
     user_role = request.session.get('role')
     if user_role not in allowed_roles:

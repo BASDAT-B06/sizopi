@@ -47,13 +47,7 @@ DB_POOL = psycopg2.pool.SimpleConnectionPool(
 # )
 
 def get_db_connection():
-    conn = DB_POOL.getconn()
-    conn.autocommit = True  
-    with conn.cursor() as cur:
-        cur.execute("SET search_path TO sizopi")  
-    return conn
-
-
+    return DB_POOL.getconn()
 
 def release_db_connection(conn):
     DB_POOL.putconn(conn)
