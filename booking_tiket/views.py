@@ -9,11 +9,11 @@ load_dotenv(override=True)
 
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
     1, 20,
-    dbname=os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
+    dbname="railway",
+    user="postgres",
+    password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
+    host="postgres.railway.internal",
+    port="5432",
     options="-c search_path=sizopi"
 )
 
@@ -33,7 +33,7 @@ def get_db_connection():
 
 def release_db_connection(conn):
     DB_POOL.putconn(conn)
-    
+
 def check_role(request, allowed_roles):
     user_role = request.session.get('role')
     if user_role not in allowed_roles:
