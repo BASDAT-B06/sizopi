@@ -6,35 +6,41 @@
 {% endblock meta %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True user_role="staf_administrasi" %}
+{% include "components/navbar.html" with is_logged_in=True user_role="staf_admin" %}
 {% endblock navbar %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto px-4">
-    <div class="text-3xl font-bold text-primary mt-6 mb-6">Dashboard Staf Administrasi</div>
+    <div class="text-3xl font-bold text-primary mb-6">Dashboard Staf Administrasi</div>
 
     <div class="bg-white p-6 shadow-md rounded-lg mb-6">
         <div class="text-2xl font-semibold text-primary mb-4">Profil Pengguna</div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-sm text-gray-500">Nama Lengkap</p>
-                <p class="text-base font-medium text-gray-800">Janette Karim Kumar</p>
+                <p class="text-base font-medium text-gray-800">{{ nama_lengkap }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Username</p>
-                <p class="text-base font-medium text-gray-800">kkumar2l</p>
+                <p class="text-base font-medium text-gray-800">{{ username }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Email</p>
-                <p class="text-base font-medium text-gray-800">kkumar2l@netvibes.com</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if email %}{{ email }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Nomor Telepon</p>
-                <p class="text-base font-medium text-gray-800">+2307603448</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if nomor_telepon %}{{ nomor_telepon }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">ID Staf</p>
-                <p class="text-base font-medium text-gray-800">e37e4290-155a-4933-a9dd-ee8ef0d3dea7</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if id_staf %}{{ id_staf }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Peran</p>
@@ -43,37 +49,21 @@
         </div>
     </div>
 
-    <div class="bg-white p-6 shadow-md rounded-lg">
+    <div class="bg-white p-6 shadow-md rounded-lg mb-6">
         <div class="text-2xl font-semibold text-primary mb-4">Informasi Staf Administrasi</div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-secondary-20 rounded-md p-4">
                 <p class="text-sm text-gray-500 mb-1">Ringkasan Penjualan Tiket Hari Ini</p>
-                <p class="text-2xl font-bold text-primary">Rp 5.450.000</p>
+                <p class="text-2xl font-bold text-primary">{{ total_tiket_hari_ini }}</p>
+                <p class="text-xs text-gray-400">tiket terjual</p>
             </div>
 
             <div class="bg-secondary-20 rounded-md p-4">
                 <p class="text-sm text-gray-500 mb-1">Jumlah Pengunjung Hari Ini</p>
-                <p class="text-2xl font-bold text-primary">180</p>
-            </div>
-
-            <div class="bg-secondary-20 rounded-md p-4">
-                <p class="text-sm text-gray-500 mb-1">Laporan Pendapatan Mingguan</p>
-                <p class="text-2xl font-bold text-primary">Rp 25.125.000</p>
+                <p class="text-2xl font-bold text-primary">{{ jumlah_pengunjung_hari_ini }}</p>
+                <p class="text-xs text-gray-400">pengunjung</p>
             </div>
         </div>
     </div>
 </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const mobileMenuButton = document.querySelector('.mobile-menu-button');
-        const mobileMenu = document.querySelector('.mobile-menu');
-        if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', function () {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
-    });
-</script>
 {% endblock content %}

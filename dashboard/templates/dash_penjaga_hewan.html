@@ -11,30 +11,36 @@
 
 {% block content %}
 <div class="max-w-4xl mx-auto px-4">
-    <div class="text-3xl font-bold text-primary mt-6 mb-6">Dashboard Penjaga Hewan</div>
+    <div class="text-3xl font-bold text-primary mb-6">Dashboard Penjaga Hewan</div>
 
     <div class="bg-white p-6 shadow-md rounded-lg mb-6">
         <div class="text-2xl font-semibold text-primary mb-4">Profil Penjaga</div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-sm text-gray-500">Nama Lengkap</p>
-                <p class="text-base font-medium text-gray-800">Budi Santoso</p>
+                <p class="text-base font-medium text-gray-800">{{ nama_lengkap }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Username</p>
-                <p class="text-base font-medium text-gray-800">budi_keeper</p>
+                <p class="text-base font-medium text-gray-800">{{ username }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Email</p>
-                <p class="text-base font-medium text-gray-800">budi.s@zoofresh.com</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if email %}{{ email }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Nomor Telepon</p>
-                <p class="text-base font-medium text-gray-800">+6282151234</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if nomor_telepon %}{{ nomor_telepon }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">ID Staf</p>
-                <p class="text-base font-medium text-gray-800">671a4515-79ed-43fb-8c37-9bedc0040e6e</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if id_staf %}{{ id_staf }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Peran</p>
@@ -43,38 +49,19 @@
         </div>
     </div>
 
-    <div class="bg-white shadow-md p-6 rounded-xl border border-primary-20">
+    <div class="bg-white shadow-md p-6 rounded-xl border border-primary-20 mb-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div class="flex items-center">
                 <div
                     class="flex items-center justify-center w-16 h-16 bg-primary text-white rounded-full mr-4 shadow-md">
-                    <span class="text-2xl font-bold">5</span>
+                    <span class="text-2xl font-bold">{{ total_hewan_diberi_pakan }}</span>
                 </div>
                 <div>
                     <h6 class="text-primary font-semibold text-lg">Hewan Diberi Pakan</h6>
+                    <p class="text-sm text-gray-500">Total hewan yang sudah diberi pakan</p>
                 </div>
-            </div>
-
-            <div class="flex flex-col md:items-end">
-                <a href="/pemberian-pakan/"
-                    class="group flex items-center justify-center px-6 py-3 bg-white border border-primary-20 text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300 shadow-sm">
-                    <i class="fas fa-chart-bar mr-2 group-hover:animate-pulse"></i>
-                    <span class="font-medium">Detail Pemberian Pakan</span>
-                </a>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const mobileMenuButton = document.querySelector('.mobile-menu-button');
-        const mobileMenu = document.querySelector('.mobile-menu');
-        if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', function () {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
-    });
-</script>
 {% endblock content %}
