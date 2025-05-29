@@ -424,6 +424,11 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    if (data.trigger_messages && data.trigger_messages.length > 0) {
+                        data.trigger_messages.forEach(msg => {
+                            showNotification(msg, 'success');
+                        });
+                    }
                     alert('Adopsi berhasil didaftarkan!');
                     location.reload();
                 } else {
@@ -452,6 +457,11 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    if (data.trigger_messages && data.trigger_messages.length > 0) {
+                        data.trigger_messages.forEach(msg => {
+                            showNotification(msg, 'success');
+                        });
+                    }
                     alert('Adopsi berhasil didaftarkan!');
                     location.reload();
                 } else {
@@ -487,6 +497,11 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    if (data.trigger_messages && data.trigger_messages.length > 0) {
+                        data.trigger_messages.forEach(msg => {
+                            showNotification(msg, 'success');
+                        });
+                    }
                     alert('Status pembayaran berhasil diupdate!');
                     location.reload();
                 } else {
@@ -538,6 +553,44 @@
             }
         }
         return cookieValue;
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transition-all duration-300 transform translate-x-full`;
+        
+        if (type === 'success') {
+            notification.className += ' bg-green-500 text-white';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+        } else {
+            notification.className += ' bg-red-500 text-white';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+        }
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+        
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 5000);
     }
 
     // Event listeners untuk form submission

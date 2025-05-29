@@ -4,6 +4,7 @@ from django.contrib import messages
 import json
 from .services import AdopsiService
 from .utils import get_user_context
+from django.db import connection
 
 # Views untuk Staf Administrasi
 def adoption_list_admin(request):
@@ -191,19 +192,23 @@ def create_adoption_individu(request):
                     'message': 'Periode adopsi tidak valid'
                 })
             
+            if hasattr(connection.connection, 'notices'):
+                connection.connection.notices.clear()
+            
             success = AdopsiService.create_individual_adoption(
                 username, animal_id, nik, nama, alamat, 
                 no_telepon, nominal, periode
             )
             
+            trigger_messages = capture_trigger_messages()
+
             if success:
-                messages.success(request, 'Adopsi berhasil didaftarkan!')
-                return JsonResponse({'success': True})
+                response_data = {'success': True}
+                if trigger_messages:
+                    response_data['trigger_messages'] = trigger_messages
+                return JsonResponse(response_data)
             else:
-                return JsonResponse({
-                    'success': False, 
-                    'message': 'Gagal mendaftarkan adopsi. Periksa apakah hewan sudah diadopsi atau data tidak valid.'
-                })
+                return JsonResponse({'success': False, 'message': 'Gagal mendaftarkan adopsi'})
                 
         except Exception as e:
             return JsonResponse({
@@ -256,19 +261,23 @@ def create_adoption_organisasi(request):
                     'message': 'Periode adopsi tidak valid'
                 })
             
+            if hasattr(connection.connection, 'notices'):
+                connection.connection.notices.clear()
+            
             success = AdopsiService.create_organization_adoption(
                 username, animal_id, npp, nama_organisasi, 
                 alamat, kontak, nominal, periode
             )
             
+            trigger_messages = capture_trigger_messages()
+
             if success:
-                messages.success(request, 'Adopsi berhasil didaftarkan!')
-                return JsonResponse({'success': True})
+                response_data = {'success': True}
+                if trigger_messages:
+                    response_data['trigger_messages'] = trigger_messages
+                return JsonResponse(response_data)
             else:
-                return JsonResponse({
-                    'success': False, 
-                    'message': 'Gagal mendaftarkan adopsi. Periksa apakah hewan sudah diadopsi atau data tidak valid.'
-                })
+                return JsonResponse({'success': False, 'message': 'Gagal mendaftarkan adopsi'})
                 
         except Exception as e:
             return JsonResponse({
@@ -290,15 +299,20 @@ def update_payment_status(request):
             animal_id = data.get('animal_id')
             status = data.get('status')
             
+            if hasattr(connection.connection, 'notices'):
+                connection.connection.notices.clear()
+            
             success = AdopsiService.update_payment_status(animal_id, status)
             
+            trigger_messages = capture_trigger_messages()
+            
             if success:
-                return JsonResponse({'success': True})
+                response_data = {'success': True}
+                if trigger_messages:
+                    response_data['trigger_messages'] = trigger_messages
+                return JsonResponse(response_data)
             else:
-                return JsonResponse({
-                    'success': False, 
-                    'message': 'Gagal mengupdate status pembayaran'
-                })
+                return JsonResponse({'success': False, 'message': 'Gagal mengupdate status pembayaran'})
                 
         except Exception as e:
             return JsonResponse({
@@ -391,6 +405,17 @@ def delete_adoption_history(request):
     
     return JsonResponse({'success': False, 'message': 'Invalid request'})
 
+def capture_trigger_messages():
+    """Capture PostgreSQL trigger messages"""
+    trigger_messages = []
+    if hasattr(connection.connection, 'notices'):
+        for notice in connection.connection.notices:
+            notice_text = str(notice).strip()
+            if 'SUKSES:' in notice_text:
+                clean_message = notice_text.replace('NOTICE:', '').strip()
+                trigger_messages.append(clean_message)
+    return trigger_messages
+
 def extend_adoption(request):
     """Perpanjang periode adopsi"""
     user_context = get_user_context(request)
@@ -449,12 +474,20 @@ def extend_adoption(request):
                     'message': 'Periode adopsi tidak valid'
                 })
             
+            if hasattr(connection.connection, 'notices'):
+                connection.connection.notices.clear()
+            
             success, message = AdopsiService.extend_adoption(
                 username, animal_id, nominal, periode
             )
+
+            trigger_messages = capture_trigger_messages()
             
             if success:
-                return JsonResponse({'success': True, 'message': message})
+                response_data = {'success': True, 'message': message}
+                if trigger_messages:
+                    response_data['trigger_messages'] = trigger_messages
+                return JsonResponse(response_data)
             else:
                 return JsonResponse({'success': False, 'message': message})
                 
