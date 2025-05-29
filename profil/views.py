@@ -6,7 +6,8 @@ from psycopg2 import pool, IntegrityError, errors
 from dotenv import load_dotenv
 from django.contrib import messages
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
+
 
 load_dotenv(override=True)
 

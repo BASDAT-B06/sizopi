@@ -5,7 +5,8 @@ import psycopg2
 import os
 from dotenv import load_dotenv
 from psycopg2 import pool
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
+
 
 
 load_dotenv(override=True)

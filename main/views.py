@@ -5,7 +5,8 @@ import psycopg2
 from psycopg2 import pool
 from dotenv import load_dotenv
 from django.contrib import messages
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
+
 
 
 load_dotenv(override=True)

@@ -10,7 +10,8 @@ from datetime import datetime, date
 import os
 from dotenv import load_dotenv
 from django.db import DatabaseError
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
+
 
 
 
