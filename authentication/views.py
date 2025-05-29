@@ -230,7 +230,6 @@ def register_dokter_view(request):
                     conn.rollback()
                 error_message = str(e).split('CONTEXT:')[0].strip()
                 messages.error(request, error_message)
-                # 👇 Just render the same page with form & message
                 return render(request, 'register_dokter_hewan.html', {'form': form})
 
             finally:
