@@ -114,9 +114,13 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                     <i class="fas fa-calendar-alt mr-2"></i>Jadwal Pertunjukan
                 </a>
                 {% elif role == "pengunjung" %}
-                <a href=""
+                <a href="{% url 'main:main' %}"
                     class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-info-circle mr-2"></i>Informasi Kebun Binatang
+                </a>
+                <a href="{% url 'booking_tiket:reservasi' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-ticket-alt mr-2"></i>Reservasi Tiket
                 </a>
                 {% if adopter %}
                 <a href="{% url 'adoption:user_list' %}"
@@ -281,9 +285,13 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                 <i class="fas fa-calendar-alt w-6 mr-2"></i>Jadwal Pertunjukan
             </a>
             {% elif role == "pengunjung" %}
-            <a href=""
+            <a href="{% url 'main:main' %}"
                 class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
                 <i class="fas fa-info-circle w-6 mr-2"></i>Informasi Kebun Binatang
+            </a>
+            <a href="{% url 'booking_tiket:reservasi' %}"
+                class="block px-4 py-3 rounded-lg text-base font-medium hover:bg-white hover:bg-opacity-10 transition-all duration-200 flex items-center">
+                <i class="fas fa-ticket-alt w-6 mr-2"></i>Reservasi Tiket
             </a>
             {% if adopter %}
             <a href="{% url 'adoption:user_list' %}"
