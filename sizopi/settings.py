@@ -111,6 +111,11 @@ DATABASES = {
         ssl_require=True
     )
 }
+
+DATABASES['default']['OPTIONS'] = {
+    'options': '-c search_path=sizopi,public'
+}
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',  # Using SQLite
