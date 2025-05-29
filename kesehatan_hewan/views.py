@@ -6,6 +6,7 @@ from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.urls import reverse
+from django.contrib import messages
 
 
 def set_schema(cur, schema='sizopi'):
@@ -117,58 +118,64 @@ class CreateRekamMedisView(View):
 
         user_data = request.session.get('user', {})
         username_dh = user_data.get('username')
-        
+
         if not username_dh:
             return JsonResponse({'success': False, 'error': 'User not authenticated'})
-        
+
         user_role = request.session.get('role')
-        
         if user_role != 'dokter_hewan':
             return JsonResponse({'success': False, 'error': 'Only dokter hewan can create medical records'})
-        
+
         try:
             cur = connection.cursor()
             set_schema(cur)
-            
+
+            # Cek duplikasi
             cur.execute("""
                 SELECT COUNT(*) FROM catatan_medis 
                 WHERE id_hewan = %s AND tanggal_pemeriksaan = %s
             """, (str(id_hewan), data.get('tanggal')))
-            
             existing_count = cur.fetchone()[0]
-            
+
             if existing_count > 0:
                 cur.close()
                 return JsonResponse({
-                    'success': False, 
+                    'success': False,
                     'error': f'Rekam medis untuk tanggal {data.get("tanggal")} sudah ada. Gunakan fitur edit untuk mengubah data existing.'
                 })
-            
+
+            # Tambah rekam medis dulu
             cur.execute("""
                 INSERT INTO catatan_medis (
-                    id_hewan, 
-                    username_dh, 
-                    tanggal_pemeriksaan,
-                    status_kesehatan, 
-                    diagnosis, 
-                    pengobatan
+                    id_hewan, username_dh, tanggal_pemeriksaan,
+                    status_kesehatan, diagnosis, pengobatan
                 ) VALUES (%s, %s, %s, %s, %s, %s)
             """, (
-                str(id_hewan), 
-                username_dh, 
+                str(id_hewan),
+                username_dh,
                 data.get('tanggal'),
-                data.get('status'), 
+                data.get('status'),
                 data.get('diagnosa', ''),
-                data.get('pengobatan', '') 
+                data.get('pengobatan', '')
             ))
-            
+
+            # Baru panggil sinkronisasi (karena trigger/function perlu data rekam medis yang sudah ada)
+            cur.execute("""
+                SELECT sinkronisasi_jadwal_pemeriksaan_text(%s, %s, %s)
+            """, [str(id_hewan), data.get('tanggal'), data.get('status')])
+
+            result = cur.fetchone()
+            if result and result[0]:
+                messages.success(request, result[0])
+
             connection.commit()
             cur.close()
-            
+
             return redirect('kesehatan_hewan:list_rekam_medis', id_hewan=id_hewan)
-            
+
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
+
         
 class EditRekamMedisView(View):
     def post(self, request, id_hewan, tanggal):
@@ -292,7 +299,7 @@ class JadwalPemeriksaanView(View):
             jenis_hewan = hewan_detail[1] if hewan_detail else "Unknown"
             
             cur.close()
-            
+                    
             jadwal = [{'tanggal_pemeriksaan': date[0]} for date in raw_jadwal]
 
             return render(request, self.template_name, {
@@ -345,14 +352,18 @@ class CreateJadwalView(View):
                 VALUES (%s, %s, %s)
             """, (str(id_hewan), tanggal, freq_rutin))
             
+            cur.execute("SELECT tambah_jadwal_rutin_manual(%s, %s, %s)", [id_hewan, tanggal, freq_rutin])
+            msg = cur.fetchone()[0]
+            if msg:
+                messages.success(request, msg)
+
             connection.commit()
             cur.close()
-            
+
             return redirect('kesehatan_hewan:jadwal_pemeriksaan', id_hewan=id_hewan)
             
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class EditJadwalView(View):
@@ -400,11 +411,10 @@ class EditJadwalView(View):
 class DeleteJadwalView(View):
     def post(self, request, id_hewan):
         tanggal = request.POST.get('tanggal')
-        
+
         user_data = request.session.get('user', {})
         username = user_data.get('username')
         user_role = request.session.get('role')
-        
         
         if not username or user_role != 'dokter_hewan':
             return JsonResponse({'success': False, 'error': 'Unauthorized access'})
@@ -412,22 +422,12 @@ class DeleteJadwalView(View):
         try:
             cur = connection.cursor()
             set_schema(cur)
-            
-            cur.execute("""
-                SELECT COUNT(*) FROM jadwal_pemeriksaan_kesehatan
-                WHERE id_hewan = %s AND tgl_pemeriksaan_selanjutnya = %s
-            """, (str(id_hewan), tanggal))
-            
-            if cur.fetchone()[0] == 0:
-                cur.close()
-                return JsonResponse({'success': False, 'error': 'Jadwal tidak ditemukan'})
 
             cur.execute("""
                 DELETE FROM jadwal_pemeriksaan_kesehatan
                 WHERE id_hewan = %s AND tgl_pemeriksaan_selanjutnya = %s
             """, (str(id_hewan), tanggal))
             
-            rows_affected = cur.rowcount
             connection.commit()
             cur.close()
             
