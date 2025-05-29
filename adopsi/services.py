@@ -477,18 +477,29 @@ class AdopsiService:
 
     @staticmethod
     def update_payment_status(animal_id, status):
-        """Update status pembayaran adopsi"""
+        """Update status pembayaran"""
         try:
             with connection.cursor() as cursor:
                 cursor.execute("SET search_path TO SIZOPI")
+                
+                cursor.execute("""
+                    SELECT COUNT(*) FROM ADOPSI 
+                    WHERE id_hewan = %s AND tgl_berhenti_adopsi > CURRENT_DATE
+                """, [animal_id])
+                count = cursor.fetchone()[0]
+                
+                if count == 0:
+                    return False
+                
                 cursor.execute("""
                     UPDATE ADOPSI 
                     SET status_pembayaran = %s
                     WHERE id_hewan = %s AND tgl_berhenti_adopsi > CURRENT_DATE
                 """, [status, animal_id])
-                    
+                
+                return cursor.rowcount > 0
+                
         except Exception as e:
-            print(f"Error updating payment status: {e}")
             return False
     
     @staticmethod
