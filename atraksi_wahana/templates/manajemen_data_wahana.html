@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html lang="id">
 {% extends "base.html" %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True user_role="pelatih_hewan" %}
+{% include "components/navbar.html" with is_logged_in=True user_role="staf_admin" %}
 {% endblock %}
 
 {% block content %}
@@ -94,19 +92,11 @@
     </style>
 </head>
 
-{% extends "base.html" %}
-
-{% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True%}
-{% endblock %}
-
-{% block content %}
-
 <body class="bg-white">
 
     <div class="max-w-6xl mx-auto bg-accent-100 p-6 rounded-lg shadow">
         <h2 class="text-xl font-semibold mb-6">Data Wahana</h2>
-        <button id="btnTambahAtraksi" class="btn-primary mb-4 inline-block"
+        <button id="btnTambahWahana" class="btn-primary mb-4 inline-block"
             onclick="window.location.href='{% url 'atraksi_wahana:tambah_wahana' %}'">
             Tambah Wahana
         </button>
@@ -146,7 +136,7 @@
                                 Edit
                             </button>
                             <button
-                                onclick="cancelReservasi('{{ wahana.nama }}')"
+                                onclick="hapusWahana('{{ wahana.nama }}')"
                                 class="btn-hapus">
                                 Hapus
                             </button>
@@ -162,14 +152,13 @@
         </table>
     </div>
     <script>
-        function cancelReservasi(namaWahana) {
+        function hapusWahana(namaWahana) {
             if (confirm("Apakah Anda yakin ingin menghapus wahana " + namaWahana + "?")) {
-                // Redirect ke URL hapus atraksi dengan nama sebagai parameter
-                window.location.href = "{% url 'atraksi_wahana:hapus' %}?nama=" + encodeURIComponent(namaWahana);
+                // Redirect ke URL hapus wahana dengan nama sebagai parameter
+                window.location.href = "{% url 'atraksi_wahana:hapus_wahana' %}?nama=" + encodeURIComponent(namaWahana);
             }
         }
     </script>
 </body>
 
 {% endblock %}
-</html>

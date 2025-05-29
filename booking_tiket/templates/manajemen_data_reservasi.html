@@ -106,7 +106,7 @@
 {% extends "base.html" %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True%}
+{% include "components/navbar.html" with is_logged_in=True user_role="staf_admin" %}
 {% endblock %}
 
 {% block content %}
@@ -115,7 +115,6 @@
 
     <div class="max-w-6xl mx-auto bg-accent-100 p-6 rounded-lg shadow">
         <h2 class="text-xl font-semibold mb-6">Manajemen Data Reservasi</h2>
-        <!-- <button id="btnTambahReservasi" class="btn-primary mb-4 inline-block">Tambah Reservasi</button> -->
 
         <table class="w-full border-collapse">
             <thead class="bg-primary-20">
@@ -158,19 +157,13 @@
                             class="btn-hapus">
                             Batalkan
                         </button>
-                        {% else %}
-                        <!-- <button 
-                                onclick="viewReservasi('{{ reservasi.id }}', '{{ reservasi.username }}', '{{ reservasi.nama_atraksi }}', '{{ reservasi.lokasi }}', '{{ reservasi.tanggal }}', '{{ reservasi.jam }}', '{{ reservasi.jumlah_tiket }}', '{{ reservasi.status }}')" 
-                                class="btn-secondary">
-                                Detail
-                            </button> -->
                         {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="8" class="border p-4 text-center text-gray-500">Tidak ada data reservasi</td>
+                    <td colspan="6" class="border p-4 text-center text-gray-500">Tidak ada data reservasi</td>
                 </tr>
                 {% endif %}
             </tbody>

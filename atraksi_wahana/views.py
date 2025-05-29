@@ -311,8 +311,10 @@ def edit_atraksi(request):
         lokasi = request.GET.get('lokasi', '')
         kapasitas = request.GET.get('kapasitas', '')
         jadwal = request.GET.get('jadwal', '')
-        pelatih_id = request.GET.get('pelatih', '')
-        hewan_ids = request.GET.getlist('hewan[]')
+        
+        # Ambil pelatih_id dan hewan_ids dari database, bukan dari URL
+        pelatih_id = ''
+        hewan_ids = []
 
         try:
             with conn.cursor() as cur:
@@ -340,6 +342,18 @@ def edit_atraksi(request):
                 for row in hewan_rows:
                     hewan_list.append({'id': row[0], 'nama': row[1], 'jenis': row[2]})
 
+                # Ambil pelatih yang sedang bertugas untuk atraksi ini
+                cur.execute("""
+                    SELECT username_lh
+                    FROM JADWAL_PENUGASAN
+                    WHERE nama_atraksi = %s
+                    ORDER BY tgl_penugasan DESC
+                    LIMIT 1
+                """, (nama,))
+                pelatih_result = cur.fetchone()
+                if pelatih_result:
+                    pelatih_id = pelatih_result[0]
+
                 # Ambil data hewan yang berpartisipasi
                 cur.execute("""
                     SELECT h.id
@@ -347,7 +361,8 @@ def edit_atraksi(request):
                     JOIN HEWAN h ON bp.id_hewan = h.id
                     WHERE bp.nama_fasilitas = %s
                 """, (nama,))
-                hewan_ids = [row[0] for row in cur.fetchall()]
+                hewan_ids = [str(row[0]) for row in cur.fetchall()]
+                
         except Exception as e:
             messages.error(request, f"Error retrieving data: {str(e)}")
         finally:
@@ -366,7 +381,8 @@ def edit_atraksi(request):
         return render(request, 'edit_atraksi.html', context)
 
     elif request.method == 'POST':
-        nama = request.POST.get('nama')
+        nama_baru = request.POST.get('nama')
+        nama_lama = request.POST.get('nama_lama')
         lokasi = request.POST.get('lokasi')
         kapasitas = request.POST.get('kapasitas')
         jadwal = request.POST.get('jadwal')
@@ -375,40 +391,132 @@ def edit_atraksi(request):
         hewan_ids = request.POST.getlist('hewan')
 
         conn = get_db_connection()
+        trigger_messages = []
+        
         try:
             with conn.cursor() as cur:
-                # Update data di tabel FASILITAS
+                # Validasi nama atraksi jika berubah
+                if nama_baru != nama_lama:
+                    cur.execute("SELECT 1 FROM FASILITAS WHERE nama = %s", (nama_baru,))
+                    if cur.fetchone():
+                        messages.error(request, f"Nama atraksi '{nama_baru}' sudah digunakan. Silakan pilih nama lain.")
+                        return redirect('atraksi_wahana:manajemen_data_atraksi')
+
+                # **MANUAL CHECK untuk rotasi pelatih SEBELUM update**
+                pelatih_lama_info = None
+                rotasi_diperlukan = False
+                
+                if nama_lama:
+                    cur.execute("""
+                        SELECT jp.username_lh, jp.tgl_penugasan, 
+                               CONCAT(p.nama_depan, 
+                                      CASE WHEN p.nama_tengah IS NOT NULL THEN ' ' || p.nama_tengah ELSE '' END,
+                                      ' ', p.nama_belakang) as nama_lengkap
+                        FROM JADWAL_PENUGASAN jp
+                        JOIN PENGGUNA p ON jp.username_lh = p.username
+                        WHERE jp.nama_atraksi = %s
+                        ORDER BY jp.tgl_penugasan DESC
+                        LIMIT 1
+                    """, (nama_lama,))
+                    pelatih_lama_info = cur.fetchone()
+
+                    if pelatih_lama_info:
+                        username_lama, tgl_penugasan, nama_pelatih_lama = pelatih_lama_info
+                        
+                        # Cek apakah sudah lebih dari 3 bulan
+                        cur.execute("SELECT %s <= CURRENT_DATE - INTERVAL '3 months'", (tgl_penugasan,))
+                        lebih_dari_3_bulan = cur.fetchone()[0]
+                        
+                        if lebih_dari_3_bulan and username_lama == pelatih:
+                            rotasi_diperlukan = True
+                            trigger_messages.append(
+                                f'SUKSES: Pelatih "{nama_pelatih_lama}" telah bertugas lebih dari 3 bulan di atraksi "{nama_lama}" dan akan diganti.'
+                            )
+
+                # Update FASILITAS
                 cur.execute("""
                     UPDATE FASILITAS
-                    SET jadwal = %s, kapasitas_max = %s
+                    SET nama = %s, jadwal = %s, kapasitas_max = %s
                     WHERE nama = %s
-                """, (jadwal_full, kapasitas, nama))
+                """, (nama_baru, jadwal_full, kapasitas, nama_lama))
 
-                # Update data di tabel ATRAKSI
+                # Update ATRAKSI
                 cur.execute("""
                     UPDATE ATRAKSI
-                    SET lokasi = %s
+                    SET nama_atraksi = %s, lokasi = %s
                     WHERE nama_atraksi = %s
-                """, (lokasi, nama))
+                """, (nama_baru, lokasi, nama_lama))
 
-                # Update data pelatih
-                cur.execute("DELETE FROM JADWAL_PENUGASAN WHERE nama_atraksi = %s", (nama,))
-                if pelatih:
+                # **HANDLE PELATIH dengan rotasi manual**
+                cur.execute("DELETE FROM JADWAL_PENUGASAN WHERE nama_atraksi = %s", (nama_lama,))
+                
+                pelatih_final = pelatih
+                if rotasi_diperlukan:
+                    # Cari pelatih pengganti
+                    cur.execute("""
+                        SELECT ph.username_lh,
+                               CONCAT(p.nama_depan, 
+                                      CASE WHEN p.nama_tengah IS NOT NULL THEN ' ' || p.nama_tengah ELSE '' END,
+                                      ' ', p.nama_belakang) as nama_lengkap
+                        FROM PELATIH_HEWAN ph
+                        JOIN PENGGUNA p ON ph.username_lh = p.username
+                        WHERE ph.username_lh != %s
+                          AND ph.username_lh NOT IN (
+                              SELECT jp2.username_lh 
+                              FROM JADWAL_PENUGASAN jp2 
+                              WHERE jp2.tgl_penugasan > CURRENT_DATE - INTERVAL '3 months'
+                                AND jp2.nama_atraksi != %s
+                          )
+                        LIMIT 1
+                    """, (pelatih, nama_lama))
+                    
+                    pelatih_pengganti = cur.fetchone()
+                    if pelatih_pengganti:
+                        pelatih_final = pelatih_pengganti[0]
+                        nama_pengganti = pelatih_pengganti[1]
+                        trigger_messages.append(
+                            f'Pelatih pengganti "{nama_pengganti}" telah ditugaskan untuk atraksi "{nama_baru}".'
+                        )
+                    else:
+                        trigger_messages.append("Tidak ada pelatih pengganti yang tersedia. Pelatih lama tetap ditugaskan.")
+
+                # Insert pelatih (baru atau lama)
+                if pelatih_final:
                     cur.execute("""
                         INSERT INTO JADWAL_PENUGASAN (username_lh, tgl_penugasan, nama_atraksi)
                         VALUES (%s, %s, %s)
-                    """, (pelatih, datetime.date.today(), nama))
+                    """, (pelatih_final, datetime.date.today(), nama_baru))
 
-                # Update data hewan yang berpartisipasi
-                cur.execute("DELETE FROM BERPARTISIPASI WHERE nama_fasilitas = %s", (nama,))
+                # Update BERPARTISIPASI
+                cur.execute("DELETE FROM BERPARTISIPASI WHERE nama_fasilitas = %s", (nama_lama,))
                 for hewan_id in hewan_ids:
                     cur.execute("""
                         INSERT INTO BERPARTISIPASI (nama_fasilitas, id_hewan)
                         VALUES (%s, %s)
-                    """, (nama, hewan_id))
+                    """, (nama_baru, hewan_id))
+
+                # Update RESERVASI
+                cur.execute("""
+                    UPDATE RESERVASI
+                    SET nama_fasilitas = %s
+                    WHERE nama_fasilitas = %s
+                """, (nama_baru, nama_lama))
 
                 conn.commit()
-                messages.success(request, "Atraksi berhasil diperbarui.")
+                
+                # Tampilkan pesan sukses
+                if nama_baru == nama_lama:
+                    messages.success(request, "Atraksi berhasil diperbarui.")
+                else:
+                    messages.success(request, f"Atraksi berhasil diperbarui. Nama diubah dari '{nama_lama}' menjadi '{nama_baru}'.")
+                
+                # Tampilkan pesan rotasi
+                for msg in trigger_messages:
+                    if msg.startswith('SUKSES:'):
+                        messages.warning(request, msg)
+                    else:
+                        messages.info(request, msg)
+                
         except Exception as e:
             conn.rollback()
             messages.error(request, f"Error memperbarui atraksi: {str(e)}")
@@ -416,7 +524,7 @@ def edit_atraksi(request):
             release_db_connection(conn)
 
         return redirect('atraksi_wahana:manajemen_data_atraksi')
-
+    
     return HttpResponseForbidden("Invalid request method.")
 
 @staff_admin_required

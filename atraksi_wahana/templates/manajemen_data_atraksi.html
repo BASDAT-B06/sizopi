@@ -97,8 +97,15 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-white">
+{% extends "base.html" %}
 
+{% block navbar %}
+{% include "components/navbar.html" with is_logged_in=True user_role="staf_admin" %}
+{% endblock %}
+
+{% block content %}
+
+<body class="min-h-screen bg-white">
 
     <div class="max-w-6xl mx-auto bg-accent-100 p-6 rounded-lg shadow">
         <h2 class="text-xl font-semibold mb-6">Data Atraksi</h2>
@@ -131,12 +138,12 @@
                     <td class="border p-2">{{ atraksi.pelatih }}</td>
                     <td class="border p-2 space-x-2">
                         <button
-                            onclick="window.location.href='{% url 'atraksi_wahana:edit_atraksi' %}?nama={{ atraksi.nama }}&lokasi={{ atraksi.lokasi }}&kapasitas={{ atraksi.kapasitas }}&jadwal={{ atraksi.jadwal }}&hewan={{ atraksi.hewan }}&pelatih={{ atraksi.pelatih }}'"
+                            onclick="window.location.href='{% url 'atraksi_wahana:edit_atraksi' %}?nama={{ atraksi.nama|urlencode }}&lokasi={{ atraksi.lokasi|urlencode }}&kapasitas={{ atraksi.kapasitas }}&jadwal={{ atraksi.jadwal }}'"
                             class="btn-edit">
                             Edit
                         </button>
                         <button
-                            onclick="cancelReservasi('{{ atraksi.nama }}')"
+                            onclick="hapusAtraksi('{{ atraksi.nama }}')"
                             class="btn-hapus">
                             Hapus
                         </button>
@@ -152,10 +159,10 @@
         </table>
     </div>
     <script>
-        function cancelReservasi(namaAtraksi) {
+        function hapusAtraksi(namaAtraksi) {
             if (confirm("Apakah Anda yakin ingin menghapus atraksi " + namaAtraksi + "?")) {
                 // Redirect ke URL hapus atraksi dengan nama sebagai parameter
-                window.location.href = "{% url 'atraksi_wahana:hapus' %}?nama=" + encodeURIComponent(namaAtraksi);
+                window.location.href = "{% url 'atraksi_wahana:hapus_atraksi' %}?nama=" + encodeURIComponent(namaAtraksi);
             }
         }
     </script>

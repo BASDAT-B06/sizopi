@@ -58,6 +58,20 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
         }
+
+        .card-dibatalkan {
+            opacity: 0.5;
+            filter: grayscale(30%);
+            background-color: #f9f9f9;
+        }
+
+        .card-dibatalkan .text-gray-600 {
+            color: #a0a0a0 !important;
+        }
+
+        .card-dibatalkan h5 {
+            color: #888 !important;
+        }
     </style>
 </head>
 
@@ -71,13 +85,12 @@
 
 <body class="bg-white min-h-screen">
 
-
     <div class="container mx-auto max-w-6xl mt-8">
 
         <h1 class="text-3xl font-bold text-primary-80 mb-6 text-center">Reservasi Anda</h1>
         <div id="userReservasiContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for reservasi in user_reservasi %}
-            <div class="bg-white bg-opacity-100 rounded-lg shadow-md overflow-hidden reservasi-card">
+            <div class="bg-white bg-opacity-100 rounded-lg shadow-md overflow-hidden reservasi-card {% if reservasi.status == 'Dibatalkan' %}card-dibatalkan{% endif %}">
                 <div class="p-6">
                     <h5 class="text-xl font-semibold text-primary mb-2">{{ reservasi.nama_fasilitas }}</h5>
                     <p class="text-gray-600 mb-1"><span class="font-medium">Tanggal:</span>
@@ -92,18 +105,31 @@
                         </span>
                         {{ reservasi.lokasi_peraturan }}
                     </p>
-                    <p class="text-gray-600 mb-1"><span class="font-medium">Status:</span> {{ reservasi.status }}</p>
+                    <p class="text-gray-600 mb-1">
+                        <span class="font-medium">Status:</span> 
+                        <span class="{% if reservasi.status == 'Dibatalkan' %}text-red-500 font-semibold{% endif %}">
+                            {{ reservasi.status }}
+                        </span>
+                    </p>
+                    
+                    {% if reservasi.status != 'Dibatalkan' %}
                     <div class="mt-3 flex justify-between items-center">
-                        <a href="{% url 'booking_tiket:edit_reservasi' %}?nama={{ reservasi.nama_fasilitas }}&lokasi_peraturan={{ reservasi.lokasi_peraturan }}&tanggal_kunjungan={{ reservasi.tanggal_kunjungan }}&jumlah_tiket={{ reservasi.jumlah_tiket }}"
-                            class="bg-accent-500 text-white py-1 px-3 rounded-md hover:bg-accent-600 transition duration-300">
-                            Edit
+                        <!-- Perbaiki URL edit reservasi -->
+                        <a href="{% url 'booking_tiket:edit_reservasi' %}?nama={{ reservasi.nama_fasilitas }}&lokasi_peraturan={{ reservasi.lokasi_peraturan|urlencode }}&tanggal_kunjungan={{ reservasi.tanggal_kunjungan }}&jumlah_tiket={{ reservasi.jumlah_tiket }}&username={{ reservasi.username }}"
+                           class="bg-accent-500 text-white py-1 px-3 rounded-md hover:bg-accent-600 transition duration-300">
+                           Edit
                         </a>
                         <button
-                            onclick="cancelReservasi('{{ reservasi.username }}', '{{ reservasi.nama_atraksi }}', '{{ reservasi.tanggal }}')"
-                            class="btn-hapus">
+                            onclick="cancelReservasi('{{ reservasi.username }}', '{{ reservasi.nama_fasilitas }}', '{{ reservasi.tanggal_kunjungan }}')"
+                            class="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 transition duration-300">
                             Batalkan
                         </button>
                     </div>
+                    {% else %}
+                    <div class="mt-3 text-center">
+                        <span class="text-red-400 text-sm italic">Reservasi telah dibatalkan</span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -170,7 +196,7 @@
     </div>
 
     <script>
-        function cancelReservasi(username, nama, tanggal) {
+        function cancelReservasi(username, nama_fasilitas, tanggal_kunjungan) {
             if (confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')) {
                 const form = document.createElement('form');
                 form.method = 'POST';
@@ -191,13 +217,13 @@
                 const namaInput = document.createElement('input');
                 namaInput.type = 'hidden';
                 namaInput.name = 'nama_fasilitas';
-                namaInput.value = nama;
+                namaInput.value = nama_fasilitas;
                 form.appendChild(namaInput);
 
                 const tanggalInput = document.createElement('input');
                 tanggalInput.type = 'hidden';
                 tanggalInput.name = 'tanggal_kunjungan';
-                tanggalInput.value = tanggal;
+                tanggalInput.value = tanggal_kunjungan;
                 form.appendChild(tanggalInput);
 
                 document.body.appendChild(form);

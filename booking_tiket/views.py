@@ -88,60 +88,57 @@ def reservasi(request):
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
-            # Ambil semua atraksi
+
             cur.execute("""
-                SELECT f.nama, f.jadwal, a.lokasi, f.kapasitas_max, 
-                       COALESCE(SUM(r.jumlah_tiket), 0) AS total_tiket_terpesan
+                SELECT f.nama, f.jadwal, a.lokasi, f.kapasitas_max
                 FROM FASILITAS f
                 JOIN ATRAKSI a ON f.nama = a.nama_atraksi
-                LEFT JOIN RESERVASI r ON f.nama = r.nama_fasilitas
-                GROUP BY f.nama, f.jadwal, a.lokasi, f.kapasitas_max
+                ORDER BY f.nama
             """)
             atraksi_list = [
                 {
                     'nama': row[0],
-                    'jadwal': row[1].strftime("%Y-%m-%d"),
-                    'jam': row[1].strftime("%H:%M"),
+                    'jadwal': row[1].strftime("%Y-%m-%d") if row[1] else '',
+                    'jam': row[1].strftime("%H:%M") if row[1] else '',
                     'lokasi': row[2],
                     'kapasitas_max': row[3],
-                    'total_tiket_terpesan': row[4],
-                    'kapasitas_tersisa': row[3] - row[4]
+                    'total_tiket_terpesan': 0,
+                    'kapasitas_tersisa': row[3]
                 }
                 for row in cur.fetchall()
             ]
 
-            # Ambil semua wahana
             cur.execute("""
-                SELECT f.nama, w.peraturan, f.kapasitas_max, 
-                       COALESCE(SUM(r.jumlah_tiket), 0) AS total_tiket_terpesan
+                SELECT f.nama, w.peraturan, f.kapasitas_max
                 FROM FASILITAS f
                 JOIN WAHANA w ON f.nama = w.nama_wahana
-                LEFT JOIN RESERVASI r ON f.nama = r.nama_fasilitas
-                GROUP BY f.nama, w.peraturan, f.kapasitas_max
+                ORDER BY f.nama
             """)
             wahana_list = [
                 {
                     'nama': row[0],
                     'peraturan': row[1],
                     'kapasitas_max': row[2],
-                    'total_tiket_terpesan': row[3],
-                    'kapasitas_tersisa': row[2] - row[3]
+                    'total_tiket_terpesan': 0,
+                    'kapasitas_tersisa': row[2]
                 }
                 for row in cur.fetchall()
             ]
 
-            # Ambil reservasi pengguna
             cur.execute("""
                 SELECT r.nama_fasilitas, r.tanggal_kunjungan, r.jumlah_tiket, r.status
                 FROM RESERVASI r
                 WHERE r.username_p = %s
+                ORDER BY r.tanggal_kunjungan DESC
             """, (request.session.get('user')['username'],))
+            
             user_reservasi = [
                 {
                     'nama_fasilitas': row[0],
                     'tanggal_kunjungan': row[1].strftime("%Y-%m-%d"),
                     'jumlah_tiket': row[2],
                     'status': row[3],
+                    'username': request.session.get('user')['username'],  # Tambahkan username
                     'lokasi_peraturan': next(
                         (atraksi['lokasi'] for atraksi in atraksi_list if atraksi['nama'] == row[0]),
                         next((wahana['peraturan'] for wahana in wahana_list if wahana['nama'] == row[0]), None)
@@ -159,6 +156,7 @@ def reservasi(request):
         'is_adopter': is_adopter
     }
     return render(request, 'reservasi.html', context)
+
 def manajemen_data_reservasi(request):
     if not check_role(request, ['staf_admin']):
         return HttpResponseForbidden("You do not have permission to access this page.")
@@ -213,11 +211,80 @@ def create_reservasi(request):
         conn = get_db_connection()
         try:
             with conn.cursor() as cur:
+                # Cek apakah reservasi sudah ada untuk tanggal yang sama
+                cur.execute("""
+                    SELECT COUNT(*) FROM RESERVASI 
+                    WHERE username_p = %s AND nama_fasilitas = %s AND tanggal_kunjungan = %s
+                """, (username, nama_fasilitas, tanggal_kunjungan))
+                
+                existing_count = cur.fetchone()[0]
+                
+                if existing_count > 0:
+                    # Jika sudah ada reservasi untuk tanggal yang sama, tampilkan error
+                    lokasi_peraturan = request.POST.get('lokasi_peraturan', '')
+                    kategori = request.POST.get('kategori', '')
+                    
+                    context = {
+                        'nama_fasilitas': nama_fasilitas,
+                        'lokasi_peraturan': lokasi_peraturan,
+                        'kategori': kategori,
+                        'error_message': f'Anda sudah memiliki reservasi untuk {nama_fasilitas} pada tanggal {tanggal_kunjungan}. Harap pilih tanggal yang berbeda.',
+                        'tanggal_kunjungan': tanggal_kunjungan,
+                        'jumlah_tiket': jumlah_tiket
+                    }
+                    return render(request, 'create_reservasi.html', context)
+                
+                # Jika belum ada, insert reservasi baru
                 cur.execute("""
                     INSERT INTO RESERVASI (username_p, nama_fasilitas, tanggal_kunjungan, jumlah_tiket, status)
                     VALUES (%s, %s, %s, %s, %s)
                 """, (username, nama_fasilitas, tanggal_kunjungan, jumlah_tiket, "Terjadwal"))
                 conn.commit()
+                
+        except psycopg2.Error as e:
+            conn.rollback()
+            error_message = str(e)
+            print(f"Database error: {error_message}")
+            
+            # Tangkap pesan error dari trigger
+            if "ERROR: Kapasitas tersisa" in error_message:
+                # Extract pesan error dari trigger
+                trigger_error = error_message.split("ERROR: ")[1].split("\n")[0]
+                display_error = f"ERROR: {trigger_error}"
+            else:
+                display_error = 'Terjadi kesalahan saat membuat reservasi. Silakan coba lagi.'
+            
+            # Tampilkan error dari trigger atau error umum
+            lokasi_peraturan = request.POST.get('lokasi_peraturan', '')
+            kategori = request.POST.get('kategori', '')
+            
+            context = {
+                'nama_fasilitas': nama_fasilitas,
+                'lokasi_peraturan': lokasi_peraturan,
+                'kategori': kategori,
+                'error_message': display_error,
+                'tanggal_kunjungan': tanggal_kunjungan,
+                'jumlah_tiket': jumlah_tiket
+            }
+            return render(request, 'create_reservasi.html', context)
+            
+        except Exception as e:
+            conn.rollback()
+            print(f"General error: {e}")
+            
+            # Tampilkan error umum jika ada masalah lain
+            lokasi_peraturan = request.POST.get('lokasi_peraturan', '')
+            kategori = request.POST.get('kategori', '')
+            
+            context = {
+                'nama_fasilitas': nama_fasilitas,
+                'lokasi_peraturan': lokasi_peraturan,
+                'kategori': kategori,
+                'error_message': 'Terjadi kesalahan saat membuat reservasi. Silakan coba lagi.',
+                'tanggal_kunjungan': tanggal_kunjungan,
+                'jumlah_tiket': jumlah_tiket
+            }
+            return render(request, 'create_reservasi.html', context)
         finally:
             release_db_connection(conn)
 
@@ -245,6 +312,7 @@ def edit_reservasi(request):
             'nama_fasilitas': nama_fasilitas,
             'lokasi_peraturan': lokasi_peraturan,
             'tanggal_kunjungan': tanggal_kunjungan,
+            'tanggal_kunjungan_lama': tanggal_kunjungan,  # Simpan tanggal lama
             'jumlah_tiket': jumlah_tiket,
         }
         return render(request, 'edit_reservasi.html', context)
@@ -252,18 +320,96 @@ def edit_reservasi(request):
     elif request.method == 'POST':
         username = request.POST.get('username')
         nama_fasilitas = request.POST.get('nama_fasilitas')
-        tanggal_kunjungan = request.POST.get('tanggal_kunjungan')
+        tanggal_kunjungan_baru = request.POST.get('tanggal_kunjungan')
+        tanggal_kunjungan_lama = request.POST.get('tanggal_kunjungan_lama')
         jumlah_tiket = request.POST.get('jumlah_tiket')
+        lokasi_peraturan = request.POST.get('lokasi_peraturan', '')
         
         conn = get_db_connection()
         try:
             with conn.cursor() as cur:
+                # Jika tanggal berubah, cek apakah tanggal baru sudah ada
+                if tanggal_kunjungan_baru != tanggal_kunjungan_lama:
+                    cur.execute("""
+                        SELECT COUNT(*) FROM RESERVASI 
+                        WHERE username_p = %s AND nama_fasilitas = %s AND tanggal_kunjungan = %s AND status != 'Dibatalkan'
+                    """, (username, nama_fasilitas, tanggal_kunjungan_baru))
+                    
+                    existing_count = cur.fetchone()[0]
+                    
+                    if existing_count > 0:
+                        # Jika sudah ada reservasi untuk tanggal baru, tampilkan error
+                        context = {
+                            'username': username,
+                            'nama_fasilitas': nama_fasilitas,
+                            'lokasi_peraturan': lokasi_peraturan,
+                            'tanggal_kunjungan': tanggal_kunjungan_baru,
+                            'tanggal_kunjungan_lama': tanggal_kunjungan_lama,
+                            'jumlah_tiket': jumlah_tiket,
+                            'error_message': f'Anda sudah memiliki reservasi untuk {nama_fasilitas} pada tanggal {tanggal_kunjungan_baru}. Harap pilih tanggal yang berbeda.'
+                        }
+                        return render(request, 'edit_reservasi.html', context)
+                
+                # Update reservasi dengan WHERE clause yang lengkap (username, nama_fasilitas, tanggal_lama)
                 cur.execute("""
                     UPDATE RESERVASI
                     SET tanggal_kunjungan = %s, jumlah_tiket = %s
-                    WHERE username_p = %s AND nama_fasilitas = %s
-                """, (tanggal_kunjungan, jumlah_tiket, username, nama_fasilitas))
+                    WHERE username_p = %s AND nama_fasilitas = %s AND tanggal_kunjungan = %s
+                """, (tanggal_kunjungan_baru, jumlah_tiket, username, nama_fasilitas, tanggal_kunjungan_lama))
+                
+                if cur.rowcount == 0:
+                    # Jika tidak ada row yang ter-update
+                    context = {
+                        'username': username,
+                        'nama_fasilitas': nama_fasilitas,
+                        'lokasi_peraturan': lokasi_peraturan,
+                        'tanggal_kunjungan': tanggal_kunjungan_baru,
+                        'tanggal_kunjungan_lama': tanggal_kunjungan_lama,
+                        'jumlah_tiket': jumlah_tiket,
+                        'error_message': 'Reservasi tidak ditemukan atau sudah berubah. Silakan coba lagi.'
+                    }
+                    return render(request, 'edit_reservasi.html', context)
+                
                 conn.commit()
+                
+        except psycopg2.Error as e:
+            conn.rollback()
+            error_message = str(e)
+            print(f"Database error: {error_message}")
+            
+            # Tangkap pesan error dari trigger
+            if "ERROR: Kapasitas tersisa" in error_message:
+                # Extract pesan error dari trigger
+                trigger_error = error_message.split("ERROR: ")[1].split("\n")[0]
+                display_error = f"ERROR: {trigger_error}"
+            else:
+                display_error = f'Terjadi kesalahan saat mengupdate reservasi: {str(e)}. Silakan coba lagi.'
+            
+            context = {
+                'username': username,
+                'nama_fasilitas': nama_fasilitas,
+                'lokasi_peraturan': lokasi_peraturan,
+                'tanggal_kunjungan': tanggal_kunjungan_baru,
+                'tanggal_kunjungan_lama': tanggal_kunjungan_lama,
+                'jumlah_tiket': jumlah_tiket,
+                'error_message': display_error
+            }
+            return render(request, 'edit_reservasi.html', context)
+            
+        except Exception as e:
+            conn.rollback()
+            print(f"General error: {e}")
+            
+            context = {
+                'username': username,
+                'nama_fasilitas': nama_fasilitas,
+                'lokasi_peraturan': lokasi_peraturan,
+                'tanggal_kunjungan': tanggal_kunjungan_baru,
+                'tanggal_kunjungan_lama': tanggal_kunjungan_lama,
+                'jumlah_tiket': jumlah_tiket,
+                'error_message': 'Terjadi kesalahan saat mengupdate reservasi. Silakan coba lagi.'
+            }
+            return render(request, 'edit_reservasi.html', context)
         finally:
             release_db_connection(conn)
 
@@ -272,6 +418,7 @@ def edit_reservasi(request):
             return redirect('booking_tiket:manajemen_data_reservasi')
         elif user_role == 'pengunjung':
             return redirect('booking_tiket:reservasi')
+            
     return HttpResponseForbidden("Invalid request method.")
 
 def cancel_reservasi(request):
@@ -279,9 +426,14 @@ def cancel_reservasi(request):
         return HttpResponseForbidden("You do not have permission to access this page.")
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+        user_role = request.session.get('role')
+        if user_role == 'staf_admin':
+            username = request.POST.get('username', '')
+        else:
+            username = request.session.get('user')['username']
         nama_fasilitas = request.POST.get('nama_fasilitas')
         tanggal_kunjungan = request.POST.get('tanggal_kunjungan')
+        print(f"Canceling reservation for {username} on {nama_fasilitas} for {tanggal_kunjungan}")
 
         conn = get_db_connection()
         try:
@@ -295,7 +447,7 @@ def cancel_reservasi(request):
         finally:
             release_db_connection(conn)
 
-        user_role = request.session.get('role')
+        
         if user_role == 'staf_admin':
             return redirect('booking_tiket:manajemen_data_reservasi')
         elif user_role == 'pengunjung':

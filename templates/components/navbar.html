@@ -102,11 +102,23 @@ is_adopter=True/False (optional, only needed if user_role is "pengunjung")
                     class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
                     <i class="fas fa-user-friends mr-2"></i>Kelola Adopter
                 </a>
+                <a href="{% url 'booking_tiket:manajemen_data_reservasi' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-ticket-alt mr-2"></i>Kelola Reservasi
+                </a>
+                <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-calendar-alt mr-2"></i>Kelola Atraksi
+                </a>
+                <a href="{% url 'atraksi_wahana:manajemen_data_wahana' %}"
+                    class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
+                    <i class="fas fa-gamepad mr-2"></i>Kelola Wahana
+                </a>
                 <a href="{% url 'datasatwa:daftar_satwa' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
-                    <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Satwa
+                    <i class="fas fa-paw mr-2"></i>Data Satwa
                 </a>
                 <a href="{% url 'datahabitat:daftar_habitat' %}" class="px-4 py-2 mx-1 rounded-full text-sm font-medium hover:bg-white hover:bg-opacity-20 transition-all duration-200 flex items-center">
-                    <i class="fas fa-notes-medical mr-2"></i>Manajemen Data Habitat
+                    <i class="fas fa-home mr-2"></i>Data Habitat
                 </a>
                 {% elif role == "pelatih_hewan" %}
                 <a href="{% url 'atraksi_wahana:manajemen_data_atraksi' %}"
