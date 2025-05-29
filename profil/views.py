@@ -26,20 +26,26 @@ load_dotenv(override=True)
 db_url = os.getenv("DATABASE_URL")
 parsed = urlparse(db_url)
 
+DB_POOL = psycopg2.pool.SimpleConnectionPool(
+    1, 20,
+    dbname=parsed.path.lstrip('/'),
+    user=parsed.username,
+    password=parsed.password,
+    host=parsed.hostname,
+    port=parsed.port,
+    options='-c search_path=sizopi'
+)
+
 def get_db_connection():
-    if not hasattr(get_db_connection, "pool"):
-        get_db_connection.pool = psycopg2.pool.SimpleConnectionPool(
-            minconn=1,
-            maxconn=5,
-            dsn=os.getenv("DATABASE_URL"),
-            options='-c search_path=sizopi,public'
-        )
-    return get_db_connection.pool.getconn()
+    conn = DB_POOL.getconn()
+    with conn.cursor() as cur:
+        cur.execute("SET search_path TO sizopi")
+    return conn
 
 def release_db_connection(conn):
-    if conn:
-        get_db_connection.pool.putconn(conn)
-        
+    DB_POOL.putconn(conn)
+
+
 def pengaturan_profil(request):
     if not request.session.get("is_authenticated"):
         return redirect("authentication:login")
