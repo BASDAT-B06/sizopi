@@ -23,7 +23,6 @@
             Jadwal Pemeriksaan Kesehatan Hewan
         </h3>
 
-        <!-- Animal Info Card -->
         <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary mb-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
@@ -41,7 +40,6 @@
             </div>
         </div>
 
-        <!-- Frequency & Button Section -->
         <div class="flex flex-col md:flex-row justify-between mb-6">
             <div class="bg-white p-4 rounded-lg shadow-md flex items-center mb-4 md:mb-0 md:mr-4 md:flex-grow">
                 <div class="w-10 h-10 rounded-full bg-primary-20 flex items-center justify-center mr-3">
@@ -71,7 +69,6 @@
             </button>
         </div>
 
-        <!-- Table -->
         <div class="overflow-x-auto bg-white rounded-lg shadow-md">
             <table class="min-w-full">
                 <thead>
@@ -106,8 +103,6 @@
     </div>
 </div>
 
-<!-- MODALS -->
-<!-- Tambah Jadwal Modal -->
 <div id="createModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
         id="createModalContent">
@@ -125,7 +120,7 @@
             <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
         </div>
 
-        <form class="p-6" method="post" action="{% url 'kesehatan_hewan:create-jadwal' id_hewan %}">
+        <form class="p-6" method="post" action="{% url 'kesehatan_hewan:create_jadwal' id_hewan %}">
             {% csrf_token %}
             <div class="mb-4">
                 <label class="block text-primary font-medium mb-1.5 text-sm" for="tanggal">Tanggal Pemeriksaan
@@ -153,7 +148,6 @@
     </div>
 </div>
 
-<!-- Edit Jadwal Modal -->
 <div id="editJadwalModal"
     class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
@@ -163,7 +157,7 @@
             <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
         </div>
 
-        <form id="editJadwalForm" class="p-6" method="post" action="{% url 'kesehatan_hewan:edit-jadwal' id_hewan %}">
+        <form id="editJadwalForm" class="p-6" method="post" action="{% url 'kesehatan_hewan:edit_jadwal' id_hewan %}">
             {% csrf_token %}
             <div class="mb-4">
                 <label class="block text-primary font-medium mb-1.5 text-sm" for="tanggal_baru">Tanggal Pemeriksaan
@@ -192,7 +186,6 @@
     </div>
 </div>
 
-<!-- Edit Frekuensi Modal -->
 <div id="editFrekuensiModal"
     class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
@@ -202,7 +195,7 @@
             <button class="text-gray-500 hover:text-gray-700 close-modal">×</button>
         </div>
 
-        <form class="p-6" method="post" action="{% url 'kesehatan_hewan:edit-frekuensi' id_hewan %}">
+        <form class="p-6" method="post" action="{% url 'kesehatan_hewan:edit_frekuensi' id_hewan %}">
             {% csrf_token %}
             <div>
                 <label class="block text-primary font-medium mb-1.5 text-sm" for="frekuensi">Frekuensi
@@ -224,7 +217,6 @@
     </div>
 </div>
 
-<!-- Delete Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-neutral-black bg-opacity-50 z-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
         id="deleteModalContent">
@@ -235,7 +227,7 @@
 
         <div class="p-6 text-center">
             <p class="text-sm text-neutral-black mb-6">Apakah Anda yakin ingin menghapus jadwal pemeriksaan ini?</p>
-            <form id="deleteForm" method="post" action="{% url 'kesehatan_hewan:delete-jadwal' id_hewan %}"
+            <form id="deleteForm" method="post" action="{% url 'kesehatan_hewan:delete_jadwal' id_hewan %}"
                 class="inline">
                 {% csrf_token %}
                 <input type="hidden" id="delete_tanggal" name="tanggal">
@@ -262,23 +254,19 @@
             delete: { modal: document.getElementById('deleteModal'), content: document.getElementById('deleteModalContent') }
         };
 
-        // Set current date as default for new appointments
         const today = new Date();
         const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1); // Set to tomorrow as default
+        tomorrow.setDate(tomorrow.getDate() + 1);
         const formattedDate = tomorrow.toISOString().split('T')[0];
         document.getElementById('tanggal').value = formattedDate;
 
-        // Button listeners
         document.getElementById('openCreateModal').addEventListener('click', () => {
-            // Reset form when opening
             document.getElementById('tanggal').value = formattedDate;
             openModal('create');
         });
 
         document.getElementById('editFrekuensiBtn').addEventListener('click', () => openModal('editFrekuensi'));
 
-        // Edit jadwal buttons
         document.querySelectorAll('.edit-jadwal-btn').forEach(btn => {
             btn.addEventListener('click', function () {
                 const tanggal = this.getAttribute('data-tanggal');
@@ -290,7 +278,6 @@
             });
         });
 
-        // Delete jadwal buttons
         document.querySelectorAll('.delete-jadwal-btn').forEach(btn => {
             btn.addEventListener('click', function () {
                 const tanggal = this.getAttribute('data-tanggal');
@@ -301,12 +288,10 @@
             });
         });
 
-        // Close modal buttons
         document.querySelectorAll('.close-modal').forEach(btn => {
             btn.addEventListener('click', closeActiveModal);
         });
 
-        // Close on background click
         window.addEventListener('click', function (event) {
             for (const key in modals) {
                 if (event.target === modals[key].modal) {
@@ -315,7 +300,6 @@
             }
         });
 
-        // Form validation
         document.getElementById('tanggal').addEventListener('change', function () {
             const selectedDate = new Date(this.value);
             const today = new Date();
@@ -334,12 +318,10 @@
 
             if (selectedDate < today) {
                 alert('Tanggal pemeriksaan tidak boleh di masa lalu');
-                // Reset to original value
                 this.value = document.getElementById('tanggal_lama').value;
             }
         });
 
-        // Helper functions
         function openModal(modalKey) {
             console.log('Opening modal:', modalKey);
             modals[modalKey].modal.classList.remove('hidden');

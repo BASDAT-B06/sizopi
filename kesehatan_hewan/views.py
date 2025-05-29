@@ -170,7 +170,6 @@ class CreateRekamMedisView(View):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
         
-@method_decorator(csrf_exempt, name='dispatch')
 class EditRekamMedisView(View):
     def post(self, request, id_hewan, tanggal):
         data = request.POST
@@ -205,7 +204,7 @@ class EditRekamMedisView(View):
             """, (
                 data.get('diagnosa', ''),
                 data.get('pengobatan', ''),
-                data.get('tindak_lanjut', ''),
+                data.get('catatan', ''),
                 str(id_hewan),
                 tanggal
             ))
@@ -217,7 +216,7 @@ class EditRekamMedisView(View):
             
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
-
+        
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteRekamMedisView(View):
     def post(self, request, id_hewan, tanggal):
