@@ -64,8 +64,8 @@
 {% extends "base.html" %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True%}
-{% endblock %}
+{% include "components/navbar.html" with is_logged_in=True user_role="pengunjung"%}
+{% endblock navbar %}
 
 {% block content %}
 
@@ -80,8 +80,10 @@
             <div class="bg-white bg-opacity-100 rounded-lg shadow-md overflow-hidden reservasi-card">
                 <div class="p-6">
                     <h5 class="text-xl font-semibold text-primary mb-2">{{ reservasi.nama_fasilitas }}</h5>
-                    <p class="text-gray-600 mb-1"><span class="font-medium">Tanggal:</span> {{reservasi.tanggal_kunjungan }}</p>
-                    <p class="text-gray-600 mb-1"><span class="font-medium">Jumlah Tiket yang Ingin Dibeli:</span> {{reservasi.jumlah_tiket }}</p>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Tanggal:</span>
+                        {{reservasi.tanggal_kunjungan }}</p>
+                    <p class="text-gray-600 mb-1"><span class="font-medium">Jumlah Tiket yang Ingin Dibeli:</span>
+                        {{reservasi.jumlah_tiket }}</p>
                     <p class="text-gray-600 mb-1">
                         <span class="font-medium">
                             {% if reservasi.lokasi_peraturan %}
