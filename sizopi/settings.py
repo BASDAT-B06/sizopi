@@ -99,9 +99,6 @@ WSGI_APPLICATION = 'sizopi.wsgi.application'
 #         'PASSWORD': os.getenv('DB_PASSWORD'), 
 #         'HOST': os.getenv('DB_HOST'),
 #         'PORT': os.getenv('DB_PORT'),
-#         'OPTIONS': {
-#             'options': '-c search_path=sizopi'
-#         }
 #     }
 # }
 
@@ -116,7 +113,6 @@ DATABASES = {
 DATABASES['default']['OPTIONS'] = {
     'options': '-c search_path=sizopi,public'
 }
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',  # Using SQLite
