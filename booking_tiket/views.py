@@ -7,26 +7,26 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-# DB_POOL = psycopg2.pool.SimpleConnectionPool(
-#     1, 20,
-#     dbname=os.getenv("DB_NAME"),
-#     user=os.getenv("DB_USER"),
-#     password=os.getenv("DB_PASSWORD"),
-#     host=os.getenv("DB_HOST"),
-#     port=os.getenv("DB_PORT"),
-#     options="-c search_path=sizopi"
-# )
-
-# For deployment
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
     1, 20,
-    dbname="railway",
-    user="postgres",
-    password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
-    host="postgres.railway.internal",
-    port="5432",
-    database="-c search_path=sizopi"
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
+    options="-c search_path=sizopi"
 )
+
+# For deployment
+# DB_POOL = psycopg2.pool.SimpleConnectionPool(
+#     1, 20,
+#     dbname="railway",
+#     user="postgres",
+#     password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
+#     host="postgres.railway.internal",
+#     port="5432",
+#     database="-c search_path=sizopi"
+# )
 def get_db_connection():
     conn = DB_POOL.getconn()
     with conn.cursor() as cur:

@@ -15,6 +15,16 @@ from django.db import DatabaseError
 load_dotenv(override=True) 
 
 # For deployment
+# DB_POOL = psycopg2.pool.SimpleConnectionPool(
+#     1, 20,
+#     dbname="railway",
+#     user="postgres",
+#     password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
+#     host="postgres.railway.internal",
+#     port="5432",
+#     database="-c search_path=sizopi"
+# )
+
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
     1, 20,
     dbname="railway",
@@ -22,7 +32,7 @@ DB_POOL = psycopg2.pool.SimpleConnectionPool(
     password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
     host="postgres.railway.internal",
     port="5432",
-    database="-c search_path=sizopi"
+    options="-c search_path=sizopi"
 )
 
 # For development
