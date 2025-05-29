@@ -244,6 +244,18 @@ def dash_pengunjung(request):
     try:
         cur = connection.cursor()
         set_schema(cur)
+
+        # Cek apakah pengunjung adalah adopter
+        cur.execute("""
+            SELECT COUNT(*) FROM adopter 
+            WHERE username_adopter = %s
+        """, [username_p])
+        is_adopter = cur.fetchone()[0] > 0
+        
+        # Update session dengan status adopter
+        user_data['is_adopter'] = is_adopter
+        request.session['user'] = user_data
+        request.session.modified = True
         
         cur.execute("""
             SELECT 
@@ -320,7 +332,8 @@ def dash_pengunjung(request):
                 'email': email,
                 'nomor_telepon': no_telepon,
                 'riwayat_kunjungan': riwayat_kunjungan,
-                'tiket_dibeli': tiket_dibeli
+                'tiket_dibeli': tiket_dibeli,
+                'is_adopter': is_adopter
             }
         else:
             context = {
@@ -329,7 +342,8 @@ def dash_pengunjung(request):
                 'email': user_data.get('email'),
                 'nomor_telepon': user_data.get('no_telepon'),
                 'riwayat_kunjungan': [],
-                'tiket_dibeli': []
+                'tiket_dibeli': [],
+                'is_adopter': is_adopter
             }
         
         cur.close()
@@ -345,7 +359,8 @@ def dash_pengunjung(request):
             'email': user_data.get('email'),
             'nomor_telepon': user_data.get('no_telepon'),
             'riwayat_kunjungan': [],
-            'tiket_dibeli': []
+            'tiket_dibeli': [],
+            'is_adopter': False
         }
         return render(request, 'dash_pengunjung.html', context)
 
