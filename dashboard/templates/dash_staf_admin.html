@@ -63,6 +63,19 @@
                 <p class="text-2xl font-bold text-primary">{{ jumlah_pengunjung_hari_ini }}</p>
                 <p class="text-xs text-gray-400">pengunjung</p>
             </div>
+
+            <div class="bg-secondary-20 rounded-md p-4">
+                <div class="flex items-center mb-2">
+                    <p class="text-sm text-gray-500 mb-1">Laporan Pendapatan Mingguan</p>
+                </div>
+                <p class="text-2xl font-bold text-primary">
+                    Rp{{ pendapatan_adopsi_minggu_ini|floatformat:0 }}
+                </p>
+                <p class="text-xs text-gray-600 mb-1">dari {{ jumlah_adopsi_minggu_ini }} adopsi</p>
+                <p class="text-xs text-primary-80">
+                    {{ start_week|date:"d M" }} - {{ end_week|date:"d M Y" }}
+                </p>
+            </div>
         </div>
     </div>
 </div>

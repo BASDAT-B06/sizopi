@@ -1,9 +1,16 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 from django.shortcuts import render, redirect
 from django.db import connection
 
 def set_schema(cursor):
     cursor.execute("SET search_path TO sizopi")
+
+def get_current_week_range():
+    """Mendapatkan tanggal awal dan akhir minggu ini (Senin - Minggu)"""
+    today = datetime.now().date()
+    start_of_week = today - timedelta(days=today.weekday())  
+    end_of_week = start_of_week + timedelta(days=6) 
+    return start_of_week, end_of_week
 
 def dash_dokter_hewan(request):
     user_data = request.session.get('user', {})
@@ -493,6 +500,26 @@ def dash_staf_admin(request):
             total_tiket_hari_ini = cur.fetchone()[0]
             
             jumlah_pengunjung_hari_ini = total_tiket_hari_ini
+
+            start_week, end_week = get_current_week_range()
+            
+            cur.execute("""
+                SELECT COALESCE(SUM(kontribusi_finansial), 0)
+                FROM adopsi
+                WHERE status_pembayaran = 'Lunas'
+                    AND tgl_mulai_adopsi >= %s 
+                    AND tgl_mulai_adopsi <= %s
+            """, [start_week, end_week])
+            pendapatan_adopsi_minggu_ini = cur.fetchone()[0]
+
+            cur.execute("""
+                SELECT COUNT(*)
+                FROM adopsi
+                WHERE status_pembayaran = 'Lunas'
+                    AND tgl_mulai_adopsi >= %s 
+                    AND tgl_mulai_adopsi <= %s
+            """, [start_week, end_week])
+            jumlah_adopsi_minggu_ini = cur.fetchone()[0]
             
             context = {
                 'nama_lengkap': nama_lengkap,
@@ -501,7 +528,11 @@ def dash_staf_admin(request):
                 'nomor_telepon': staf_data[3],
                 'id_staf': staf_data[1],
                 'total_tiket_hari_ini': total_tiket_hari_ini,
-                'jumlah_pengunjung_hari_ini': jumlah_pengunjung_hari_ini
+                'jumlah_pengunjung_hari_ini': jumlah_pengunjung_hari_ini,
+                'pendapatan_adopsi_minggu_ini': pendapatan_adopsi_minggu_ini,
+                'jumlah_adopsi_minggu_ini': jumlah_adopsi_minggu_ini,
+                'start_week': start_week,  
+                'end_week': end_week
             }
         else:
             context = {
@@ -511,7 +542,11 @@ def dash_staf_admin(request):
                 'nomor_telepon': None,
                 'id_staf': None,
                 'total_tiket_hari_ini': 0,
-                'jumlah_pengunjung_hari_ini': 0
+                'jumlah_pengunjung_hari_ini': 0,
+                'pendapatan_adopsi_minggu_ini': 0, 
+                'jumlah_adopsi_minggu_ini': 0, 
+                'start_week': get_current_week_range()[0],
+                'end_week': get_current_week_range()[1]
             }
         
         cur.close()
