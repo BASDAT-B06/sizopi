@@ -5,6 +5,7 @@ import psycopg2
 from psycopg2 import pool
 from dotenv import load_dotenv
 from django.contrib import messages
+from urllib.parse import urlparse
 
 
 load_dotenv(override=True)
@@ -18,30 +19,25 @@ load_dotenv(override=True)
 #     port=os.getenv("DB_PORT"),
 #     options="-c search_path=sizopi"
 # )
-
-# # For deployment
-# DB_POOL = psycopg2.pool.SimpleConnectionPool(
-#     1, 20,
-#     dbname="railway",
-#     user="postgres",
-#     password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
-#     host="postgres.railway.internal",
-#     port="5432",
-#     database="-c search_path=sizopi"
-# )
+db_url = os.getenv("DATABASE_URL")
+parsed = urlparse(db_url)
 
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
     1, 20,
-    dbname="railway",
-    user="postgres",
-    password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
-    host="postgres.railway.internal",
-    port="5432",
-    options="-c search_path=sizopi"
+    dbname=parsed.path.lstrip('/'),
+    user=parsed.username,
+    password=parsed.password,
+    host=parsed.hostname,
+    port=parsed.port,
+    options='-c search_path=sizopi'
 )
 
+
 def get_db_connection():
-    return DB_POOL.getconn()
+    conn = DB_POOL.getconn()
+    with conn.cursor() as cur:
+        cur.execute("SET search_path TO sizopi")
+    return conn
 
 def release_db_connection(conn):
     DB_POOL.putconn(conn)

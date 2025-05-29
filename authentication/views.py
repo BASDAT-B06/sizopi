@@ -10,6 +10,8 @@ from datetime import datetime, date
 import os
 from dotenv import load_dotenv
 from django.db import DatabaseError
+from urllib.parse import urlparse
+
 
 
 load_dotenv(override=True) 
@@ -25,19 +27,6 @@ load_dotenv(override=True)
 #     database="-c search_path=sizopi"
 # )
 
-
-DB_POOL = psycopg2.pool.SimpleConnectionPool(
-    minconn=1,
-    maxconn=10,
-    user=os.getenv('DB_USER'),
-    password=os.getenv('DB_PASSWORD'),
-    host=os.getenv('DB_HOST'),
-    port=os.getenv('DB_PORT'),
-    database=os.getenv('DB_NAME'),
-    options='-c search_path=sizopi'
-)
-
-
 # For development
 # DB_POOL = psycopg2.pool.SimpleConnectionPool(
 #     1, 20,
@@ -49,8 +38,28 @@ DB_POOL = psycopg2.pool.SimpleConnectionPool(
 #     options="-c search_path=sizopi"
 # )
 
+db_url = os.getenv("DATABASE_URL")
+parsed = urlparse(db_url)
+
+DB_POOL = psycopg2.pool.SimpleConnectionPool(
+    1, 20,
+    dbname=parsed.path.lstrip('/'),
+    user=parsed.username,
+    password=parsed.password,
+    host=parsed.hostname,
+    port=parsed.port,
+    options='-c search_path=sizopi'
+)
+
+
 def get_db_connection():
-    return DB_POOL.getconn()
+    conn = DB_POOL.getconn()
+    conn.autocommit = True  
+    with conn.cursor() as cur:
+        cur.execute("SET search_path TO sizopi")  
+    return conn
+
+
 
 def release_db_connection(conn):
     DB_POOL.putconn(conn)
