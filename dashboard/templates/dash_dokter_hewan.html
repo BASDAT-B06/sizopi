@@ -18,19 +18,23 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-sm text-gray-500">Nama Lengkap</p>
-                <p class="text-base text-gray-800 font-medium">dr. Siti Diana</p>
+                <p class="text-base text-gray-800 font-medium">{{ nama_lengkap }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Username</p>
-                <p class="text-base text-gray-800 font-medium">dr_siti_d</p>
+                <p class="text-base text-gray-800 font-medium">{{ username }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Email</p>
-                <p class="text-base text-gray-800 font-medium">sitidianad@gmail.com</p>
+                <p class="text-base text-gray-800 font-medium">
+                    {% if email %}{{ email }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Nomor Telepon</p>
-                <p class="text-base text-gray-800 font-medium">+1234567890</p>
+                <p class="text-base text-gray-800 font-medium">
+                    {% if nomor_telepon %}{{ nomor_telepon }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Peran</p>
@@ -43,25 +47,25 @@
         <div class="text-2xl font-semibold text-primary mb-4">Informasi Profesional</div>
         <div class="space-y-4 mb-6">
             <div>
-                <p class="text-sm text-gray-500">Nomor Sertifikasi Profesional</p>
-                <p class="text-base text-gray-800 font-medium">STR-DOC-11</p>
+                <p class="text-sm text-gray-500">Nomor Sertifikasi Profesional (STR)</p>
+                <p class="text-base text-gray-800 font-medium">
+                    {% if no_str %}{{ no_str }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Spesialisasi</p>
                 <div class="flex flex-wrap gap-2 mt-1">
-                    <span class="px-3 py-1 bg-primary-20 text-primary text-sm rounded-full">Mamalia Besar</span>
+                    {% for spesialisasi in spesialisasis %}
+                    <span class="px-3 py-1 bg-primary-20 text-primary text-sm rounded-full">{{ spesialisasi }}</span>
+                    {% empty %}
+                    <span class="px-3 py-1 bg-gray-100 text-gray-500 text-sm rounded-full">Belum ada spesialisasi</span>
+                    {% endfor %}
                 </div>
             </div>
         </div>
 
-        <div class="text-xl font-semibold text-primary mb-3">Hewan yang Ditangani: <span class="font-bold">3</span>
-        </div>
-
-        <div class="mt-4">
-            <a href="/rekam-medis/"
-                class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-80 transition-colors">
-                <i class="fas fa-notes-medical mr-2"></i>Lihat Rekam Medis
-            </a>
+        <div class="text-xl font-semibold text-primary mb-3">
+            Hewan yang Ditangani: <span class="font-bold">{{ total_hewan }}</span>
         </div>
     </div>
 </div>

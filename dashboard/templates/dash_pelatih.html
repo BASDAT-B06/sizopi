@@ -6,7 +6,7 @@
 {% endblock meta %}
 
 {% block navbar %}
-{% include "components/navbar.html" with is_logged_in=True user_role="pelatih_pertunjukan" %}
+{% include "components/navbar.html" with is_logged_in=True user_role="pelatih_hewan" %}
 {% endblock navbar %}
 
 {% block content %}
@@ -18,23 +18,29 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-sm text-gray-500">Nama Lengkap</p>
-                <p class="text-base font-medium text-gray-800">Thornie Loree Borrie</p>
+                <p class="text-base font-medium text-gray-800">{{ nama_lengkap }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Username</p>
-                <p class="text-base font-medium text-gray-800">lborrie23</p>
+                <p class="text-base font-medium text-gray-800">{{ username }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Email</p>
-                <p class="text-base font-medium text-gray-800">lborrie23@alibaba.com</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if email %}{{ email }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Nomor Telepon</p>
-                <p class="text-base font-medium text-gray-800">9429960954</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if nomor_telepon %}{{ nomor_telepon }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">ID Staf</p>
-                <p class="text-base font-medium text-gray-800">efd4160e-9cad-4d5c-b24a-77cf29163e63</p>
+                <p class="text-base font-medium text-gray-800">
+                    {% if id_staf %}{{ id_staf }}{% else %}Belum diisi{% endif %}
+                </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Peran</p>
@@ -48,58 +54,50 @@
 
         <div class="mb-6">
             <div class="text-lg font-semibold text-primary mb-3">Jadwal Pertunjukan Hari Ini</div>
-            <div class="space-y-2">
-                <div class="p-3 bg-secondary-20 rounded-md">
-                    <span class="text-sm font-medium">Pertunjukan Gajah</span>
-                    <p class="text-xs text-gray-500">10:00 - 10:30</p>
-                </div>
-                <div class="p-3 bg-secondary-20 rounded-md">
-                    <span class="text-sm font-medium">Pertunjukan Lumba-lumba</span>
-                    <p class="text-xs text-gray-500">13:00 - 13:45</p>
-                </div>
+            {% if atraksi_list %}
+            {% for atraksi in atraksi_list %}
+            <div class="p-3 bg-secondary-20 rounded-md mb-2">
+                <span class="text-sm font-medium">{{ atraksi.nama_atraksi }}</span>
+                <p class="text-xs text-gray-500">{{ atraksi.jadwal|date:"H:i" }}</p>
+                <p class="text-xs text-gray-400">Lokasi: {{ atraksi.lokasi }}</p>
             </div>
+            {% endfor %}
+            {% else %}
+            <div class="p-3 bg-secondary-20 rounded-md">
+                <p class="text-gray-500 text-center">Tidak ada jadwal pertunjukan hari ini</p>
+            </div>
+            {% endif %}
         </div>
 
         <div class="mb-6">
             <div class="text-lg font-semibold text-primary mb-3">Daftar Hewan yang Dilatih</div>
-            <div class="space-y-2">
-                <div class="p-3 bg-secondary-20 rounded-md">
-                    <span class="text-sm font-medium">Molly (Gajah)</span>
-                </div>
-                <div class="p-3 bg-secondary-20 rounded-md">
-                    <span class="text-sm font-medium">Dolphy (Lumba-lumba)</span>
-                </div>
+            {% if hewan_list %}
+            {% for hewan in hewan_list %}
+            <div class="p-3 bg-secondary-20 rounded-md mb-2">
+                <span class="text-sm font-medium">{{ hewan.nama }} ({{ hewan.spesies }})</span>
+                <p class="text-xs text-gray-400">Status: {{ hewan.status_kesehatan }}</p>
             </div>
+            {% endfor %}
+            {% else %}
+            <div class="p-3 bg-secondary-20 rounded-md">
+                <p class="text-gray-500 text-center">Belum ada hewan yang dilatih</p>
+            </div>
+            {% endif %}
         </div>
 
         <div>
             <div class="text-lg font-semibold text-primary mb-3">Status Latihan Terakhir</div>
-            <div class="space-y-2">
-                <div class="p-3 bg-secondary-20 rounded-md flex justify-between items-center">
-                    <span class="text-sm">Molly (Gajah)</span>
-                    <span class="text-xs px-2 py-0.5 bg-green-100 text-green-800 font-medium rounded-full">Siap
-                        Tampil</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-secondary-20 rounded-md p-4">
+                    <div class="text-2xl font-bold text-primary">{{ total_atraksi }}</div>
+                    <div class="text-sm text-gray-600">Total Pertunjukan</div>
                 </div>
-                <div class="p-3 bg-secondary-20 rounded-md flex justify-between items-center">
-                    <span class="text-sm">Dolphy (Lumba-lumba)</span>
-                    <span class="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-800 font-medium rounded-full">Perlu
-                        Latihan</span>
+                <div class="bg-secondary-20 rounded-md p-4">
+                    <div class="text-2xl font-bold text-primary">{{ total_hewan_dilatih }}</div>
+                    <div class="text-sm text-gray-600">Hewan Dilatih</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const mobileMenuButton = document.querySelector('.mobile-menu-button');
-        const mobileMenu = document.querySelector('.mobile-menu');
-        if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', function () {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
-    });
-</script>
 {% endblock content %}
