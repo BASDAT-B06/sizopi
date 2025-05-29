@@ -44,14 +44,46 @@ def release_db_connection(conn):
     DB_POOL.putconn(conn)
 
 def check_role(request, allowed_roles):
+    """Check role dan set is_adopter status"""
     user_role = request.session.get('role')
     if user_role not in allowed_roles:
         return False
+    
+    if user_role == 'pengunjung':
+        username = request.session.get('user', {}).get('username', '')
+        if username:
+            is_adopter = check_is_adopter(username)
+            # Update session dengan status adopter
+            user_data = request.session.get('user', {})
+            user_data['is_adopter'] = is_adopter
+            request.session['user'] = user_data
+            request.session.modified = True
+    
     return True
+
+def check_is_adopter(username):
+    """Cek apakah user adalah adopter dengan query database"""
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT COUNT(*) FROM ADOPTER 
+                WHERE username_adopter = %s
+            """, (username,))
+            result = cur.fetchone()
+            return result[0] > 0 if result else False
+    except Exception as e:
+        print(f"Error checking adopter status: {e}")
+        return False
+    finally:
+        release_db_connection(conn)
 
 def reservasi(request):
     if not check_role(request, ['pengunjung', 'staf_admin']):
         return HttpResponseForbidden("You do not have permission to access this page.")
+
+    user = request.session.get("user", {})
+    is_adopter = user.get("is_adopter", False)
 
     conn = get_db_connection()
     try:
@@ -123,7 +155,8 @@ def reservasi(request):
     context = {
         'atraksi_list': atraksi_list,
         'wahana_list': wahana_list,
-        'user_reservasi': user_reservasi
+        'user_reservasi': user_reservasi,
+        'is_adopter': is_adopter
     }
     return render(request, 'reservasi.html', context)
 def manajemen_data_reservasi(request):
