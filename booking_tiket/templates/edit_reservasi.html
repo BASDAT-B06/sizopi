@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Tiket</title>
+    <title>Edit Tiket</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -45,11 +45,26 @@
     <div class="container max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
         <h1 class="text-3xl font-bold text-primary mb-6 text-center">Edit Tiket</h1>
 
-        <form method="post" action="{% url 'booking_tiket:edit_reservasi' %}" class="space-y-4">
+        <!-- Error Message -->
+        {% if error_message %}
+        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="font-medium">Error!</span>
+            </div>
+            <p class="mt-1">{{ error_message }}</p>
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'booking_tiket:edit_reservasi' %}" class="space-y-4" onsubmit="return validateForm()">
             {% csrf_token %}
 
-            <!-- Username -->
+            <!-- Hidden fields -->
             <input type="hidden" id="username" name="username" value="{{ username }}">
+            <input type="hidden" id="tanggal_kunjungan_lama" name="tanggal_kunjungan_lama" value="{{ tanggal_kunjungan_lama }}">
+            <input type="hidden" id="lokasi_peraturan" name="lokasi_peraturan" value="{{ lokasi_peraturan }}">
 
             <!-- Nama Fasilitas -->
             <div class="mb-4">
@@ -63,10 +78,10 @@
 
             <!-- Lokasi/Peraturan -->
             <div class="mb-4">
-                <label for="lokasi_peraturan" class="block text-sm font-medium text-gray-700 mb-1">
+                <label for="lokasi_peraturan_display" class="block text-sm font-medium text-gray-700 mb-1">
                     Lokasi/Peraturan <span class="text-red-500">*</span>
                 </label>
-                <input type="text" id="lokasi_peraturan" name="lokasi_peraturan" value="{{ lokasi_peraturan }}"
+                <input type="text" id="lokasi_peraturan_display" name="lokasi_peraturan_display" value="{{ lokasi_peraturan }}"
                     class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     readonly>
             </div>
@@ -78,7 +93,8 @@
                 </label>
                 <input type="date" id="tanggal_kunjungan" name="tanggal_kunjungan" value="{{ tanggal_kunjungan }}"
                     class="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    required>
+                    min="{{ today|date:'Y-m-d' }}" required>
+                <small class="text-gray-600">Pilih tanggal yang berbeda jika ingin mengubah tanggal kunjungan</small>
             </div>
 
             <!-- Jumlah Tiket -->
@@ -97,23 +113,30 @@
             </button>
 
             <button type="button" onclick="window.location.href='{% url 'booking_tiket:reservasi' %}'"
-                class="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300">
+                class="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition duration-300">
                 Batal
             </button>
         </form>
     </div>
 
     <script>
-        function updateFormFields() {
-            const kategori = document.getElementById('kategori').value;
-            const lokasiPeraturanLabel = document.querySelector('label[for="lokasi_peraturan"]');
-
-            if (kategori === 'Atraksi') {
-                lokasiPeraturanLabel.textContent = 'Lokasi';
-            } else if (kategori === 'Wahana') {
-                lokasiPeraturanLabel.textContent = 'Peraturan';
+        function validateForm() {
+            const tanggalKunjungan = document.getElementById('tanggal_kunjungan').value;
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (tanggalKunjungan < today) {
+                alert('Tanggal kunjungan tidak boleh kurang dari hari ini!');
+                return false;
             }
+            
+            return true;
         }
+
+        // Set minimum date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggal_kunjungan').setAttribute('min', today);
+        });
     </script>
 </body>
 

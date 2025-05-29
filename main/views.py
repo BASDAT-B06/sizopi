@@ -5,19 +5,34 @@ import psycopg2
 from psycopg2 import pool
 from dotenv import load_dotenv
 from django.contrib import messages
+from urllib.parse import urlparse, parse_qs
+
 
 
 load_dotenv(override=True)
 
+# DB_POOL = psycopg2.pool.SimpleConnectionPool(
+#     1, 20,
+#     dbname=os.getenv("DB_NAME"),
+#     user=os.getenv("DB_USER"),
+#     password=os.getenv("DB_PASSWORD"),
+#     host=os.getenv("DB_HOST"),
+#     port=os.getenv("DB_PORT"),
+#     options="-c search_path=sizopi"
+# )
+db_url = os.getenv("DATABASE_URL")
+parsed = urlparse(db_url)
+
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
     1, 20,
-    dbname=os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
-    options="-c search_path=sizopi"
+    dbname=parsed.path.lstrip('/'),
+    user=parsed.username,
+    password=parsed.password,
+    host=parsed.hostname,
+    port=parsed.port,
+    options='-c search_path=sizopi'
 )
+
 
 def get_db_connection():
     conn = DB_POOL.getconn()

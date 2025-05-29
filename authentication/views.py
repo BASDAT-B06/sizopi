@@ -10,6 +10,9 @@ from datetime import datetime, date
 import os
 from dotenv import load_dotenv
 from django.db import DatabaseError
+from urllib.parse import urlparse, parse_qs
+
+
 
 
 load_dotenv(override=True) 
@@ -26,15 +29,29 @@ load_dotenv(override=True)
 # )
 
 # For development
+# DB_POOL = psycopg2.pool.SimpleConnectionPool(
+#     1, 20,
+#     dbname=os.getenv("DB_NAME"),
+#     user=os.getenv("DB_USER"),
+#     password=os.getenv("DB_PASSWORD"),
+#     host=os.getenv("DB_HOST"),
+#     port=os.getenv("DB_PORT"),
+#     options="-c search_path=sizopi"
+# )
+
+db_url = os.getenv("DATABASE_URL")
+parsed = urlparse(db_url)
+
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
     1, 20,
-    dbname=os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
-    options="-c search_path=sizopi"
+    dbname=parsed.path.lstrip('/'),
+    user=parsed.username,
+    password=parsed.password,
+    host=parsed.hostname,
+    port=parsed.port,
+    options='-c search_path=sizopi'
 )
+
 
 def get_db_connection():
     conn = DB_POOL.getconn()
@@ -157,13 +174,14 @@ def login_view(request):
 
 
 
+
 def register_dokter_view(request):
     if request.method == 'POST':
         form = RegisterDokterForm(request.POST)
         if form.is_valid():
             conn = get_db_connection()
             try:
-                conn.autocommit = False  
+                conn.autocommit = False
 
                 with conn.cursor() as cur:
                     # Insert ke PENGGUNA
@@ -182,7 +200,7 @@ def register_dokter_view(request):
                         form.cleaned_data['no_hp']
                     ))
 
-                    # Buat STR dan insert ke DOKTER_HEWAN
+                    # DOKTER_HEWAN + SPESIALISASI
                     no_str = f"STR-DOC-{form.cleaned_data['no_izin_praktek']}"
                     cur.execute("""
                         INSERT INTO DOKTER_HEWAN (username_DH, no_STR)
@@ -192,13 +210,11 @@ def register_dokter_view(request):
                         no_str
                     ))
 
-                    # Handle spesialisasi
                     spesialis_list = form.cleaned_data['spesialis']
                     if 'Lainnya' in spesialis_list and form.cleaned_data.get('spesialis_lainnya'):
                         spesialis_list.remove('Lainnya')
                         spesialis_list.append(form.cleaned_data['spesialis_lainnya'])
 
-                    # Simpan ke SPESIALISASI
                     for spesialis in spesialis_list:
                         cur.execute("""
                             INSERT INTO SPESIALISASI (username_SH, nama_spesialisasi)
@@ -212,15 +228,11 @@ def register_dokter_view(request):
             except Exception as e:
                 if not conn.autocommit:
                     conn.rollback()
-
-                conn.autocommit = True
-                release_db_connection(conn)
-
                 error_message = str(e).split('CONTEXT:')[0].strip()
                 messages.error(request, error_message)
+                return render(request, 'register_dokter_hewan.html', {'form': form})
 
             finally:
-                conn.autocommit = True
                 release_db_connection(conn)
 
         else:
@@ -229,6 +241,7 @@ def register_dokter_view(request):
         form = RegisterDokterForm()
 
     return render(request, 'register_dokter_hewan.html', {'form': form})
+
 
 
 

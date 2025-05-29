@@ -116,13 +116,15 @@ def edit_habitat(request, nama):
 
     if request.method == 'POST':
         nama_baru = request.POST.get('nama_baru', '').strip()
-        luas_area = request.POST.get('luas_area')
-        kapasitas = request.POST.get('kapasitas')
-        status = request.POST.get('status')
+        luas_area = request.POST.get('luas_area', '').strip()
+        kapasitas = request.POST.get('kapasitas', '').strip()
+        status = request.POST.get('status', '').strip()
         error_message = None
 
-        if not nama_baru:
-            error_message = "Nama habitat tidak boleh kosong."
+        # Validasi semua field harus diisi
+        if not nama_baru or not luas_area or not kapasitas or not status:
+            error_message = "Semua field harus diisi."
+
         else:
             with connection.cursor() as cursor:
                 cursor.execute("SET search_path TO SIZOPI")
@@ -169,6 +171,7 @@ def edit_habitat(request, nama):
                 """, [nama_baru, nama])
 
         return redirect('datahabitat:daftar_habitat')
+
 
     return render(request, 'edit_habitat.html', {
         'habitat': habitat,
