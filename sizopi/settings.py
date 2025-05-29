@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -98,9 +99,6 @@ WSGI_APPLICATION = 'sizopi.wsgi.application'
 #         'PASSWORD': os.getenv('DB_PASSWORD'), 
 #         'HOST': os.getenv('DB_HOST'),
 #         'PORT': os.getenv('DB_PORT'),
-#         'OPTIONS': {
-#             'options': '-c search_path=sizopi'
-#         }
 #     }
 # }
 
@@ -110,6 +108,10 @@ DATABASES = {
         conn_max_age=600,
         ssl_require=True
     )
+}
+
+DATABASES['default']['OPTIONS'] = {
+    'options': '-c search_path=sizopi,public'
 }
 # DATABASES = {
 #     'default': {
@@ -153,10 +155,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-if DEBUG:
-    STATICFILES_DIRS = [BASE_DIR / 'static']
-else:
-    STATIC_ROOT = BASE_DIR / 'static'
+
+# Ini direktori output hasil collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Ini direktori asal file statis milikmu (sudah benar)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
