@@ -7,15 +7,15 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-# DB_POOL = psycopg2.pool.SimpleConnectionPool(
-#     1, 20,
-#     dbname=os.getenv("DB_NAME"),
-#     user=os.getenv("DB_USER"),
-#     password=os.getenv("DB_PASSWORD"),
-#     host=os.getenv("DB_HOST"),
-#     port=os.getenv("DB_PORT"),
-#     options="-c search_path=sizopi"
-# )
+DB_POOL = psycopg2.pool.SimpleConnectionPool(
+    1, 20,
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
+    options="-c search_path=sizopi"
+)
 
 # For deployment
 # DB_POOL = psycopg2.pool.SimpleConnectionPool(
