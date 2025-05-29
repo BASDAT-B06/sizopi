@@ -386,16 +386,27 @@ def delete_adoption_history(request):
             adopter_id = data.get('adopter_id')
             animal_id = data.get('animal_id')
             start_date = data.get('start_date')
+
+            if hasattr(connection.connection, 'notices'):
+                connection.connection.notices.clear()
             
             success = AdopsiService.delete_adoption_history(adopter_id, animal_id, start_date)
             
+            trigger_messages = []
+            if hasattr(connection.connection, 'notices'):
+                for notice in connection.connection.notices:
+                    notice_text = str(notice).strip()
+                    if 'SUKSES:' in notice_text:
+                        clean_message = notice_text.replace('NOTICE:', '').strip()
+                        trigger_messages.append(clean_message)
+            
             if success:
-                return JsonResponse({'success': True})
+                response_data = {'success': True}
+                if trigger_messages:
+                    response_data['trigger_messages'] = trigger_messages
+                return JsonResponse(response_data)
             else:
-                return JsonResponse({
-                    'success': False, 
-                    'message': 'Gagal menghapus riwayat adopsi'
-                })
+                return JsonResponse({'success': False, 'message': 'Gagal menghapus riwayat adopsi'})
                 
         except Exception as e:
             return JsonResponse({
