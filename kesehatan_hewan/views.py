@@ -14,9 +14,9 @@ def set_schema(cur, schema='sizopi'):
 
 
 def dictfetchall(cursor):
-    "Helper: ambil hasil cursor sebagai list of dict"
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
 
 class DaftarHewanView(View):
     template_name = 'daftar_hewan.html'
@@ -27,22 +27,14 @@ class DaftarHewanView(View):
             set_schema(cur)
 
             cur.execute("""
-                SELECT
-                    id,
-                    nama AS nama_individu,
-                    spesies,
-                    asal_hewan,
-                    tanggal_lahir,
-                    status_kesehatan,
-                    nama_habitat AS habitat,
-                    url_foto
+                SELECT id, nama AS nama_individu, spesies, asal_hewan, tanggal_lahir,
+                       status_kesehatan, nama_habitat AS habitat, url_foto
                 FROM hewan
                 ORDER BY nama
             """)
             
             data = dictfetchall(cur)
             cur.close()
-
             return render(request, self.template_name, {'data': data})
         except Exception as e:
             return JsonResponse({'error': str(e)})
@@ -58,15 +50,8 @@ class RekamMedisListView(View):
             set_schema(cur)
 
             cur.execute("""
-                SELECT 
-                    cm.tanggal_pemeriksaan, 
-                    p.nama_depan,
-                    p.nama_tengah,
-                    p.nama_belakang,
-                    cm.status_kesehatan,
-                    cm.diagnosis, 
-                    cm.pengobatan, 
-                    cm.catatan_tindak_lanjut
+                SELECT cm.tanggal_pemeriksaan, p.nama_depan, p.nama_tengah, p.nama_belakang,
+                       cm.status_kesehatan, cm.diagnosis, cm.pengobatan, cm.catatan_tindak_lanjut
                 FROM catatan_medis cm
                 JOIN dokter_hewan dh ON cm.username_dh = dh.username_dh
                 JOIN pengguna p ON dh.username_dh = p.username
@@ -76,12 +61,7 @@ class RekamMedisListView(View):
             
             raw_records = cur.fetchall()
             
-            cur.execute("""
-                SELECT nama, spesies
-                FROM hewan
-                WHERE id = %s
-            """, (str(id_hewan),))
-            
+            cur.execute("SELECT nama, spesies FROM hewan WHERE id = %s", (str(id_hewan),))
             hewan_detail = cur.fetchone()
             nama_hewan = hewan_detail[0] if hewan_detail else "Unknown"
             jenis_hewan = hewan_detail[1] if hewan_detail else "Unknown"
@@ -93,7 +73,7 @@ class RekamMedisListView(View):
                 records.append({
                     'tanggal_pemeriksaan': record[0],
                     'nama_depan': record[1] or "",
-                    'nama_tengah': record[2] or "",  # Handle null nama_tengah
+                    'nama_tengah': record[2] or "",
                     'nama_belakang': record[3] or "",
                     'status_kesehatan': record[4],
                     'diagnosis': record[5] or "",
@@ -111,11 +91,11 @@ class RekamMedisListView(View):
         except Exception as e:
             return JsonResponse({'error': str(e)})
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateRekamMedisView(View):
     def post(self, request, id_hewan):
         data = request.POST
-
         user_data = request.session.get('user', {})
         username_dh = user_data.get('username')
 
@@ -130,7 +110,6 @@ class CreateRekamMedisView(View):
             cur = connection.cursor()
             set_schema(cur)
 
-            # Cek duplikasi
             cur.execute("""
                 SELECT COUNT(*) FROM catatan_medis 
                 WHERE id_hewan = %s AND tanggal_pemeriksaan = %s
@@ -144,25 +123,15 @@ class CreateRekamMedisView(View):
                     'error': f'Rekam medis untuk tanggal {data.get("tanggal")} sudah ada. Gunakan fitur edit untuk mengubah data existing.'
                 })
 
-            # Tambah rekam medis dulu
             cur.execute("""
-                INSERT INTO catatan_medis (
-                    id_hewan, username_dh, tanggal_pemeriksaan,
-                    status_kesehatan, diagnosis, pengobatan
-                ) VALUES (%s, %s, %s, %s, %s, %s)
-            """, (
-                str(id_hewan),
-                username_dh,
-                data.get('tanggal'),
-                data.get('status'),
-                data.get('diagnosa', ''),
-                data.get('pengobatan', '')
-            ))
+                INSERT INTO catatan_medis (id_hewan, username_dh, tanggal_pemeriksaan,
+                                         status_kesehatan, diagnosis, pengobatan)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (str(id_hewan), username_dh, data.get('tanggal'), 
+                  data.get('status'), data.get('diagnosa', ''), data.get('pengobatan', '')))
 
-            # Baru panggil sinkronisasi (karena trigger/function perlu data rekam medis yang sudah ada)
-            cur.execute("""
-                SELECT sinkronisasi_jadwal_pemeriksaan_text(%s, %s, %s)
-            """, [str(id_hewan), data.get('tanggal'), data.get('status')])
+            cur.execute("SELECT tambah_catatan_sakit(%s, %s, %s)", 
+                       [str(id_hewan), data.get('tanggal'), data.get('status')])
 
             result = cur.fetchone()
             if result and result[0]:
@@ -170,17 +139,16 @@ class CreateRekamMedisView(View):
 
             connection.commit()
             cur.close()
-
             return redirect('kesehatan_hewan:list_rekam_medis', id_hewan=id_hewan)
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
 
-        
+
+@method_decorator(csrf_exempt, name='dispatch')        
 class EditRekamMedisView(View):
     def post(self, request, id_hewan, tanggal):
         data = request.POST
-        
         user_data = request.session.get('user', {})
         username_dh = user_data.get('username')
         user_role = request.session.get('role')
@@ -203,27 +171,19 @@ class EditRekamMedisView(View):
             
             cur.execute("""
                 UPDATE catatan_medis
-                SET 
-                    diagnosis = %s, 
-                    pengobatan = %s, 
-                    catatan_tindak_lanjut = %s
+                SET diagnosis = %s, pengobatan = %s, catatan_tindak_lanjut = %s
                 WHERE id_hewan = %s AND tanggal_pemeriksaan = %s
-            """, (
-                data.get('diagnosa', ''),
-                data.get('pengobatan', ''),
-                data.get('catatan', ''),
-                str(id_hewan),
-                tanggal
-            ))
+            """, (data.get('diagnosa', ''), data.get('pengobatan', ''), 
+                  data.get('catatan', ''), str(id_hewan), tanggal))
             
             connection.commit()
             cur.close()
-            
             return redirect('kesehatan_hewan:list_rekam_medis', id_hewan=id_hewan)
             
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
-        
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteRekamMedisView(View):
     def post(self, request, id_hewan, tanggal):
@@ -254,11 +214,11 @@ class DeleteRekamMedisView(View):
 
             connection.commit()
             cur.close()
-
             return redirect('kesehatan_hewan:list_rekam_medis', id_hewan=id_hewan)
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class JadwalPemeriksaanView(View):
@@ -288,18 +248,12 @@ class JadwalPemeriksaanView(View):
             result = cur.fetchone()
             frekuensi = result[0] if result else 3 
             
-            cur.execute("""
-                SELECT nama, spesies
-                FROM hewan
-                WHERE id = %s
-            """, (str(id_hewan),))
-            
+            cur.execute("SELECT nama, spesies FROM hewan WHERE id = %s", (str(id_hewan),))
             hewan_detail = cur.fetchone()
             nama_hewan = hewan_detail[0] if hewan_detail else "Unknown"
             jenis_hewan = hewan_detail[1] if hewan_detail else "Unknown"
             
             cur.close()
-                    
             jadwal = [{'tanggal_pemeriksaan': date[0]} for date in raw_jadwal]
 
             return render(request, self.template_name, {
@@ -312,11 +266,11 @@ class JadwalPemeriksaanView(View):
         except Exception as e:
             return JsonResponse({'error': str(e)})
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateJadwalView(View):
     def post(self, request, id_hewan):
         tanggal = request.POST.get('tanggal')
-        
         user_data = request.session.get('user', {})
         username = user_data.get('username')
         user_role = request.session.get('role')
@@ -352,14 +306,13 @@ class CreateJadwalView(View):
                 VALUES (%s, %s, %s)
             """, (str(id_hewan), tanggal, freq_rutin))
             
-            cur.execute("SELECT tambah_jadwal_rutin_manual(%s, %s, %s)", [id_hewan, tanggal, freq_rutin])
+            cur.execute("SELECT tambah_jadwal(%s, %s, %s)", [id_hewan, tanggal, freq_rutin])
             msg = cur.fetchone()[0]
             if msg:
                 messages.success(request, msg)
 
             connection.commit()
             cur.close()
-
             return redirect('kesehatan_hewan:jadwal_pemeriksaan', id_hewan=id_hewan)
             
         except Exception as e:
@@ -370,7 +323,6 @@ class EditJadwalView(View):
     def post(self, request, id_hewan):
         tanggal_lama = request.POST.get('tanggal_lama')
         tanggal_baru = request.POST.get('tanggal_baru')
-        
         user_data = request.session.get('user', {})
         username = user_data.get('username')
         user_role = request.session.get('role')
@@ -397,10 +349,8 @@ class EditJadwalView(View):
                 WHERE id_hewan = %s AND tgl_pemeriksaan_selanjutnya = %s
             """, (tanggal_baru, str(id_hewan), tanggal_lama))
             
-            rows_affected = cur.rowcount
             connection.commit()
             cur.close()
-            
             return redirect('kesehatan_hewan:jadwal_pemeriksaan', id_hewan=id_hewan)
             
         except Exception as e:
@@ -411,7 +361,6 @@ class EditJadwalView(View):
 class DeleteJadwalView(View):
     def post(self, request, id_hewan):
         tanggal = request.POST.get('tanggal')
-
         user_data = request.session.get('user', {})
         username = user_data.get('username')
         user_role = request.session.get('role')
@@ -430,7 +379,6 @@ class DeleteJadwalView(View):
             
             connection.commit()
             cur.close()
-            
             return redirect('kesehatan_hewan:jadwal_pemeriksaan', id_hewan=id_hewan)
             
         except Exception as e:
@@ -441,7 +389,6 @@ class DeleteJadwalView(View):
 class EditFrekuensiView(View):
     def post(self, request, id_hewan):
         frekuensi = request.POST.get('frekuensi')
-        
         user_data = request.session.get('user', {})
         username = user_data.get('username')
         user_role = request.session.get('role')
@@ -475,7 +422,6 @@ class EditFrekuensiView(View):
             
             connection.commit()
             cur.close()
-            
             return redirect('kesehatan_hewan:jadwal_pemeriksaan', id_hewan=id_hewan)
             
         except Exception as e:
