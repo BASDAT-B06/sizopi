@@ -26,14 +26,16 @@ load_dotenv(override=True)
 #     database="-c search_path=sizopi"
 # )
 
+
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
-    1, 20,
-    dbname="railway",
-    user="postgres",
-    password="NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt",
-    host="postgres.railway.internal",
-    port="5432",
-    options="-c search_path=sizopi"
+    minconn=1,
+    maxconn=10,
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
+    host=os.getenv('DB_HOST'),
+    port=os.getenv('DB_PORT'),
+    database=os.getenv('DB_NAME'),
+    options='-c search_path=sizopi'
 )
 
 
