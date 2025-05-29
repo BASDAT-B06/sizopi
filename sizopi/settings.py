@@ -86,6 +86,9 @@ DATABASES = {
         'PASSWORD': 'NtrtcaMLQLEEGnNopTYFXNJJOlbmMVYt', 
         'HOST': 'postgres.railway.internal',
         'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c search_path=sizopi'
+        }
     }
 }
 
